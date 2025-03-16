@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Body & Button Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Poppins&family=Nunito&family=Lato&family=Oswald&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,500,0,0&icon_names=account_circle" />
+</head>
+<body>
+    <div id="container">
+        <div id="chatBody">
+        </div>
+        <div id="uploadMenu">
+            <div id="uploadImageDiv">
+                <i class="fas fa-image"></i>
+            </div>
+            <div id="uploadVideoDiv">
+                <input type="file" id="videoInput" accept="video/*" style="display: none;">
+                <i class="fas fa-video"></i>
+            </div>                
+            <div id="uploadAudioDiv">
+                <i class="fas fa-music"></i>
+            </div>
+            <div id="uploadGifDiv">
+                <i class="fas fa-gift"></i>
+            </div>
+            <div id="uploadStickerDiv">
+                <i class="fas fa-sticky-note"></i>
+            </div>
+            <div id="uploadDrawingDiv">
+                <i class="fas fa-paint-brush"></i>
+            </div>
+            <div id="uploadGameDiv">
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <div id="uploadYoutubeDiv">
+                <i class="fab fa-youtube"></i>
+            </div>
+        </div>
+        <div id="progressBarContainer">
+            <div id="progressBar"></div>
+        </div> 
+        <div id="quoteReplyDivCon">
+            <div id="quoteReplyDiv">
+                <div id="upPart">
+                    <div id="quoteReplyUserName">
+                    </div>
+                    <i class="fas fa-times" id="cancel"></i>
+                </div>
+                <div id="quoteReplyMessage"></div>
+                <div id="quoteReplyMessageId"></div>
+            </div>  
+        </div>     
+        <div id="chatBar">
+            <div id="uploadDiv">
+                <i class="fas fa-add"></i>
+            </div>
+            <div id="emojiDiv">
+                <i class="fas fa-smile"></i>
+            </div>
+            <div id="messageDiv">
+                <textarea id="message" placeholder="Type a message"></textarea>
+            </div>
+            <div id="recordDiv">
+                <i class="fas fa-microphone"></i>
+            </div>
+            <div id="sendDiv">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <div id="reportPopUpDiv">
+            <div id="reportPopUp">
+                <div id="reportTitle">Report</div>
+                <div id="reportText">Report this message?</div>
+                <div id="messageId">
+                    <span>Message ID: </span>
+                    <span id="messageIdSpan"></span>
+                </div>
+                <div id="reportBtnDiv">
+                    <button id="reportBtn">Report</button>
+                    <button id="cancelBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div id="thankYouPopUpDiv">
+            <div id="thankYouPopUp">
+                <div id="thankYouTitle">Thank you</div>
+                <div id="thankYouText">Your report has been submitted</div>
+                <button id="thankYouBtn">OK</button>
+            </div>
+        </div>
+        <div id="profilePopUpDiv">
+            <div id="profilePopUp">
+                <div id="topProfileBar">
+                    <div id="profilePopUpCloseBtn">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <div id="profilePopUpTitle">Profile</div>
+                </div>
+                <div id="profilePicAndCoverImgDiv">
+                    <div id="coverImgDiv">
+                        <img src="img/jolofu.webp" alt="cover" id="coverImg">
+                    </div>
+                    <div id="profilePicDiv">
+                        <img src="img/emperor.png" alt="profile" id="profilePic">
+                        <div id="onlineStatus"></div>
+                    </div>
+                </div>
+                <div id="profileNameDiv">
+                    <div id="profileName">--</div>
+                    <div id="profileRankDivCon">
+                        <img src="img/user.png" id="profileRankImg">
+                    <div id="profileRank">
+                        <span id="profileRankText"></span>
+                    </div>
+                    </div>
+                </div>
+                <div id="actionDiv">
+                    <div id="chat">
+                        <i class="fas fa-comment"></i>
+                        <span>Chat</span>
+                    </div>
+                    <div id="viewProfile">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </div>
+                    <div id="rate">
+                        <i class="fas fa-star"></i>
+                        <span>Rate</span>
+                    </div>
+                    <div id="block">
+                        <i class="fas fa-ban
+                        "></i>
+                        <span>Block</span>
+                    </div>
+                    <div id="report">
+                        <i class="fas fa-flag"></i>
+                        <span>Report</span>
+                    </div>
+                    <div id="action">
+                        <i class="fas fa-ellipsis-h"></i>
+                        <span>Action</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="recordPopUpDiv">
+            <div id="recordPopUp">
+                <div id="recordTitle">Recording</div>
+                <div id="recordingIcon">
+                    <i class="fas fa-microphone"></i>
+                </div>
+                <div id="recordReaderDiv">
+                    <div id="recordReader">0:00</div>
+                </div>
+                <div id="cancelAndGoRecordDiv">
+                    <button id="cancelRecordBtn">Cancel</button>
+                    <button id="goRecordBtn">Go</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/chat.js" type="module"></script>
+    <script src="js/image.js" type="module"></script>
+    <script src="js/audio.js" type="module"></script>
+    <script src="js/send.js" type="module"></script>
+    <script src="js/other.js" type="module"></script>
+    <script src="js/emoji.js" type="module"></script>
+    <script src="js/record.js" type="module"></script>
+    <script src="js/index.js"></script>
+    <script src="js/recorder.js"></script>
+</body>
+</html>

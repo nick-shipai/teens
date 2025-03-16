@@ -1,0 +1,100 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: white;
+}
+ 
+#topBar {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centers content horizontally */
+    height: 60px; /* Adjust height as needed */
+    position: relative;
+    width: 100%;
+    margin-top: 40px;
+}
+
+#backBtnDiv {
+    position: absolute;
+    left: 20px; /* Adjust as needed */
+    font-size: 1.5rem;
+}
+
+#logo {
+    font-family: 'Bungee', sans-serif;
+    font-size: 24px; /* Adjust size if needed */
+    font-weight: bold;
+}
+span:nth-child(2) {
+    color: blue;
+}
+span:nth-child(3) {
+    color: red;
+}
+span:nth-child(5) {
+    color: green;
+}
+#bodyPart {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1%;
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+}
+#bodyPart h3 {
+    font-size: 1.5rem;
+    word-spacing: 2px;
+}
+.wTlk {
+    margin-top: 2px;
+    color: grey;
+    font-size: 1.1rem;
+}
+#selectOption {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#option1, #option2, #option3, #option4, #option5 {
+    display: flex;
+    width: 370px;
+    height: 70px;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 20px;
+    border-radius: 20px;
+}
+#option1:hover, #option2:hover, #option3:hover, #option4:hover, #option5:hover {
+    background-color: #f0f0f0;
+}
+input {
+    margin-left: 20px;
+    width: 50px;
+    height: 30px;
+    accent-color: red;
+}
+.text {
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 1rem;
+}
+#continue {
+    height: 70px;
+    background-color: red;
+    border: none;
+    border-bottom: 5px solid black;
+    margin-top: 20px;
+    border-radius: 30px;
+    font-size: 1.3rem;
+    color: white;
+    font-family: 'Lato', sans-serif;
+    width: 310px;
+}

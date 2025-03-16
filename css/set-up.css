@@ -1,0 +1,303 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+    overflow-x: hidden;
+}
+
+body {
+    background-color: red;
+}
+/* Ensure #container fills the full height */
+#container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+@media (max-height: 667px) {
+    #topBar {
+        margin-top: 10px;
+    }
+}
+#topBarDiv {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+#topBar {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centers content horizontally */
+    height: 60px; /* Adjust height as needed */
+    position: relative;
+    width: 100%;
+    margin-top: 50px;
+}
+#bodyPart h3 {
+    margin-top: 50px;
+    font-size: 1.5rem;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    text-align: center;
+}
+#backBtnDiv {
+    position: absolute;
+    left: 20px; /* Adjust as needed */
+    font-size: 1.5rem;
+    color: white;
+}
+
+#logo {
+    font-family: 'Bungee', sans-serif;
+    font-size: 24px; /* Adjust size if needed */
+    font-weight: bold;
+}
+
+span:nth-child(2) {
+    color: blue;
+}
+span:nth-child(3) {
+    color: yellow;
+}
+span:nth-child(5) {
+    color: green;
+}
+#logoDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#logoDiv div {
+    color: white;
+    font-size: 1.3rem;
+    font-family: 'Bungee', sans-serif;
+}
+#bodyPart {
+    background-color: white;
+    height: 100%;
+    width: 100%;
+    border-radius: 30px 30px 0 0;
+    padding: 10px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+#profileSetUpDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#profilePicDiv {
+    position: relative; /* Allows positioning of the pencil icon */
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    background-color: grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Ensures the image stays within the border */
+    border: 2px solid white;
+    margin-top: 20px;
+}
+
+#profilePic {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    object-fit: cover; /* Ensures the image is properly contained */
+}
+
+/* Pencil icon styling */
+#profilePicDiv i {
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    background-color: white;
+    color: red;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 1;
+}
+#nameDiv {
+    display: flex;
+    padding: 10px;
+    width: 330px;
+    height: 70px;
+    border: 2px solid black;
+    margin-top: 30px;;
+    border-radius: 30px;
+    align-items: center;
+}
+#iconDiv {
+    height: 50px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    background-color: red;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+}
+#name {
+    width: 250px;
+    margin-left: 5px;
+    height: 50px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border: none;
+    outline: none;
+    font-size: 1.5rem;
+}
+h4 {
+    margin-top: 20px;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+#ageSliderPick {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    width: 90%; /* Increase width for better scrolling */
+    max-width: 400px; /* Limit max width */
+    overflow-x: auto; /* Enables horizontal scrolling */
+    white-space: nowrap;
+    scroll-snap-type: x mandatory; /* Makes scrolling smoother */
+    gap: 15px;
+    padding: 10px 50px; /* Extra padding for smooth left-right scrolling */
+    position: relative;
+    scrollbar-width: none; /* Hide scrollbar */
+    
+}
+
+
+/* Hide scrollbar in WebKit browsers */
+#ageSliderPick::-webkit-scrollbar {
+    display: none;
+}
+
+#ageSliderPick div {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Bungee', sans-serif;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    scroll-snap-align: center; /* Snaps each item to center */
+    background-color: rgba(0, 0, 0, 0.1);
+    color: black;
+}
+
+/* Active (Selected) Age */
+#ageSliderPick .active {
+    color: white;
+    font-size: 1.7rem;
+    background-color: red;
+    padding: 12px 22px;
+    border-radius: 15px;
+}
+#genderSliderPick {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    width: 90%;
+    max-width: 400px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scroll-snap-type: x mandatory;
+    gap: 15px;
+    padding: 10px 50px;
+    position: relative;
+    scrollbar-width: none; /* Hide scrollbar */
+}
+
+/* Hide scrollbar for WebKit browsers */
+#genderSliderPick::-webkit-scrollbar {
+    display: none;
+}
+
+#genderSliderPick div {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Bungee', sans-serif;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    scroll-snap-align: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: black;
+}
+
+/* Active (Selected) Gender */
+#genderSliderPick .genActive {
+    color: white;
+    font-size: 1.7rem;
+    background-color: red;
+    padding: 12px 22px;
+    border-radius: 15px;
+}
+#setUpBtn {
+    height: 70px;
+    background-color: red;
+    border: none;
+    border-bottom: 5px solid black;
+    margin-top: 30px;
+    border-radius: 30px;
+    font-size: 1.3rem;
+    color: white;
+    font-family: 'Lato', sans-serif;
+    width: 90%;
+}
+#animationDiv {
+    display: none;
+    justify-content: center;
+    animation: bounce 2s ease-in-out;
+}
+#animationDiv div {
+    background-color: white;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    margin: 5px;
+    animation: bounce 1.5s infinite ease-in-out;
+}
+
+/* Delay each circle to create a wave effect */
+#animationDiv div:nth-child(1) {
+    background-color: blue;
+    animation-delay: 0s;
+}
+#animationDiv div:nth-child(2) {
+    background-color: yellow;
+    animation-delay: 0.2s;
+}
+#animationDiv div:nth-child(3)  {
+    background-color: white;
+    animation-delay: 0.4s;
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}

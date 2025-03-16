@@ -1,0 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    background-color: white;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#topBar {
+    background: red;
+    height: 50px;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 1.5rem;
+}
+
+#iframeDiv {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    overflow: auto;
+}
+
+#iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+#leftFrameDiv {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 50%;
+    background-color: white;
+    overflow: auto;
+    border: none;
+     background-color: #eee;
+}
+#leftFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+#iframeBodyDiv {
+    display: flex;
+    height: 100%;
+}
+#appIcons {
+    display: flex;
+    margin-left: auto; /* Pushes icons to the right */
+    gap: 15px; /* Adds spacing between icons */
+}
+
+#appIcons div {
+    cursor: pointer;
+    padding: 10px;
+    font-size: 1.5rem;
+}
+@media (max-width: 730px) { 
+    /* Apply styles for most phones */
+    #leftFrameDiv {
+        display: none;
+    }
+}

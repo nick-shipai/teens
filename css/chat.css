@@ -1,0 +1,795 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    scrollbar-width: none;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: white;
+}
+
+/* Chat Body */
+#chatBody {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Chat Bubble Container */
+.chatBubbleConDiv {
+    justify-content: flex-start;
+    background-color: #ECECEC;
+    padding: 10px;
+    flex-direction: column;
+    word-wrap: break-word;
+}
+.chatBubbleCon {
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px;
+    word-wrap: break-word;
+}
+
+
+/* Chat Bubble */
+.chatBubble {
+    max-width: 70%;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    word-wrap: break-word;
+    margin-left: 10px;
+}
+
+/* Align messages sent by the user */
+.chatBubbleCon.user {
+    justify-content: flex-end;
+}
+
+.chatBubbleCon.user .chatBubble {
+    background: #dc3545;
+    color: white;
+}
+
+/* Chat Bar */
+#chatBar {
+    background: #DDDDDD;
+    height: 70px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    border-radius: 20px 20px 0 0;
+    gap: 15px;
+}
+
+/* Icons */
+#chatBar i {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+}
+
+/* Message Input */
+#messageDiv {
+    width: 70%;
+}
+
+#message {
+    width: 100%;
+    height: 40px;
+    border: none;
+    padding: 10px;
+    font-size: 1rem;
+    outline: none;
+    background-color: transparent;
+    resize: none;
+    font-family: 'Roboto';
+    scrollbar-width: none;
+}
+
+/* Send Button */
+#sendDiv {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    justify-content: center;
+    margin-left: 20px;
+}
+
+#sendDiv i {
+    color: white;
+    font-size: 1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) { 
+    #message {
+        width: 100%;
+    }
+    #chatBar {
+        gap: 10px;
+    }
+    #chatBar i {
+        font-size: 1.2rem;
+    }
+    .timeDiv {
+        left: 20%;
+    }
+}
+/* Alternate chat bubble backgrounds */
+.chatBubbleConDiv:nth-child(odd) {
+    background-color: #ECECEC;
+}
+
+.chatBubbleConDiv:nth-child(even) {
+    background-color: white;
+}
+/* Status Icon (Clock or Checkmark) */
+.statusIcon {
+    font-size: 0.9rem;
+    margin-left: 8px;
+    vertical-align: middle;
+    color: gray;
+}
+#messagePicDiv {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: #d2d2d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+#messagePic {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+#nameDiv {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 15px;
+    margin-left: 7px;
+    display: flex;
+    align-items: center;
+}
+#rankDiv {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+#rankImg {
+    height: 20px;
+}
+#rankText {
+    background-color: red;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 0.7rem;
+    padding: 10px;
+    border-radius: 10px;
+    margin-left: 5px;
+}
+#uploadMenu {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #d2d2d2;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 10;
+    bottom: 80px;
+    margin: 10px;
+    width: 50%;
+    gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    display: none;
+}
+#uploadMenu div {
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#uploadMenu div:hover {
+     transform: scale(1.1);
+}
+#progressBarContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    position: absolute;
+    z-index: 20;
+    background-color: red;
+    top: 100px;
+    width: 200px;
+    height: 50px;
+    color: white;
+    align-items: center;
+    margin-left: 10px;
+    border-radius: 20px;
+    display: none;
+    text-align: center;
+    color: black;
+    border: 3px solid white;
+}
+#progressBar {
+    background-color: white;
+    height: 100%;
+    width: 0;
+    border-radius: 20px;
+    color: black;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+     
+}
+/* Video container */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+}
+
+/* Play button */
+.video-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 50%;
+}
+
+/* Audio styling */
+.audio-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f1f1f1;
+    padding: 8px;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.play-pause-btn {
+    font-size: 18px;
+}
+
+.audio-duration {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-left: 15px;
+}
+.chatBubbleConDiv {
+    position: relative; /* Ensure child elements are positioned relative to this */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 30px; /* Add padding to prevent overlap */
+}
+
+.reactDiv {
+    position: absolute;
+    bottom: 10px;
+    left: 3%;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    font-size: 0.9rem;
+}
+.timeDiv {
+    font-size: 15px;
+    color: gray;
+    text-align: right;
+    margin-top: 5px;
+    position: absolute;
+    bottom: 10px;
+    left: 90%;
+    padding: 10px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+@media (max-width: 600px) {
+    .timeDiv {
+        left: 80%;
+    }
+    
+}
+.bubbleMenuDiv {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.threeDotsIcon {
+    font-size: 18px;
+    color: gray;
+}
+
+.bubbleMenuOptions {
+    position: absolute;
+    top: 25px;
+    right: 0;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    z-index: 100;
+}
+
+.menuOption {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menuOption i {
+    color: gray;
+}
+
+.menuOption:hover {
+    background: #f1f1f1;
+}
+#reportPopUpDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    display: none;
+}
+
+#reportPopUp {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+#reportTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#reportText {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+#messageId {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+#reportBtnDiv {
+    display: flex;
+    justify-content: space-between;
+}
+
+#reportBtn, #cancelBtn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#cancelBtn {
+    background: gray;
+}
+#thankYouPopUpDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    display: none;
+}
+
+#thankYouPopUp {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#thankYouTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#thankYouText {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+#thankYouBtn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+#quoteReplyDiv {
+    position: fixed;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    bottom: 75px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 70px;
+}
+#quoteReplyDivCon {
+    display: none;
+    justify-content: center;
+    z-index: 100;
+
+}
+#upPart {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#upPart i {
+    font-size: 1.5rem;
+    color: red;
+    margin-left: auto;
+}
+#quoteReplyUserName {
+    font-weight: bold;
+    color: green;
+    font-size: 1.1rem;
+}
+#quoteReplyMessageId {
+    visibility: hidden;
+}
+#wrapperDiv {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: white;
+}
+/* ...existing code... */
+
+/* Reply Message Styling */
+.replyAndMessageDiv {
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f0f0;
+    border-left: 3px solid red;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.replyName {
+    font-weight: bold;
+    color: #00796b;
+    font-size: 0.9rem;
+}
+
+.replyDiv {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 2px;
+}
+
+.messageDiv {
+    font-size: 1rem;
+    color: #000;
+    margin-top: 5px;
+}
+#profilePopUpDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+}
+#profilePopUp {
+    background: white;
+    width: 300px;
+    text-align: center;
+    height: 95%;
+    border-radius: 10px;
+    overflow-y: scroll;
+    padding: 5px;
+    scrollbar-width: none;
+}
+@media (max-width: 600px) {
+    #profilePopUp {
+        width: 100%;
+        border-radius: 0;
+        height: 100%;
+    }
+    
+}
+#profilePicAndCoverImgDiv {
+    background-color: black;
+    width: 100%;
+    height: 200px;
+    position: relative;
+}
+#coverImgDiv {
+    width: 100%;
+    height: 100%;
+}
+#coverImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+#profilePicDiv {
+    background-color: black;
+    width: 170px;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid white;
+}
+#profilePic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+#topProfileBar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    align-items: center;
+    border-bottom: 1px solid #f1f1f1;
+    font-weight: bold;
+}
+#profilePopUpCloseBtn {
+    font-size: 1.5rem;
+    color: red;
+}
+#onlineStatus {
+    height: 20px;
+    width: 20px;
+    background-color: green;
+    border-radius: 50%;
+    position: absolute;
+    top: 135px;
+    left: 70%;
+}
+
+#actionDiv {
+    margin-top: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: grid;
+}
+#actionDiv div {
+    width: 100%;
+    background-color: #f1f1f1;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+#actionDiv div:hover {
+    background-color: #e1e1e1;
+}
+#actionDiv div span {
+    margin-left: 10px;
+}
+#chat i {
+    color: green;
+}
+#block i {
+    color: red;
+}
+#rate i {
+    color: orange;
+}
+#report i {
+    color: red;
+}
+#action i {
+    color: blue;
+}
+#viewProfile i {
+    color: blue;
+}
+#profileNameDiv {
+    margin-top: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#profileName {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+#profileRankImg {
+    height: 20px;
+}
+#profileRank {
+    background-color: red;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 0.7rem;
+    padding: 10px;
+    border-radius: 10px;
+    margin-left: 5px;
+    height: 30px;
+}
+#profileRankDivCon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#recordPopUpDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    flex-direction: column;
+    justify-content: center;
+}
+#recordPopUp {
+    background: white;
+    width: 500px;
+    text-align: center;
+    height: 50%;
+    border-radius: 10px;
+    overflow-y: scroll;
+    padding: 5px;
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#recordTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+#recordingIcon {
+    font-size: 5rem;
+    color: red;
+    animation: pulse 1s infinite;
+}
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+#cancelAndGoRecordDiv {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    width: 100%;
+}
+#cancelRecordBtn {
+    background: gray;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+#goRecordBtn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+#recordReader {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 20px;
+}
+@media (max-width: 600px) {
+    #recordPopUp {
+        width: 70%;
+    }
+    
+}
