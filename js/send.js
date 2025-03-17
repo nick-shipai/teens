@@ -139,68 +139,55 @@ document.body.addEventListener("click", (event) => {
     }
 });
 
-document.addEventListener("deviceready", function () {
-    if (cordova.plugins.permissions) {
-        let permissions = cordova.plugins.permissions;
-        permissions.requestPermission(permissions.RECORD_AUDIO, function (status) {
-            if (!status.hasPermission) {
-                alert("Microphone access is required to record audio.");
-            }
-        });
-    }
-}, false);
-
-let mediaRec;
+let mediaRecorder;
 let audioChunks = [];
 let recordStartTime;
 let timerInterval;
-let fileURL = "";
 
-document.getElementById("recordDiv").addEventListener("click", () => {
+document.getElementById("recordDiv").addEventListener("click", async () => {
     document.getElementById("recordPopUpDiv").style.display = "flex";
 
-    if (window.audioinput) {
-        startRecording();
-    } else {
-        alert("Audio input plugin is not available.");
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        recordStartTime = Date.now();
+
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                audioChunks.push(event.data);
+            }
+        };
+
+        mediaRecorder.start();
+        startTimer();
+        console.log("Recording started...");
+    } catch (error) {
+        console.error("Error accessing microphone:", error);
+        alert("Microphone access is required to record audio.");
     }
 });
 
-// Start Recording Function
-function startRecording() {
-    audioChunks = [];
-    recordStartTime = Date.now();
+document.getElementById("goRecordBtn").addEventListener("click", async () => {
+    if (!mediaRecorder) return;
 
-    audioinput.start({
-        streamToWebAudio: false,  // Don't process with Web Audio API
-        normalize: true,          // Adjust volume levels
-        format: "wav",            // PCM format (convert to MP3 later)
-        samplerate: 44100,        // Standard audio quality
-        channels: 1,              // Mono recording
-    });
-
-    audioinput.ondata = function (data) {
-        audioChunks.push(new Uint8Array(data));
-    };
-
-    startTimer();
-    console.log("Recording started...");
-}
-
-document.getElementById("goRecordBtn").addEventListener("click", () => {
-    if (!audioinput.isCapturing()) return;
-    
-    audioinput.stop();
+    mediaRecorder.stop();
     clearInterval(timerInterval);
     document.getElementById("recordReader").textContent = "0:00"; // Reset timer UI
     console.log("Recording stopped...");
 
-    processAudioRecording();
+    mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        audioChunks = [];
+
+        uploadRecordedAudio(audioBlob);
+        document.getElementById("recordPopUpDiv").style.display = "none";
+    };
 });
 
 document.getElementById("cancelRecordBtn").addEventListener("click", () => {
-    if (audioinput.isCapturing()) {
-        audioinput.stop();
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
     }
     clearInterval(timerInterval);
     document.getElementById("recordReader").textContent = "0:00";
@@ -218,29 +205,7 @@ function startTimer() {
     }, 1000);
 }
 
-// Process the audio recording
-async function processAudioRecording() {
-    if (audioChunks.length === 0) {
-        console.error("No audio data available.");
-        return;
-    }
-
-    // Convert raw PCM data to a Blob (WAV format)
-    const wavBlob = new Blob(audioChunks, { type: "audio/wav" });
-
-    // Convert WAV to MP3
-    const mp3Blob = await convertToMP3(wavBlob);
-    
-    // Upload to Firebase
-    uploadRecordedAudio(mp3Blob);
-}
-
-// Function to convert WAV to MP3
-async function convertToMP3(wavBlob) {
-    return new Blob([await wavBlob.arrayBuffer()], { type: "audio/mpeg" }); // Convert to MP3
-}
-
-// Upload recorded audio to Firebase Storage
+// Upload recorded audio
 async function uploadRecordedAudio(audioBlob) {
     const user = auth.currentUser;
     if (!user) {
@@ -248,7 +213,7 @@ async function uploadRecordedAudio(audioBlob) {
         return;
     }
 
-    const fileName = `recorded_${Date.now()}.mp3`; // Now saving as MP3
+    const fileName = `recorded_${Date.now()}.webm`;
     const fileRef = storageRef(storage, `chatRecords/${user.uid}/${fileName}`);
     const uploadTask = uploadBytesResumable(fileRef, audioBlob);
 
@@ -269,7 +234,7 @@ async function uploadRecordedAudio(audioBlob) {
             const messageRef = push(ref(database, `group-chat/${chatName}/message`));
 
             const messageData = {
-                audio: fileUrl,
+                record: fileUrl,
                 id: messageRef.key,
                 time: serverTimestamp(),
                 uid: user.uid
