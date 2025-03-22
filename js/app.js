@@ -57,3 +57,12 @@ window.onload = () => {
         setIframeSrc(uid);
     }
 };
+document.addEventListener("DOMContentLoaded", function () {
+    window.history.pushState(null, null, window.location.href);
+    
+    window.addEventListener("popstate", function (e) {
+      e.preventDefault(); // Stop going back
+      window.history.pushState(null, null, window.location.href); // Push again to prevent back navigation
+      alert("Press back again to exit"); // Optional: Show a warning before exit
+    });
+  });

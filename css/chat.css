@@ -793,3 +793,235 @@ html, body {
     }
     
 }
+#canvasDivCon {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+#canvasDiv {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    height: 95%;
+}
+#canvasTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+#canvas {
+    border: 1px solid #f1f1f1;
+    border-radius: 10px;
+    width: 100%;
+    height: 70%;
+}
+#canvasBtnDiv {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+}
+#cancelCanvasBtn {
+    background: gray;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+#sendCanvasBtn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+#changePenColorDiv {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+#red {
+    height: 50px;
+    border: 2px solid #f1f1f1;
+    width: 50px;
+    border-radius: 50%;
+    background-color: red;
+}
+#blue {
+    height: 50px;
+    border: 2px solid #f1f1f1;
+    width: 50px;
+    border-radius: 50%;
+    background-color: blue;
+}
+#green {
+    height: 50px;
+    border: 2px solid #f1f1f1;
+    width: 50px;
+    border-radius: 50%;
+    background-color: green;
+}
+#yellow {
+    height: 50px;
+    border: 2px solid #f1f1f1;
+    width: 50px;
+    border-radius: 50%;
+    background-color: yellow;
+}
+#black {
+    height: 50px;
+    border: 2px solid #f1f1f1;
+    width: 50px;
+    border-radius: 50%;
+    background-color: black;
+}
+#orange {
+    height: 50px;
+    border: 2px solid #f1f1f1;
+    width: 50px;
+    border-radius: 50%;
+    background-color: orange;
+}
+#white {
+    height: 40px;
+    border: 2px solid #f1f1f1;
+    width: 40px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}
+@media (max-width: 600px) {
+    #changePenColorDiv div {
+        height: 40px;
+        width: 40px;
+    }
+    
+}
+#uploadGivDiv {
+    font-weight: bold;
+}
+#gifDivCon {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+#gifDiv {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    height: 95%;
+    justify-content: center;
+}
+#gifTop {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+    background-color: #f9f9f9;
+}
+
+#searchGivDiv {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#searchGiv {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #d2d2d2;
+    border-radius: 5px;
+    outline-color: red;
+}
+#gifGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Always two columns */
+    gap: 5px; /* Reduce space between items */
+    padding: 5px;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto; /* Enable scrolling */
+    justify-content: center;
+    align-content: start;
+}
+
+.grid-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 80px; /* Make it smaller */
+    width: 80px; /* Ensure it's square */
+
+}
+
+.grid-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+#gifBottom {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+}
+#cancelGifBtn {
+    background: gray;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+#goGifBtn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+#gifBubbleCon {
+    width: 100%;
+     
+}

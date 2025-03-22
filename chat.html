@@ -27,11 +27,11 @@
             <div id="uploadAudioDiv">
                 <i class="fas fa-music"></i>
             </div>
-            <div id="uploadGifDiv">
+            <div id="uploadGiftDiv">
                 <i class="fas fa-gift"></i>
             </div>
-            <div id="uploadStickerDiv">
-                <i class="fas fa-sticky-note"></i>
+            <div id="uploadGivDiv">
+                 <span>GIF</span>
             </div>
             <div id="uploadDrawingDiv">
                 <i class="fas fa-paint-brush"></i>
@@ -66,9 +66,6 @@
             </div>
             <div id="messageDiv">
                 <textarea id="message" placeholder="Type a message"></textarea>
-            </div>
-            <div id="recordDiv">
-                <i class="fas fa-microphone"></i>
             </div>
             <div id="sendDiv">
                 <i class="fas fa-arrow-right"></i>
@@ -151,6 +148,25 @@
                 </div>
             </div>
         </div>
+       <div id="canvasDivCon">
+        <div id="canvasDiv">
+            <div id="canvasTitle">Drawing</div>
+            <canvas id="canvas"></canvas>
+            <div id="changePenColorDiv">
+                <div id="red"></div>
+                <div id="green"></div>
+                <div id="blue"></div>
+                <div id="black"></div>
+                <div id="yellow"></div>
+                <div id="orange"></div>
+                    <i class="fas fa-eraser" id="white"></i>
+            </div>
+            <div id="canvasBtnDiv">
+                <button id="cancelCanvasBtn">Cancel</button>
+                <button id="sendCanvasBtn">Send</button>
+            </div>
+        </div>
+       </div>
         <div id="recordPopUpDiv">
             <div id="recordPopUp">
                 <div id="recordTitle">Recording</div>
@@ -166,6 +182,20 @@
                 </div>
             </div>
         </div>
+        <div id="gifDivCon">
+            <div id="gifDiv">
+                <div id="gifTop">
+                    <div id="searchGivDiv">
+                        <input type="text" id="searchGiv">
+                    </div>
+                </div>
+                    <div id="gifGrid"></div>
+                    <div id="gifBottom">
+                         <button id="cancelGifBtn">Cancel</button>
+                         <button id="goGifBtn">Send</button>
+                    </div>
+            </div>
+        </div>
     </div>
     <script src="js/chat.js" type="module"></script>
     <script src="js/image.js" type="module"></script>
@@ -174,7 +204,6 @@
     <script src="js/other.js" type="module"></script>
     <script src="js/emoji.js" type="module"></script>
     <script src="js/record.js" type="module"></script>
-    <script src="js/index.js"></script>
     <script src="js/recorder.js"></script>
 </body>
 </html>

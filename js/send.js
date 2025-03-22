@@ -138,95 +138,128 @@ document.body.addEventListener("click", (event) => {
         uploadMenu.style.display = "none";
     }
 });
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-let mediaRecorder;
-let audioChunks = [];
-let recordStartTime;
-let timerInterval;
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let penColor = "black"; // Default pen color
 
-document.getElementById("recordDiv").addEventListener("click", async () => {
-    document.getElementById("recordPopUpDiv").style.display = "flex";
-
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-        recordStartTime = Date.now();
-
-        mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-                audioChunks.push(event.data);
-            }
-        };
-
-        mediaRecorder.start();
-        startTimer();
-        console.log("Recording started...");
-    } catch (error) {
-        console.error("Error accessing microphone:", error);
-        alert("Microphone access is required to record audio.");
-    }
-});
-
-document.getElementById("goRecordBtn").addEventListener("click", async () => {
-    if (!mediaRecorder) return;
-
-    mediaRecorder.stop();
-    clearInterval(timerInterval);
-    document.getElementById("recordReader").textContent = "0:00"; // Reset timer UI
-    console.log("Recording stopped...");
-
-    mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        audioChunks = [];
-
-        uploadRecordedAudio(audioBlob);
-        document.getElementById("recordPopUpDiv").style.display = "none";
-    };
-});
-
-document.getElementById("cancelRecordBtn").addEventListener("click", () => {
-    if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        mediaRecorder.stop();
-    }
-    clearInterval(timerInterval);
-    document.getElementById("recordReader").textContent = "0:00";
-    document.getElementById("recordPopUpDiv").style.display = "none";
-});
-
-// Function to start the recording timer
-function startTimer() {
-    const recordReader = document.getElementById("recordReader");
-    timerInterval = setInterval(() => {
-        const elapsedTime = Math.floor((Date.now() - recordStartTime) / 1000);
-        const minutes = Math.floor(elapsedTime / 60);
-        const seconds = elapsedTime % 60;
-        recordReader.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
-    }, 1000);
+// Resize canvas to match its container
+function resizeCanvas() {
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
 }
 
-// Upload recorded audio
-async function uploadRecordedAudio(audioBlob) {
+// Get correct coordinates
+function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX || (e.touches && e.touches[0]?.clientX);
+    const y = e.clientY || (e.touches && e.touches[0]?.clientY);
+    return [x - rect.left, y - rect.top];
+}
+
+// Start drawing
+function startDrawing(e) {
+    e.preventDefault(); // Prevent scrolling on touch devices
+    isDrawing = true;
+    [lastX, lastY] = getMousePos(e);
+
+    // Start the path immediately at the starting point
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+}
+
+// Draw function
+function draw(e) {
+    if (!isDrawing) return;
+    e.preventDefault(); // Prevent unwanted scrolling
+
+    let [x, y] = getMousePos(e);
+
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round";
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    [lastX, lastY] = [x, y]; // Update last position
+}
+
+// Stop drawing
+function stopDrawing() {
+    isDrawing = false;
+    ctx.closePath(); // Close the path when drawing stops
+}
+
+// Event listeners for mouse
+canvas.addEventListener("mousedown", startDrawing);
+canvas.addEventListener("mousemove", draw);
+canvas.addEventListener("mouseup", stopDrawing);
+canvas.addEventListener("mouseleave", stopDrawing);
+
+// Event listeners for touch
+canvas.addEventListener("touchstart", startDrawing);
+canvas.addEventListener("touchmove", draw);
+canvas.addEventListener("touchend", stopDrawing);
+canvas.addEventListener("touchcancel", stopDrawing);
+
+// Show canvas and initialize it
+const paint = document.getElementById("uploadDrawingDiv");
+
+paint.addEventListener("click", () => {
+    const canvasDivCon = document.getElementById("canvasDivCon");
+    canvasDivCon.style.display = "flex"; // Show the canvas container
+    resizeCanvas(); // Resize the canvas to match its container
+});
+
+// Change pen color
+const changePenColorDiv = document.getElementById("changePenColorDiv");
+changePenColorDiv.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target.id) {
+        penColor = target.id; // Set pen color based on the clicked element's ID
+    }
+});
+
+// Close canvas
+const closeCanvas = document.getElementById("cancelCanvasBtn");
+
+closeCanvas.addEventListener("click", () => {
+    const canvasDivCon = document.getElementById("canvasDivCon");
+    canvasDivCon.style.display = "none"; // Hide the canvas container
+});
+
+// Send canvas drawing as an image
+const sendCanvasBtn = document.getElementById("sendCanvasBtn");
+
+sendCanvasBtn.addEventListener("click", async () => {
     const user = auth.currentUser;
     if (!user) {
-        alert("You need to be logged in to upload audio.");
+        alert("You need to be logged in to send a drawing.");
         return;
     }
+    const canvasDivCon = document.getElementById("canvasDivCon");
+    canvasDivCon.style.display = "none"; // Hide the canvas container
 
-    const fileName = `recorded_${Date.now()}.webm`;
-    const fileRef = storageRef(storage, `chatRecords/${user.uid}/${fileName}`);
-    const uploadTask = uploadBytesResumable(fileRef, audioBlob);
+    // Convert canvas to image data
+    canvas.toBlob(async (blob) => {
+        if (!blob) return;
 
-    progressBarContainer.style.display = "block";
+        const fileRef = storageRef(storage, `chatImages/${user.uid}/drawing_${Date.now()}.png`);
+        const uploadTask = uploadBytesResumable(fileRef, blob);
 
-    uploadTask.on("state_changed",
-        (snapshot) => {
+        progressBarContainer.style.display = "block";
+
+        uploadTask.on("state_changed", (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             progressBar.style.width = `${progress}%`;
             progressBar.textContent = `${Math.round(progress)}%`;
         },
         (error) => {
-            console.error("Error uploading recorded audio:", error);
+            console.error("Error uploading drawing:", error);
             progressBarContainer.style.display = "none";
         },
         async () => {
@@ -234,7 +267,7 @@ async function uploadRecordedAudio(audioBlob) {
             const messageRef = push(ref(database, `group-chat/${chatName}/message`));
 
             const messageData = {
-                record: fileUrl,
+                img: fileUrl,
                 id: messageRef.key,
                 time: serverTimestamp(),
                 uid: user.uid
@@ -242,12 +275,151 @@ async function uploadRecordedAudio(audioBlob) {
 
             set(messageRef, messageData)
                 .then(() => {
-                    console.log("Recorded audio uploaded successfully.");
+                    console.log("Drawing uploaded successfully.");
+                    progressBarContainer.style.display = "none";
+                    const canvasDivCon = document.getElementById("canvasDivCon");
+                    canvasDivCon.style.display = "none"; // Hide the canvas container
+                })
+                .catch((error) => {
+                    console.error("Error saving drawing message:", error);
+                });
+        });
+    });
+});
+const openGiv = document.getElementById("uploadGivDiv");
+
+openGiv.addEventListener("click", () => {
+    const gifDivCon = document.getElementById("gifDivCon");
+    gifDivCon.style.display = "flex"; // Show the GIF container
+});
+const gifGrid = document.getElementById("gifGrid");
+const searchGiv = document.getElementById("searchGiv");
+const goGifBtn = document.getElementById("goGifBtn");
+const cancelGifBtn = document.getElementById("cancelGifBtn");
+const gifDivCon = document.getElementById("gifDivCon");
+const apiKey = "GuUL2YMPiTWV2ZfAkTR3Sz16JG53klfr";
+
+let selectedGifUrl = "";
+let selectedGifMp4Url = "";
+
+// Function to fetch and display GIFs
+async function fetchGifs(query = "") {
+    const endpoint = query
+        ? `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=20`
+        : `https://api.giphy.com/v1/gifs/trending?api_key=${apiKey}&limit=20`;
+
+    try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+
+        gifGrid.innerHTML = ""; // Clear previous GIFs
+
+        data.data.forEach((gif) => {
+            const gifDiv = document.createElement("div");
+            gifDiv.className = "gif-item";
+            gifDiv.style.height = "100px";
+            gifDiv.style.width = "100%";
+            gifDiv.style.backgroundColor = "#d2d2d2";
+            gifDiv.style.borderRadius = "10px";
+
+            const video = document.createElement("video");
+            video.src = gif.images.original.mp4;
+            video.autoplay = true;
+            video.loop = true;
+            video.muted = true;
+            video.style.height = "100%";
+            video.style.width = "100%";
+            video.style.objectFit = "cover";
+
+            gifDiv.appendChild(video);
+            gifGrid.appendChild(gifDiv);
+
+            gifDiv.addEventListener("click", () => {
+                selectedGifUrl = gif.images.original.url; // GIF URL
+                selectedGifMp4Url = gif.images.original.mp4; // MP4 URL
+                document.querySelectorAll(".gif-item").forEach((item) => {
+                    item.style.border = "none";
+                });
+                gifDiv.style.border = "2px solid blue"; // Highlight selected GIF
+                
+            });
+        });
+    } catch (error) {
+        console.error("Error fetching GIFs:", error);
+    }
+}
+
+// Fetch trending GIFs on load
+fetchGifs();
+
+// Search GIFs on input
+searchGiv.addEventListener("input", (event) => {
+    const query = event.target.value.trim();
+    fetchGifs(query);
+});
+
+// Cancel GIF selection
+cancelGifBtn.addEventListener("click", () => {
+    gifDivCon.style.display = "none"; // Hide GIF container
+    selectedGifUrl = ""; // Reset selected GIF
+    selectedGifMp4Url = ""; // Reset selected MP4
+});
+
+// Send selected GIF
+goGifBtn.addEventListener("click", async () => {
+    if (!selectedGifUrl || !selectedGifMp4Url) {
+        alert("Please select a GIF to send.");
+        return;
+    }
+
+    gifDivCon.style.display = "none";
+
+
+    const user = auth.currentUser;
+    if (!user) {
+        alert("You need to be logged in to send a GIF.");
+        return;
+    }
+
+    const mp4Blob = await fetch(selectedGifMp4Url).then((res) => res.blob());
+    const fileRef = storageRef(storage, `chatGifs/${user.uid}/gif_${Date.now()}.mp4`);
+    const uploadTask = uploadBytesResumable(fileRef, mp4Blob);
+
+    progressBarContainer.style.display = "block";
+
+    uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${Math.round(progress)}%`;
+        },
+        (error) => {
+            console.error("Error uploading GIF MP4:", error);
+            progressBarContainer.style.display = "none";
+        },
+        async () => {
+            const mp4Url = await getDownloadURL(uploadTask.snapshot.ref);
+            const messageRef = push(ref(database, `group-chat/${chatName}/message`));
+
+            const messageData = {
+                gif: mp4Url, // Save GIF URL
+                id: messageRef.key,
+                time: serverTimestamp(),
+                uid: user.uid,
+            };
+
+            set(messageRef, messageData)
+                .then(() => {
+                    console.log("GIF sent successfully.");
+                    gifDivCon.style.display = "none"; // Hide GIF container
+                    selectedGifUrl = ""; // Reset selected GIF
+                    selectedGifMp4Url = ""; // Reset selected MP4
                     progressBarContainer.style.display = "none";
                 })
                 .catch((error) => {
-                    console.error("Error saving recorded audio message:", error);
+                    console.error("Error sending GIF:", error);
                 });
         }
     );
-}
+});

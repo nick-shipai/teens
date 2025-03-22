@@ -42,15 +42,18 @@ if (!uid) {
 }
 
 // Handle message sending
-document.getElementById("sendDiv").addEventListener("click", sendMessage);
+document.getElementById("sendDiv").addEventListener("click", () => {
+    sendMessage();
+    document.getElementById("message").focus(); // Ensure messageInput is active
+});
+
 document.getElementById("message").addEventListener("keypress", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
+        document.getElementById("message").focus(); // Ensure messageInput is active
     }
 });
-
-
 
 
 
@@ -64,7 +67,7 @@ async function fetchUserData(uid) {
     if (snapshot.exists()) {
         return snapshot.val();
     }
-    return { name: "Unknown User", profilePic: "default-profile.png", account: "User" }; // Default values
+    return { name: "Unknown User", profilePic: "profile.png", account: "User" }; // Default values
 }
 
 // Function to get current user ID
@@ -73,13 +76,17 @@ function getCurrentUserId() {
 }
 
 async function displayMessage(messageData) {
+    if (messageData.uid !== uid) {
+        const audio = new Audio("audio/recieve.mp3");
+        audio.play();
+    }
     const chatBody = document.getElementById("chatBody");
 
     // Fetch user details based on UID
     const userData = await fetchUserData(messageData.uid);
 
     let name = userData.name || "Unknown User";
-    let profilePic = userData.profilePic || "default-profile.png";
+    let profilePic = userData.profilePic || "img/profile.png";
     let rank = userData.account || "User";
 
     // Handle like system
@@ -358,7 +365,8 @@ async function displayMessage(messageData) {
                     message: replyData.message || "",
                     img: replyData.img || "",
                     video: replyData.video || "",
-                    audio: replyData.audio || ""
+                    audio: replyData.audio || "",
+                    gif: replyData.gif || ""
                 };
             }
         }
@@ -385,6 +393,8 @@ async function displayMessage(messageData) {
             quoteReplyMessage.textContent = "📷 Image";
         } else if (messageData.video) {
             quoteReplyMessage.textContent = "🎥 Video";
+        }  else if (messageData.gif) {
+            quoteReplyMessage.textContent = "GIF";
         } else if (messageData.audio) {
             quoteReplyMessage.textContent = "🔊 Audio";
         }
@@ -414,11 +424,20 @@ async function displayMessage(messageData) {
                 if (replyDetails.video) {
                     const video = document.createElement("video");
                     video.src = replyDetails.video;
-                    video.controls = false;
                     video.style.width = "50px";
                     video.style.height = "50px";
                     video.style.objectFit = "cover";
                     replyDiv.appendChild(video);
+                } else if (replyDetails.gif) {
+                    const gif = document.createElement("video");
+                    gif.src = replyDetails.gif;
+                    gif.style.width = "100%";
+                    gif.style.height = "50px";
+                    gif.style.objectFit = "cover";
+                    gif.autoplay = true;
+            gif.loop = true;
+            gif.muted = true;
+                    replyDiv.appendChild(gif);
                 } else if (replyDetails.img) {
                     const img = document.createElement("img");
                     img.src = replyDetails.img;
@@ -441,64 +460,16 @@ async function displayMessage(messageData) {
             chatBubble.textContent = messageData.message
         }
     } else if (messageData.video) {
-        if (messageData.replyingTo) {
-            const replyAndVideoDiv = document.createElement("div");
-            replyAndVideoDiv.classList.add("replyAndVideoDiv");
-
-            const replyName = document.createElement("div");
-            replyName.classList.add("replyName");
-
-            const replyDiv = document.createElement("div");
-            replyDiv.classList.add("replyDiv");
-
-            const videoDiv = document.createElement("div");
-            videoDiv.classList.add("videoDiv");
-
-            const video = document.createElement("video");
-            video.src = messageData.video;
-            video.controls = true;
-            videoDiv.appendChild(video);
-
-            // Fetch reply details
-            fetchReplyDetails(messageData.replyingTo).then(replyDetails => {
-                replyName.textContent = replyDetails.name;
-                replyDiv.textContent = replyDetails.video;
-                
-            });
-
-            replyAndVideoDiv.appendChild(replyName);
-            replyAndVideoDiv.appendChild(replyDiv);
-            replyAndVideoDiv.appendChild(videoDiv);
-            chatBubble.appendChild(replyAndVideoDiv);
-        } else {
-            const videoContainer = document.createElement("div");
-        videoContainer.classList.add("video-container");
-
-        const video = document.createElement("video");
-        video.src = messageData.video;
-        video.style.width = "100%";
-        video.style.height = "100%";
-        video.style.objectFit = "cover";
-        video.controls = false; // Hide default controls
-
-        const playBtn = document.createElement("i");
-        playBtn.classList.add("fas", "fa-play", "video-play-btn");
-
-        // Play video when button is clicked
-        playBtn.addEventListener("click", () => {
-            video.play();
-            playBtn.style.display = "none"; // Hide button
-        });
-
-        // Show play button again when video ends
-        video.addEventListener("ended", () => {
-            playBtn.style.display = "block";
-        });
-
-        videoContainer.appendChild(video);
-        videoContainer.appendChild(playBtn);
-        chatBubble.appendChild(videoContainer);
-        }
+     const chatVideo = document.createElement("video");
+     chatVideo.src = messageData.video;
+     chatVideo.autoplay = true;
+     chatVideo.loop = true;
+     chatVideo.muted = true;
+     chatVideo.style.width = "100%";
+     chatVideo.style.height = "100%";
+     chatVideo.controls = true;
+     chatBubble.appendChild(chatVideo);
+        
     } else if (messageData.img) {
         const img = document.createElement("img");
         img.src = messageData.img;
@@ -506,71 +477,22 @@ async function displayMessage(messageData) {
         img.style.height = "100%";
         img.style.objectFit = "cover";
         chatBubble.appendChild(img);
-    } else if (messageData.record) {
-        const recordContainer = document.createElement("div");
-        recordContainer.classList.add("record-container");
+    } else if (messageData.gif) {
+        
     
-        const recordPlayPauseBtn = document.createElement("i");
-        recordPlayPauseBtn.classList.add("fas", "fa-play", "record-play-pause-btn");
-    
-        const record = document.createElement("audio");
-        record.src = messageData.record;
-        record.classList.add("chat-record");
-    
-        const recordDurationText = document.createElement("span");
-        recordDurationText.textContent = "Loading..."; // Show loading text initially
-        recordDurationText.classList.add("record-duration");
-    
-        // Function to update the duration properly
-        function updateDuration() {
-            if (!isNaN(record.duration) && record.duration > 0) {
-                recordDurationText.textContent = formatTime(record.duration);
-            } else {
-                setTimeout(updateDuration, 500); // Retry after a short delay if duration isn't available
-            }
-        }
-    
-        // Update duration when audio loads
-        record.addEventListener("loadedmetadata", () => {
-            updateDuration();
-        });
-    
-        recordPlayPauseBtn.addEventListener("click", () => {
-            if (record.paused) {
-                record.play();
-                recordPlayPauseBtn.classList.replace("fa-play", "fa-pause");
-                console.log("Record started playing, scheduling notification...");
-    
-                cordova.plugins.notification.local.schedule({
-                    id: 1,
-                    title: "Record Playing",
-                    text: "A recorded message is playing",
-                    foreground: true
-                });
-            } else {
-                record.pause();
-                recordPlayPauseBtn.classList.replace("fa-pause", "fa-play");
-                console.log("Record paused, cancelling notification...");
-    
-                cordova.plugins.notification.local.cancel(1, () => {
-                    console.log("Notification canceled.");
-                });
-            }
-        });
-    
-        record.addEventListener("timeupdate", () => {
-            recordDurationText.textContent = formatTime(record.currentTime);
-        });
-    
-        record.addEventListener("ended", () => {
-            recordPlayPauseBtn.classList.replace("fa-pause", "fa-play");
-            recordDurationText.textContent = formatTime(record.duration);
-        });
-    
-        recordContainer.appendChild(recordPlayPauseBtn);
-        recordContainer.appendChild(recordDurationText);
-        recordContainer.appendChild(record);
-        chatBubble.appendChild(recordContainer);
+        const gif = document.createElement("video");
+        gif.id = "gifVideo";
+        gif.src = messageData.gif;
+        gif.autoplay = true;
+        gif.loop = true;
+        gif.muted = true;
+        gif.style.height = "100%";
+        gif.style.width = "100%";
+        gif.style.objectFit = "cover";
+        gif.controls = true;
+       
+        
+        chatBubble.appendChild(gif);
     } else if (messageData.audio) {
         const audioContainer = document.createElement("div");
         audioContainer.classList.add("audio-container");
@@ -666,6 +588,7 @@ function sendMessage() {
         alert("User not authenticated. Cannot send message.");
         return;
     }
+    
 
     const messageInput = document.getElementById("message");
     const messageText = messageInput.value.trim();
@@ -733,3 +656,4 @@ document.getElementById("cancelBtn").addEventListener("click", () => {
 document.getElementById("thankYouBtn").addEventListener("click", () => {
     document.getElementById("thankYouPopUpDiv").style.display = "none";
 });
+ 
