@@ -50,7 +50,11 @@ uploadImageDiv.addEventListener("click", () => {
 
 // Handle image upload
 imageInput.addEventListener("change", async (event) => {
-    uploadFile(event.target.files[0], "chatImages", "img");
+    const file = event.target.files[0];
+    if (file) {
+        const compressedFile = await compressImage(file);
+        uploadFile(compressedFile, "chatImages", "img");
+    }
 });
 
 // Video upload button event listener
@@ -60,7 +64,11 @@ uploadVideoDiv.addEventListener("click", () => {
 
 // Handle video upload
 videoInput.addEventListener("change", async (event) => {
-    uploadFile(event.target.files[0], "chatVideos", "video");
+    const file = event.target.files[0];
+    if (file) {
+        const compressedFile = await compressVideo(file);
+        uploadFile(compressedFile, "chatVideos", "video");
+    }
 });
 
 // Audio upload button event listener
@@ -70,7 +78,11 @@ uploadAudioDiv.addEventListener("click", () => {
 
 // Handle audio upload
 audioInput.addEventListener("change", async (event) => {
-    uploadFile(event.target.files[0], "chatAudios", "audio");
+    const file = event.target.files[0];
+    if (file) {
+        const compressedFile = await compressAudio(file);
+        uploadFile(compressedFile, "chatAudios", "audio");
+    }
 });
 
 /**
@@ -122,6 +134,56 @@ async function uploadFile(file, folder, type) {
                 console.error(`Error saving ${type} message:`, error);
             });
     });
+}
+
+/**
+ * Compress image file before uploading
+ * @param {File} file - Image file to compress
+ * @returns {Promise<File>} - Compressed image file
+ */
+async function compressImage(file) {
+    const img = document.createElement("img");
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            img.src = e.target.result;
+            img.onload = () => {
+                const maxWidth = 800; // Maximum width
+                const scale = Math.min(maxWidth / img.width, 1);
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], file.name, { type: file.type }));
+                }, file.type, 0.8); // Adjust quality as needed
+            };
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+/**
+ * Placeholder for video compression (implement as needed)
+ * @param {File} file - Video file to compress
+ * @returns {Promise<File>} - Compressed video file
+ */
+async function compressVideo(file) {
+    // Implement video compression logic if needed
+    return file;
+}
+
+/**
+ * Placeholder for audio compression (implement as needed)
+ * @param {File} file - Audio file to compress
+ * @returns {Promise<File>} - Compressed audio file
+ */
+async function compressAudio(file) {
+    // Implement audio compression logic if needed
+    return file;
 }
 
 // Upload menu toggle
@@ -300,7 +362,6 @@ const gifDivCon = document.getElementById("gifDivCon");
 const apiKey = "GuUL2YMPiTWV2ZfAkTR3Sz16JG53klfr";
 
 let selectedGifUrl = "";
-let selectedGifMp4Url = "";
 
 // Function to fetch and display GIFs
 async function fetchGifs(query = "") {
@@ -336,12 +397,10 @@ async function fetchGifs(query = "") {
 
             gifDiv.addEventListener("click", () => {
                 selectedGifUrl = gif.images.original.url; // GIF URL
-                selectedGifMp4Url = gif.images.original.mp4; // MP4 URL
                 document.querySelectorAll(".gif-item").forEach((item) => {
                     item.style.border = "none";
                 });
                 gifDiv.style.border = "2px solid blue"; // Highlight selected GIF
-                
             });
         });
     } catch (error) {
@@ -362,18 +421,16 @@ searchGiv.addEventListener("input", (event) => {
 cancelGifBtn.addEventListener("click", () => {
     gifDivCon.style.display = "none"; // Hide GIF container
     selectedGifUrl = ""; // Reset selected GIF
-    selectedGifMp4Url = ""; // Reset selected MP4
 });
 
 // Send selected GIF
 goGifBtn.addEventListener("click", async () => {
-    if (!selectedGifUrl || !selectedGifMp4Url) {
+    if (!selectedGifUrl) {
         alert("Please select a GIF to send.");
         return;
     }
 
     gifDivCon.style.display = "none";
-
 
     const user = auth.currentUser;
     if (!user) {
@@ -381,45 +438,22 @@ goGifBtn.addEventListener("click", async () => {
         return;
     }
 
-    const mp4Blob = await fetch(selectedGifMp4Url).then((res) => res.blob());
-    const fileRef = storageRef(storage, `chatGifs/${user.uid}/gif_${Date.now()}.mp4`);
-    const uploadTask = uploadBytesResumable(fileRef, mp4Blob);
+    const messageRef = push(ref(database, `group-chat/${chatName}/message`));
 
-    progressBarContainer.style.display = "block";
+    const messageData = {
+        img: selectedGifUrl, // Save GIF URL as an image
+        id: messageRef.key,
+        time: serverTimestamp(),
+        uid: user.uid,
+    };
 
-    uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            progressBar.style.width = `${progress}%`;
-            progressBar.textContent = `${Math.round(progress)}%`;
-        },
-        (error) => {
-            console.error("Error uploading GIF MP4:", error);
-            progressBarContainer.style.display = "none";
-        },
-        async () => {
-            const mp4Url = await getDownloadURL(uploadTask.snapshot.ref);
-            const messageRef = push(ref(database, `group-chat/${chatName}/message`));
-
-            const messageData = {
-                gif: mp4Url, // Save GIF URL
-                id: messageRef.key,
-                time: serverTimestamp(),
-                uid: user.uid,
-            };
-
-            set(messageRef, messageData)
-                .then(() => {
-                    console.log("GIF sent successfully.");
-                    gifDivCon.style.display = "none"; // Hide GIF container
-                    selectedGifUrl = ""; // Reset selected GIF
-                    selectedGifMp4Url = ""; // Reset selected MP4
-                    progressBarContainer.style.display = "none";
-                })
-                .catch((error) => {
-                    console.error("Error sending GIF:", error);
-                });
-        }
-    );
+    set(messageRef, messageData)
+        .then(() => {
+            console.log("GIF sent successfully.");
+            gifDivCon.style.display = "none"; // Hide GIF container
+            selectedGifUrl = ""; // Reset selected GIF
+        })
+        .catch((error) => {
+            console.error("Error sending GIF:", error);
+        });
 });

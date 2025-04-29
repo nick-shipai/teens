@@ -24,39 +24,33 @@ function getQueryParam(param) {
 }
 
 // Check for UID in the URL
-const uid = getQueryParam("uid");
+let uid = getQueryParam("uid");
+const iframe = document.getElementById("iframe");
 
-if (uid) {
-    console.log("User authenticated via UID: " + uid);
-    setIframeSrc(uid);
-} else {
-    // Check authentication state
+if (!uid) {
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            console.log("User authenticated: " + user.uid);
-            setIframeSrc(user.uid);
+            uid = user.uid;
+            console.log(`User authenticated: ${uid}`);
         } else {
-            console.log("No user is authenticated.");
+            alert("User not authenticated");
         }
+        iframe.src = `chat.html?uid=${uid}&chat=genChat`;
     });
+} else {
+    console.log(`User authenticated via UID: ${uid}`);
+    iframe.src = `chat.html?uid=${uid}&chat=genChat`;
 }
 
-// Function to set the iframe source
-function setIframeSrc(userId) {
-    const iframe = document.getElementById("iframe");
-    if (iframe) {
-        iframe.src = `chat.html?uid=${userId}&chat=genChat`;
-    }
-}
+
+
+ 
+        
+ 
 
 const leftFrame = document.getElementById("leftFrame");
  
-// Set iframe src when the page loads
-window.onload = () => {
-    if (uid) {
-        setIframeSrc(uid);
-    }
-};
+ 
 document.addEventListener("DOMContentLoaded", function () {
     window.history.pushState(null, null, window.location.href);
     
@@ -65,4 +59,27 @@ document.addEventListener("DOMContentLoaded", function () {
       window.history.pushState(null, null, window.location.href); // Push again to prevent back navigation
       alert("Press back again to exit"); // Optional: Show a warning before exit
     });
-  });
+});
+
+window.addEventListener("message", function (event) {
+    const leftFrameDiv = document.getElementById("leftFrameDiv");
+    if (!leftFrameDiv) return;
+
+    if (event.data === "page:messages") {
+        leftFrameDiv.style.display = "none";
+        console.log("Switched to messages.html → hiding left frame");
+    } else if (event.data === "page:chat") {
+        leftFrameDiv.style.display = "block";
+        console.log("Switched to chat.html → showing left frame");
+    }
+});
+const chatDiv = document.getElementById("chatDiv");
+chatDiv.addEventListener("click", function () {
+    const currentSrc = iframe.src;
+    if (!currentSrc.includes("&privateChat=opened")) {
+        const newSrc = `${currentSrc}&privateChat=opened`;
+        iframe.src = newSrc;
+        history.pushState({ path: newSrc }, null, newSrc);
+        console.log("Private chat opened in iframe without reloading");
+    }
+});

@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    user-select: none; /* Prevent text selection */
 }
 
 html, body {
@@ -18,6 +19,31 @@ html, body {
     flex-direction: column;
     height: 100%;
     background-color: white;
+    width: 70%;
+}
+
+#topBar {
+    background: red;
+    height: 50px;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 1.5rem;
+}
+#appIcons {
+    display: flex;
+    margin-left: auto; /* Pushes icons to the right */
+    gap: 15px; /* Adds spacing between icons */
+}
+
+#appIcons div {
+    cursor: pointer;
+    padding: 10px;
+    font-size: 1.5rem;
 }
 
 /* Chat Body */
@@ -75,20 +101,149 @@ html, body {
     padding: 10px;
     display: flex;
     align-items: center;
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
     border-radius: 20px 20px 0 0;
     gap: 15px;
 }
+#chatBar i:hover {
+    transform: scale(1.1);
+    transition: 0.3s;
+}
+#chatBar i:active {
+    transform: scale(0.9);
+    transition: 0.3s;
+}
+#chatBarDiv {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}
+#emojiContainer {
+    width: 70%;
+    height: 400px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Increased opacity for a darker shadow */
 
+     
+    
+}
+#emojiTopBar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+    border-bottom: 1px solid #f1f1f1;
+    height: auto;  /* Remove 100% height */
+}
+#allEmojiDiv {
+    height: 100%;
+    overflow-y: auto;
+    
+    
+}
+#emojiBottomMenu {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    align-items: center;
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    border-top: 1px solid #f1f1f1;
+    height: auto;  /* Remove 100% height */
+    z-index: 10;
+}
+#smileyEmojiCon {
+    height: auto;
+}
+#animalAndNatureEmoji {
+    height: auto;
+}
+#emojiShowDiv {
+    height: 30px;
+    width: 100px;
+    background-color: #d2d2d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+#recentEmojiCon {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+#recentEmojiTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+#recentEmoji {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    gap: 5px;
+     
+}
+#smileyEmojiCon {
+    padding: 10px;
+}
+#animalAndNatureEmojiCon {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+#animalAndNatureEmojiTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+#animalAndNatureEmoji {
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    gap: 5px;
+}
+#smileyEmojiTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+#smileyEmoji {
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    gap: 5px;
+    
+}
 /* Icons */
 #chatBar i {
     font-size: 1.5rem;
     color: red;
     cursor: pointer;
 }
-
+#emojiDivCon {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
 /* Message Input */
 #messageDiv {
     width: 70%;
@@ -117,7 +272,23 @@ html, body {
     background-color: red;
     color: white;
     justify-content: center;
-    margin-left: 20px;
+    margin-left: auto; /* Push to the end of the parent container */
+}
+#editSendDiv {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    justify-content: center;
+    margin-left: auto; /* Push to the end of the parent container */
+    display: none;
+}
+#editSendDiv i {
+    color: white;
+    font-size: 1rem;
 }
 
 #sendDiv i {
@@ -199,29 +370,6 @@ html, body {
     border-radius: 10px;
     margin-left: 5px;
 }
-#uploadMenu {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #d2d2d2;
-    border-radius: 10px;
-    padding: 10px;
-    z-index: 10;
-    bottom: 80px;
-    margin: 10px;
-    width: 50%;
-    gap: 10px;
-    grid-template-columns: repeat(4, 1fr);
-    display: none;
-}
-#uploadMenu div {
-    font-size: 1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-#uploadMenu div:hover {
-     transform: scale(1.1);
-}
 #progressBarContainer {
     display: flex;
     align-items: center;
@@ -271,6 +419,7 @@ html, body {
     background: rgba(0, 0, 0, 0.5);
     padding: 15px;
     border-radius: 50%;
+    
 }
 
 /* Audio styling */
@@ -471,6 +620,35 @@ html, body {
     cursor: pointer;
     font-size: 1rem;
 }
+
+#editPopupDiv {
+    position: fixed;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    bottom: 75px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 70px;
+}
+#editPopupDivCon {
+    justify-content: center;
+    z-index: 100;
+    display: none;
+}
+#editUpPart {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#editCancel {
+    font-size: 1.5rem;
+    color: red;
+    margin-left: auto;
+    cursor: pointer;
+}
 #quoteReplyDiv {
     position: fixed;
     background-color: white;
@@ -489,6 +667,21 @@ html, body {
     z-index: 100;
 
 }
+#editTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+#editMessageId {
+    font-size: 0.9rem;
+     
+}
+#editIdDiv {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
 #upPart {
     display: flex;
     align-items: center;
@@ -498,6 +691,7 @@ html, body {
     font-size: 1.5rem;
     color: red;
     margin-left: auto;
+    cursor: pointer;
 }
 #quoteReplyUserName {
     font-weight: bold;
@@ -1025,3 +1219,4106 @@ html, body {
     width: 100%;
      
 }
+@keyframes spin {
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}
+
+#uploadAudioDiv {
+    display: none;
+    cursor: pointer;
+}
+#uploadDrawingDiv {
+    display: none;
+    cursor: pointer;
+}
+#uploadGameDiv {
+    display: none;
+    cursor: pointer;
+}
+#uploadYoutubeDiv {
+    display: none;
+    cursor: pointer;
+}
+#uploadGiftDiv {
+    display: none;
+    cursor: pointer;
+}
+#uploadMenu {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #d2d2d2;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 10;
+    bottom: 80px;
+    margin: 10px;
+    width: auto;
+    gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    display: none;
+}
+#uploadMenu div {
+    font-size: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+#uploadMenu div:hover {
+     transform: scale(1.1);
+}
+#smileyEmoji div {
+    font-size: 1.5rem;
+    height: 50px;
+    width: 35px;
+    background-color: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    
+    
+}
+#animalAndNatureEmoji div {
+    font-size: 1.5rem;
+    height: 50px;
+    width: 35px;
+    background-color: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+a, div, button, span i {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+#smileyEmoji div:hover, #animalAndNatureEmoji div:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    background-color: #e1e1e1; /* Add a subtle background color change */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add a shadow effect */
+}
+#animalAndNatureEmoji div {
+    font-size: 1.5rem;
+}
+@media (max-width: 600px) {
+    #emojiDivCon {
+        display: none;
+        z-index: 0;
+        position: static;
+        padding: 0;
+        height: 320px;
+    }
+    #emojiContainer {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Increased opacity for a darker shadow */
+        overflow-y: auto;
+        scrollbar-width: none;
+        
+    }
+}
+#likeButton {
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+#messagePicDiv {
+    cursor: pointer;
+}
+#wholeContainer {
+    display: flex;
+    height: 100%;
+    width: 100%;
+
+}
+#theWholeContainer {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+#chatStatusDivCon {
+    width: 30%;
+    height: 100%;
+    background-color: #d2d2d2;
+    border: none;
+    border-left: 1px solid #f1f1f1;
+}
+#privateChatDivCon {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+#privateChatDiv {
+    background-color: white;
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.openPrivateChatDivAnimation {
+    animation: open 0.2s ease-in;
+}
+.closePrivateChatDivAnimation {
+    animation: close 0.2s ease-in;
+}
+@keyframes close {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+@keyframes open {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+#privateChatMenu {
+    background-color: #f9f9f9;
+    width: 70px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;    
+    align-items: center;
+    padding: 10px;
+    border-right: 1px solid #f1f1f1;
+}
+#privateChatBackIcon {
+    font-size: 1.5rem;
+    color: black;
+    cursor: pointer;
+    margin-bottom: 10px;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+#privateChatIcon {
+    font-size: 1.5rem;
+    color: black;
+    cursor: pointer;
+    margin-bottom: 10px;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #ccc;
+    transition: background-color 0.3s ease;
+}
+#statusIcon {
+    font-size: 1.5rem;
+    color: black;
+    cursor: pointer;
+    margin-bottom: 10px;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+}
+#privateChatListCon {
+    width: 30%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    font-family: 'Comic Neue', Arial, sans-serif;
+    scrollbar-width: none;
+    border: none;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+#privateChatListHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+#privateChatListTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+#searchDiv {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    width: 90%;
+    height: 40px;
+}
+#searchDivCon {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#search {
+    width: 100%;
+    height: 30px;
+    border: none;
+    outline: none;
+    padding-left: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-left: 20px;
+    transition: all 0.3s ease;
+    font-family: 'Comic Neue', Arial, sans-serif;
+}
+#privateChatHeader {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    position: sticky;
+    top: 0;
+}
+#privateChatWindowDiv {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+#privateChatWindow {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: none;
+    font-family: 'Comic Neue', Arial, sans-serif;
+}
+#privateChatProfilePic {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    border: 2px solid white;
+}
+#privateChatProfilePicImg {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+#privateChatName {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-left: 10px;
+    word-wrap: break-word;
+}
+#privateChatBody {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    padding: 10px;
+}
+#NameAndStatusDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+#privateChatStatus {
+    color: gray;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    font-weight: bold;
+    text-align: center;
+    margin-left: 5px;
+}
+#privateChatWindowBackIcon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+    padding: 5px;
+    margin-right: 5px;
+}
+#privateChatMenuIcon {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+#privateChatBarDiv {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}
+#privateChatBar {
+    background: #DDDDDD;
+    height: 70px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 20px 20px 0 0;
+    gap: 15px;
+}
+#privateChatUploadDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #f1f1f1;
+    color: red;
+    cursor: pointer;
+}
+#privateChatEmojiDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #f1f1f1;
+    color: red;
+    cursor: pointer;
+}
+#privateChatMessageDiv {
+    width: 70%;
+}
+#privateChatMessage {
+    width: 100%;
+    height: 40px;
+    border: none;
+    padding: 10px;
+    font-size: 1rem;
+    outline: none;
+    background-color: transparent;
+    resize: none;
+    font-family: 'Comic Neue', Arial, sans-serif;
+    scrollbar-width: none;
+}
+#privateChatSendDiv {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    justify-content: center;
+    margin-left: auto; /* Push to the end of the parent container */
+}
+#privateChatSendDiv i {
+    color: white;
+    font-size: 1rem;
+}
+#privateChatBar i:hover, i:active {
+    transform: scale(1.1);
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.privateChatBubble {
+    max-width: 75%;
+    padding: 10px 14px;
+    margin: 8px;
+    border-radius: 18px;
+    position: relative;
+    font-family: sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    
+  }
+  
+  /* Received message */
+  .privateChatBubble.received {
+    background-color: #fff;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+    border: 1px solid #ccc;
+    animation: pop 0.3s ease-in-out;
+    margin-left: 30px;
+  }
+  
+ 
+  
+  /* Sent message */
+  .privateChatBubble.sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+    margin-right: 30px;
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  #chatList {
+    margin-top: 10px;
+  }
+.chatItem {
+    display: flex;
+    background-color: white;
+    align-items: center;
+    padding: 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+.chatProfilePic {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    border: 2px solid white;
+    
+}
+.chatItem:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
+}
+.chatItem:active {
+    background-color: #e1e1e1;
+    transition: background-color 0.3s ease;
+}
+.chatListStatus {
+    color: gray;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+.chatListUnreadCount {
+    background-color: red;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 0.8rem;
+    margin-left: auto;
+    font-weight: bold;
+    margin-right: 5px; /* Minimal padding */
+}
+.chatListMenu {
+    margin-left: 5px; /* Minimal padding */
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+.chatListMenuPopUp {
+    position: absolute;
+    background-color: white;
+    height: auto;
+    width: 20%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    left: 300px;
+    top: 150px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 100;
+    animation: smallBig 0.3s ease-in-out;
+}
+.chatListMenuPopUp div {
+    display: flex;
+    width: 100%;
+    background-color: white;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+    animation: weavel 0.3s ease-in-out;
+}
+.chatListMenuPopUp div:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
+}
+@keyframes weavel {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+@keyframes smallBig {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+#privateChatHeaderBackBtn {
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+}
+@media (max-width: 600px) {
+    #chatStatusDivCon {
+        display: none;
+    }
+    #container {
+        width: 100%;
+        height: 100%;
+    }
+    #privateChatWindowDiv {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        display: none;
+    }
+    #privateChatListCon {
+        width: 100%;
+    }
+    #privateChatWindowBackIcon {
+        display: flex;
+    }
+    #privateChatMenu {
+        display: none;
+    }
+    #privateChatHeaderBackBtn {
+        display: flex;
+    }
+}
+.privateChatBubbleTime {
+    font-size: 0.8rem;
+    color: gray;
+}
+.privateChatBubbleTimeAndSeenRecieptDiv {
+    display: flex;
+    align-items: center;
+}
+.privateChatBubbleSeenReciept {
+    margin-left: auto;
+    font-size: 1rem;
+    margin-right: 5px;
+    font-weight: bold;
+}
+.privateChatBubbleText {
+    font-family: 'Comic Neue', Arial, sans-serif;
+    font-weight: bold;
+}
+#privateChatWindow {
+    display: none;
+}
+#openChat {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+#openChatText {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+#openChatText2 {
+    font-size: 1rem;
+    color: gray;
+    margin-bottom: 20px;
+}
+#profileScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    flex-direction: column;
+    justify-content: center;
+}
+#profileScreenDiv {
+    background: white;
+    width: 500px;
+    text-align: center;
+    height: 95%;
+    border-radius: 10px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+#profileScreenTopBar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    align-items: center;
+    border-bottom: 1px solid #f1f1f1;
+    font-weight: bold;
+}
+#profileScreenCloseBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+}
+#userProfilePicAndCoverPhoto {
+    background-color: black;
+    width: 100%;
+    height: 200px;
+    position: relative;
+}
+#userCoverPhotoDiv {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+#userCoverPhoto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+#userProfilePicDiv {
+    background-color: black;
+    width: 170px;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid white;
+}
+#userProfilePic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+#userOnlineStatus {
+    height: 20px;
+    width: 20px;
+    background-color: green;
+    border-radius: 50%;
+    position: absolute;
+    top: 135px;
+    left: 70%;
+}
+#uploadCoverPhotoIcon {
+    font-size: 1.5rem;
+    color: white;
+    position: absolute;
+    top: 150px;
+    left: 10%;
+    cursor: pointer;
+}
+#userNameAndRankDiv {
+    margin-top: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+#userName {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    word-wrap: break-word;
+}
+#userRankDivCon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#userRankImg {
+    height: 20px;
+    margin-right: 5px;
+}
+#userRank {
+    background-color: red;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 0.7rem;
+    padding: 10px;
+    border-radius: 10px;
+    margin-left: 5px;
+    height: 30px;
+}
+#userRankText {
+    font-size: 0.8rem;
+    color: gray;
+    margin-left: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+#profileMenuDivCon {
+    display: flex;
+    width: 100%;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px;
+}
+#profileMenu {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#levelInfoDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: grey;
+    width: 70%;
+    height: 50px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+#levelInfoDiv i {
+    font-size: 1.5rem;
+    color: white;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+#levelInfoText {
+    font-size: 1.2rem;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    word-wrap: break-word;
+    margin-left: 10px;
+}
+#walletDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: grey;
+    width: 70%;
+    height: 50px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+#walletDiv i {
+    font-size: 1.5rem;
+    color: white;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+#walletText {
+    font-size: 1.2rem;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    word-wrap: break-word;
+    margin-left: 10px;
+}
+#editProfileDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: grey;
+    width: 70%;
+    height: 50px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+#editProfileDiv i {
+    font-size: 1.5rem;
+    color: white;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+#editProfileText {
+    font-size: 1.2rem;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    word-wrap: break-word;
+    margin-left: 10px;
+}
+#appSettingDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: grey;
+    width: 70%;
+    height: 50px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+#appSettingDiv i {
+    font-size: 1.5rem;
+    color: white;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+#appSettingText {
+    font-size: 1.2rem;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    word-wrap: break-word;
+    margin-left: 10px;
+}
+#logOutDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: grey;
+    width: 70%;
+    height: 50px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+#logOutDiv i {
+    font-size: 1.5rem;
+    color: red;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+#logOutText {
+    font-size: 1.2rem;
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    word-wrap: break-word;
+    margin-left: 10px;
+}
+@media (max-width: 600px) {
+    #profileScreenDiv {
+        width: 100%;
+        height: 100%;
+        border-radius: 0px;
+    }
+    #userProfilePicAndCoverPhoto {
+        height: 150px;
+    }
+    #userProfilePicAndCoverPhoto {
+        height: 150px;
+    }
+    #userProfilePicDiv {
+        width: 120px;
+        height: 120px;
+    }
+    #userOnlineStatus {
+        top: 90px;
+        left: 70%;
+    }
+    #userNameAndRankDiv {
+        margin-top: 70px;
+
+    }
+    #uploadCoverPhotoIcon {
+        top: 100px;
+        left: 10%;
+    }
+    #userName {
+        font-size: 1.2rem;
+
+    }
+
+}
+#privateChatVideoCallIcon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 30px;
+}
+#profileMenu div:hover, #profileMenu div:active {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+#videoCallConDiv {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+#videoCallDiv {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    height: 95%;
+    align-items: center;
+}
+#videoBoxes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 10px;
+}
+#userBox {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+#otherUserBox {
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    bottom: 100px;
+    right: 150px;
+    background-color: white;
+    border-radius: 10px;
+}
+#videoCallMenu {
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    height: 70px;
+    align-items: center;
+}
+#muteDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: black;
+    color: red;
+    cursor: pointer;
+}
+#videoCallEndDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: black;
+    color: red;
+    cursor: pointer;
+}
+#videoCallCameraDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: black;
+    color: red;
+    cursor: pointer;
+}
+#videoCallHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    width: 100%;
+}
+#videoCancelBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    margin-left: 10px;
+}
+#incomingCallDivCon {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 300;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+
+}
+#incomingCallDiv {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 40%;
+    align-items: center;
+}
+#incomingText {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+#incomingCallNameAndPic {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+#incomingCallProfilePicDiv {
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    border: 2px solid white;
+}
+#incomingCallProfilePicImg {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+#incomingCallName {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    word-wrap: break-word;
+    margin-left: 10px;
+}
+#acceptAndRejectDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+}
+#incomingCallAcceptDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: green;
+    color: white;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+#incomingCallRejectDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+#callingDivCon {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 300;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#callingDiv {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    height: 40%;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#callingText {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#callingNameAndPic {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#callingProfilePicDiv {
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border: 2px solid white;
+}
+
+#callingProfilePicImg {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+#callingName {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    word-wrap: break-word;
+}
+
+#cancelCallDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+#typingIndicatorBubbleDiv {
+    position: absolute;
+    bottom: 80px;
+    margin-left: 20px;
+    z-index: 1;
+    display: none;
+  }
+  
+  #typingIndicatorBubble {
+    display: flex;
+    gap: 5px;
+    padding: 8px 12px;
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  #typingIndicatorBubble span {
+    width: 8px;
+    height: 8px;
+    background-color: #555;
+    border-radius: 50%;
+    animation: bounce 1.4s infinite;
+  }
+  
+  #typingIndicatorBubble span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  #typingIndicatorBubble span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes bounce {
+    0%, 80%, 100% {
+      transform: scale(0.6);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+#newMessageDiv {
+    position: absolute;
+    top: 20px;
+    margin-left: 10px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 1px;
+    width: 1px;
+    border-radius: 50%;
+    background-color: blue;
+    color: white;
+    cursor: pointer;
+}
+#walletScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#walletScreenDiv {
+    background: white;
+    width: 300px;
+    text-align: center;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#walletScreenTopBar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#walletScreenCloseBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+}
+
+#walletScreenTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#diamondDiv, #coinDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#diamondImg, #coinImg {
+    width: 50px;
+    height: 50px;
+}
+
+#diamondAmt, #coinAmt {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+#sendCoinBtn, #sendDiamondBtn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+#sendCoinBtn:hover, #sendDiamondBtn:hover {
+    background-color: darkred;
+}
+
+#sendCoinDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 300;
+}
+
+#sendCoinPopUpDiv {
+    background: white;
+    width: 350px;
+    text-align: center;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative; /* Added for positioning the top bar */
+}
+
+#sendCoinPopUpTopBar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px 10px 0 0; /* Rounded corners for the top bar */
+}
+
+#sendCoinPopUpCloseBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#sendCoinPopUpCloseBtn:hover {
+    transform: scale(1.1);
+}
+
+#sendCoinTitle {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#sendCoinText {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+#coinInput, #userNameOrUid {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    outline-color: red;
+}
+
+#insufficientFundsDiv, #sentSuccessfullyDiv, #sendCoinErrorDiv {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+#insufficientFundsDiv i, #sentSuccessfullyDiv i, #sendCoinErrorDiv i {
+    font-size: 1.2rem;
+}
+
+#insufficientFundsDiv {
+    color: #d9534f;
+}
+
+#sentSuccessfullyDiv {
+    color: #5cb85c;
+}
+
+#sendCoinErrorDiv {
+    color: #f0ad4e;
+}
+
+#sendCoinBtn2 {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#sendCoinBtn2:hover {
+    background-color: darkred;
+}
+#sendDiamondDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 300;
+}
+
+#sendDiamondPopUpDiv {
+    background: white;
+    width: 350px;
+    text-align: center;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative; /* Added for positioning the top bar */
+}
+
+#sendDiamondPopUpTopBar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px 10px 0 0; /* Rounded corners for the top bar */
+}
+
+#sendDiamondPopUpCloseBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#sendDiamondPopUpCloseBtn:hover {
+    transform: scale(1.1);
+}
+
+#sendDiamondTitle {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#sendDiamondText {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+#diamondInput, #userNameOrUidDiamond {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    outline-color: red;
+}
+
+#insufficientFundsDiamondDiv, #sentSuccessfullyDiamondDiv, #sendDiamondErrorDiv {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+#insufficientFundsDiamondDiv i, #sentSuccessfullyDiamondDiv i, #sendDiamondErrorDiv i {
+    font-size: 1.2rem;
+}
+
+#insufficientFundsDiamondDiv {
+    color: #d9534f;
+}
+
+#sentSuccessfullyDiamondDiv {
+    color: #5cb85c;
+}
+
+#sendDiamondErrorDiv {
+    color: #f0ad4e;
+}
+
+#sendDiamondBtn2 {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#sendDiamondBtn2:hover {
+    background-color: darkred;
+}
+#editProfileScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#editProfileScreenDiv {
+    background: white;
+    width: 500px;
+    height: 95%;
+    border-radius: 10px;
+    overflow-y: auto;
+    padding: 10px;
+    scrollbar-width: none;
+}
+
+#editProfileScreenTopBar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#editProfileScreenBackBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+}
+
+#editProfileCoverImgAndOtherDivCon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#editProfileCoverImgDiv {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background-color: #ccc;
+}
+
+#editProfileCoverImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+#editProfileUploadCoverImgIcon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#editProfilePicAndOther {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -50px;
+}
+
+#editProfilePicDiv {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #ccc;
+    border: 5px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#editProfilePic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+#editProfilePicIconDiv {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+#editProfilePicDeleteImage,
+#editProfilePicUploadIcon {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+#editProfilePicDeleteImage {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    bottom: 50px;
+    left: -115px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid white;
+}
+#editProfilePicUploadIcon {
+    height: 30px;
+    width: 30px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+#editProfileOnlineStatus {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+    background-color: green;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+#editProfileNameRatingLikeAndFollowersFlexDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#editProfileNameRatingLikeFollowersDiv {
+    text-align: center;
+}
+
+#editProfileName {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#likeRataAndFollowersDiv {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+#likeDiv,
+#ratingDiv,
+#followersDiv {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1rem;
+    color: gray;
+}
+
+#likeDiv i,
+#ratingDiv i,
+#followersDiv i {
+    color: red;
+    font-size: 1.2rem;
+}
+
+#editProfileMenuDiv {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 10px;
+}
+
+.editMenu {
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.editMenu.active {
+    background-color: red;
+    color: white;
+}
+
+
+
+#accountDivCon,
+#giftsDivCon,
+#moreDivCon {
+    display: none;
+    margin-top: 20px;
+}
+
+#accountDivCon {
+    display: block;
+}
+
+#accountDivCon.active,
+#giftsDivCon.active,
+#moreDivCon.active {
+    display: block;
+}
+
+#accountDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#editInfoDiv,
+#editAboutMe,
+#editMood,
+#editUserName,
+#textColor,
+#manageFriends,
+#profileSticker,
+#profleNameStyle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#editInfoDiv:hover,
+#editAboutMe:hover,
+#editMood:hover,
+#editUserName:hover,
+#textColor:hover,
+#manageFriends:hover,
+#profileSticker:hover,
+#profleNameStyle:hover {
+    background-color: #f1f1f1;
+}
+
+#editInfoIcon,
+#editAboutMeIcon,
+#editMoodIcon,
+#editUserNameIcon,
+#textColorIcon,
+#manageFriendsIcon,
+#profileStickerIcon,
+#profileNameStyleIcon {
+    font-size: 1.5rem;
+    color: red;
+}
+
+#editInfoText,
+#editAboutMeText,
+#editMoodText,
+#editUserNameText,
+#textColorText,
+#manageFriendsText,
+#profileStickerText,
+#profileNameStyleText {
+    font-size: 1rem;
+    font-weight: bold;
+}
+#rankStyle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#rankStyle:hover {
+    background-color: #f1f1f1;
+}
+
+#rankStyleIcon {
+    font-size: 1.5rem;
+    color: red;
+}
+
+#rankStyleText {
+    font-size: 1rem;
+    font-weight: bold;
+}
+#editInfoScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#editInfoScreenDiv {
+    background: white;
+    width: 400px;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#editInfoScreenTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#editInfoScreenBackBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#editInfoScreenBackBtn:hover {
+    transform: scale(1.1);
+}
+
+#editInfoScreenTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    color: #333;
+}
+
+#ageAndGenderDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#ageTitle, #genderTitle {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+#ageDiv, #genderDiv {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#ageDiv:hover, #genderDiv:hover {
+    background-color: #e1e1e1;
+}
+
+#ageText, #genderText {
+    font-size: 1rem;
+    color: #555;
+}
+
+#ageDropDownDiv, #genderDropDownDiv {
+    font-size: 1.2rem;
+    color: gray;
+}
+
+#saveInfo {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#saveInfo:hover {
+    background-color: darkred;
+}
+
+#ageDropDownDivCon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 300;
+    width: 300px;
+}
+
+#ageDropDownTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#ageList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#ageListItem {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+#ageListItem:hover {
+    background-color: #e1e1e1;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    #editInfoScreenDiv {
+        width: 90%;
+    }
+    #ageDropDownDivCon {
+        width: 90%;
+    }
+}
+#genderMenuDropDownDiv {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 300;
+    width: 300px;
+}
+
+#genderMenuDropDown {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.genderOption {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #555;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.genderOption:hover {
+    background-color: #e1e1e1;
+    transform: scale(1.05);
+}
+
+.genderOption:active {
+    background-color: #d1d1d1;
+    transform: scale(0.95);
+}
+#ageMenuDropDownDiv {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 300;
+    width: 300px;
+}
+
+#ageMenuDropDown {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ageOption {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #555;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.ageOption:hover {
+    background-color: #e1e1e1;
+    transform: scale(1.05);
+}
+
+.ageOption:active {
+    background-color: #d1d1d1;
+    transform: scale(0.95);
+}
+#editAbouMeScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#editAbouMeScreenDiv {
+    background: white;
+    width: 400px;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#editAbouMeScreenTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#editAbouMeScreenBackBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#editAbouMeScreenBackBtn:hover {
+    transform: scale(1.1);
+}
+
+#editAbouMeScreenTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    color: #333;
+}
+
+#editAboutMeTextArea {
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif;
+    resize: none;
+    outline-color: red;
+}
+
+#saveAboutMe {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#saveAboutMe:hover {
+    background-color: darkred;
+}
+#editMoodScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#editMoodScreenDiv {
+    background: white;
+    width: 400px;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#editMoodScreenTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#editMoodScreenBackBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#editMoodScreenBackBtn:hover {
+    transform: scale(1.1);
+}
+
+#editMoodScreenTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    color: #333;
+}
+
+#editMoodTextArea {
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif;
+    resize: none;
+    outline-color: red;
+}
+
+#saveMood {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#saveMood:hover {
+    background-color: darkred;
+}
+#editUserNameScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#editUserNameScreenDiv {
+    background: white;
+    width: 400px;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#editUserNameScreenTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#editUserNameScreenBackBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#editUserNameScreenBackBtn:hover {
+    transform: scale(1.1);
+}
+
+#editUserNameScreenTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    color: #333;
+}
+
+#editUserNameInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline-color: red;
+}
+
+#saveUserName {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#saveUserName:hover {
+    background-color: darkred;
+}
+#textColorScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#textColorScreenDiv {
+    background: white;
+    width: 600px;
+    height: 95%;
+    border-radius: 10px;
+    overflow-y: auto;
+    padding: 10px;
+    scrollbar-width: none;
+}
+
+#textColorScreenTopBar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#textColorScreenBackBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+}
+
+#textColorScreenTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+}
+
+#sampleText {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
+}
+
+#textColorMenu {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 10px;
+    gap: 10px;
+}
+
+#textColorMenu div {
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+#textColorMenu div.active {
+    background-color: red;
+    color: white;
+}
+
+#fontColorDivCon, #neonColorDivCon, #fontTypeDivCon {
+    display: none;
+    margin-top: 20px;
+}
+#fontColorDivCon {
+    display: block;
+}
+
+#fontColorDivCon.active, #neonColorDivCon.active, #fontTypeDivCon.active {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#fontColorDiv div, #neonColorDiv div {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#fontColorDiv div:hover, #neonColorDiv div:hover {
+    transform: scale(1.1);
+}
+
+#fontTypeDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#fontStyleDropDownDiv, #fontTypeDropDownDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#fontStyleDropDownDiv:hover, #fontTypeDropDownDiv:hover {
+    background-color: #e1e1e1;
+}
+
+#fontStyleDropDown, #fontTypeDropDown {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.fontTypeOption, .fontStyleOption {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.fontTypeOption:hover, .fontStyleOption:hover {
+    background-color: #e1e1e1;
+    transform: scale(1.05);
+}
+
+.fontTypeOption:active, .fontStyleOption:active {
+    background-color: #d1d1d1;
+    transform: scale(0.95);
+}
+
+#saveTextColor {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#saveTextColor:hover {
+    background-color: darkred;
+}
+#fontColorDiv div {
+    height: 100px;
+    width: 100px;
+    border-radius: 10px; /* Slightly rounded corners for a square look */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+}
+#fontColorDiv {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+#fontColorDivCon {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+#fontColorDiv #red {
+    background-color: red;
+}
+
+#fontColorDiv #green {
+    background-color: green;
+}
+
+#fontColorDiv #blue {
+    background-color: blue;
+}
+
+#fontColorDiv #black {
+    background-color: black;
+}
+
+#fontColorDiv #yellow {
+    background-color: yellow;
+}
+
+#fontColorDiv #orange {
+    background-color: orange;
+}
+
+#fontColorDiv #purple {
+    background-color: purple;
+}
+
+#fontColorDiv #pink {
+    background-color: pink;
+}
+
+#fontColorDiv #brown {
+    background-color: brown;
+}
+
+#fontColorDiv #gray {
+    background-color: gray;
+}
+
+#fontColorDiv #violet {
+    background-color: violet;
+}
+
+#fontColorDiv #gold {
+    background-color: gold;
+}
+
+#fontColorDiv div:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+#neonColorDivCon {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#neonColorDiv {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#neonColorDiv div {
+    height: 100px;
+    width: 100px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#neonColorDiv div div {
+    font-size: 2rem;
+    color: white;
+    display: none; /* Hide the text by default */
+}
+#neonColorDiv #red {
+    background-color: red;
+    box-shadow: 0 0 10px red, 0 0 20px red;
+}
+
+#neonColorDiv #green {
+    background-color: green;
+    box-shadow: 0 0 10px green, 0 0 20px green;
+}
+
+#neonColorDiv #blue {
+    background-color: blue;
+    box-shadow: 0 0 10px blue, 0 0 20px blue;
+}
+
+#neonColorDiv #yellow {
+    background-color: yellow;
+    box-shadow: 0 0 10px yellow, 0 0 20px yellow;
+}
+
+#neonColorDiv #orange {
+    background-color: orange;
+    box-shadow: 0 0 10px orange, 0 0 20px orange;
+}
+
+#neonColorDiv #purple {
+    background-color: purple;
+    box-shadow: 0 0 10px purple, 0 0 20px purple;
+}
+
+#neonColorDiv #pink {
+    background-color: pink;
+    box-shadow: 0 0 10px pink, 0 0 20px pink;
+}
+
+#neonColorDiv #brown {
+    background-color: brown;
+    box-shadow: 0 0 10px brown, 0 0 20px brown;
+}
+
+#neonColorDiv #gray {
+    background-color: gray;
+    box-shadow: 0 0 10px gray, 0 0 20px gray;
+}
+
+#neonColorDiv #black {
+    background-color: black;
+    box-shadow: 0 0 10px black, 0 0 20px black;
+}
+
+#neonColorDiv #violet {
+    background-color: violet;
+    box-shadow: 0 0 10px violet, 0 0 20px violet;
+}
+
+#neonColorDiv #gold {
+    background-color: gold;
+    box-shadow: 0 0 10px gold, 0 0 20px gold;
+}
+
+#neonColorDiv div:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.8);
+}
+#fontTypeDivCon {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#fontTypeDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+#fontStyleDropDownDiv, #fontTypeDropDownDiv {
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#fontStyleDropDownDiv:hover, #fontTypeDropDownDiv:hover {
+    background-color: #e1e1e1;
+}
+
+#fontStyleDropDown, #fontTypeDropDown {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 100;
+    width: 300px;
+}
+
+.fontTypeOption, .fontStyleOption {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.fontTypeOption:hover, .fontStyleOption:hover {
+    background-color: #e1e1e1;
+    transform: scale(1.05);
+}
+
+.fontTypeOption:active, .fontStyleOption:active {
+    background-color: #d1d1d1;
+    transform: scale(0.95);
+}
+
+#fontStyleText, #fontTypeText {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+#fontStyleDropDownDiv i, #fontTypeDropDownDiv i {
+    font-size: 1.2rem;
+    color: gray;
+    transition: transform 0.3s ease;
+}
+
+#fontStyleDropDownDiv:hover i, #fontTypeDropDownDiv:hover i {
+    transform: rotate(180deg);
+}
+#gradientColorDivCon {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+#gradientColorDiv {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+#gradientColorDiv div {
+    height: 100px;
+    width: 100px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#gradientColor1 {
+    background: linear-gradient(45deg, red, yellow);
+}
+
+#gradientColor2 {
+    background: linear-gradient(45deg, blue, green);
+}
+
+#gradientColor3 {
+    background: linear-gradient(45deg, purple, pink);
+}
+
+#gradientColor4 {
+    background: linear-gradient(45deg, orange, gold);
+}
+
+#gradientColor5 {
+    background: linear-gradient(45deg, cyan, teal);
+}
+
+#gradientColor6 {
+    background: linear-gradient(45deg, violet, indigo);
+}
+
+#gradientColor7 {
+    background: linear-gradient(45deg, lime, olive);
+}
+
+#gradientColor8 {
+    background: linear-gradient(45deg, navy, skyblue);
+}
+
+#gradientColor9 {
+    background: linear-gradient(45deg, maroon, salmon);
+}
+
+#gradientColor10 {
+    background: linear-gradient(45deg, black, gray);
+}
+
+#gradientColor11 {
+    background: linear-gradient(45deg, white, lightgray);
+}
+
+#gradientColor12 {
+    background: linear-gradient(45deg, gold, darkorange);
+}
+
+#gradientColor13 {
+    background: linear-gradient(45deg, turquoise, aquamarine);
+}
+
+#gradientColor14 {
+    background: linear-gradient(45deg, crimson, lightpink);
+}
+
+#gradientColor15 {
+    background: linear-gradient(45deg, darkblue, lightblue);
+}
+
+#gradientColorDiv div:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 600px) {
+    #textColorScreenDiv {
+        width: 95%;
+    }
+    #textColorMenu div {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    #editUserNameScreenDiv {
+        width: 90%;
+    }
+}
+@media (max-width: 600px) {
+    #editMoodScreenDiv {
+        width: 90%;
+    }
+}
+@media (max-width: 600px) {
+    #editAbouMeScreenDiv {
+        width: 90%;
+    }
+}
+#profileStickerScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#profileStickerScreenDiv {
+    background: white;
+    width: 400px;
+    height: 95%;
+    border-radius: 10px;
+    overflow-y: auto;
+    padding: 10px;
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#profileStickerScreenTopBar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#profileStickerScreenBackBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+}
+
+#profileStickerScreenTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+}
+
+#stickerListDivCon {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#stickerListDiv {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    align-items: center;
+    justify-items: center;
+}
+
+#stickerListDiv div {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    background-color: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.sticker {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px; /* Slightly rounded corners for a square look */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+}
+#stickerImg {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px; /* Slightly rounded corners for a square look */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+}
+#stickerListDiv div:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#saveProfileSticker {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    margin-top: auto;
+    align-self: center;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
+#saveProfileSticker:hover {
+    background-color: darkred;
+}
+#profileNameStyleScreenDivCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#profileNameStyleScreenDiv {
+    background: white;
+    width: 400px;
+    height: 95%;
+    border-radius: 10px;
+    overflow-y: auto;
+    padding: 10px;
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#profileNameStyleScreenTopBar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#profileNameStyleScreenBackBtn {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+}
+
+#profileNameStyleScreenTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+}
+
+#profileNameStyleMenu {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 10px;
+}
+
+#profileNameStyleMenu div {
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+#profileNameStyleMenu div.active {
+    background-color: red;
+    color: white;
+}
+
+#profileNameStyleFontDivCon,
+#profileNameStyleColorDivCon,
+#animationDiv {
+    display: none;
+    margin-top: 20px;
+}
+#profileNameStyleFontDivCon {
+    display: block;
+}
+
+#animationDiv {
+    display: none;
+}
+#profileNameStyleFontDivCon.active,
+#profileNameStyleColorDivCon.active,
+#animationDiv.active {
+    display: flex;
+}
+
+#profileNameStyleFontDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#fontTypeDropDownDiv2,
+#fontTypeDropDownDiv3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#fontTypeDropDownDiv2:hover,
+#fontTypeDropDownDiv3:hover {
+    background-color: #e1e1e1;
+}
+
+#fontTypeDropDown2,
+#fontStyleDropDown2 {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 100;
+}
+
+.fontTypeOption,
+.fontStyleOption {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.fontTypeOption:hover,
+.fontStyleOption:hover {
+    background-color: #e1e1e1;
+    transform: scale(1.05);
+}
+
+.fontTypeOption:active,
+.fontStyleOption:active {
+    background-color: #d1d1d1;
+    transform: scale(0.95);
+}
+
+#profileNameStyleColorDiv {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#profileNameStyleColorDiv div {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#profileNameStyleColorDiv div:hover {
+    transform: scale(1.1);
+}
+
+#animationDiv {
+    display: none;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+#animationDiv div {
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#animationDiv div:hover {
+    background-color: #e1e1e1;
+    transform: scale(1.05);
+}
+
+#animationDiv div.active {
+    background-color: red;
+    color: white;
+}
+
+#styleButtunDiv {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    padding: 10px;
+}
+
+#defaultStyle,
+#saveProfileNameStyle {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#defaultStyle:hover,
+#saveProfileNameStyle:hover {
+    background-color: darkred;
+}
+#animationDiv > div span {
+    display: inline-block;
+  }
+  
+  /* Animation: None */
+  #animation1 span {
+    animation: none;
+  }
+  
+  /* Blink */
+  #animation2 span {
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
+  /* Slide */
+  #animation3 span {
+    animation: slide 1s ease-in-out infinite alternate;
+  }
+  @keyframes slide {
+    from { transform: translateX(-10px); }
+    to { transform: translateX(10px); }
+  }
+  
+  /* Bounce */
+  #animation4 span {
+    animation: bounce 1s infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  /* Shake */
+  #animation5 span {
+    animation: shake 0.5s infinite;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  
+  /* Wave */
+  #animation6 span {
+    transform-origin: 70% 70%;
+    animation: wave 2s infinite;
+  }
+  @keyframes wave {
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(14deg); }
+    40% { transform: rotate(-8deg); }
+    60% { transform: rotate(14deg); }
+    80% { transform: rotate(-4deg); }
+    100% { transform: rotate(0deg); }
+  }
+  
+  /* Zoom */
+  #animation7 span {
+    animation: zoom 1.5s infinite;
+  }
+  @keyframes zoom {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+  
+  /* Flash */
+  #animation8 span {
+    animation: flash 1s infinite;
+  }
+  @keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+  
+  /* Spin And Show */
+  #animation9 span {
+    animation: spinShow 2s infinite;
+  }
+  @keyframes spinShow {
+    0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+    50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
+    100% { transform: rotate(360deg) scale(1); opacity: 1; }
+  }
+  
+  /* Spin */
+  #animation10 span {
+    animation: spin 2s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Pulse */
+  #animation11 span {
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  #animation12 span {
+    animation: stretch 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes stretch {
+    0%, 100% {
+      transform: scale(1, 1);
+    }
+    50% {
+      transform: scale(1.5, 0.8);
+    }
+  }
+  #animation13 span {
+    animation: swing 1s ease-in-out infinite;
+  }
+  @keyframes swing {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    50% { transform: rotate(-10deg); }
+    75% { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+  }
+  
+  #animation14 span {
+    animation: fadeInOut 2s infinite;
+  }
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+  
+  #animation15 span {
+    animation: rubberBand 1s ease-in-out infinite;
+  }
+  @keyframes rubberBand {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.25, 0.75); }
+    40% { transform: scale(0.75, 1.25); }
+    50% { transform: scale(1.15, 0.85); }
+    65% { transform: scale(.95, 1.05); }
+    75% { transform: scale(1.05, .95); }
+    100% { transform: scale(1); }
+  }
+  
+  #animation16 span {
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.3); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.3); }
+    70% { transform: scale(1); }
+  }
+  
+  #animation17 span {
+    animation: skewing 1s infinite alternate;
+  }
+  @keyframes skewing {
+    0% { transform: skew(0deg, 0deg); }
+    100% { transform: skew(20deg, 10deg); }
+  }
+  
+  #animation18 span {
+    animation: jump 0.6s ease infinite;
+  }
+  @keyframes jump {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  
+  #animation19 span {
+    animation: flip 2s infinite;
+  }
+  @keyframes flip {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(180deg); }
+    100% { transform: rotateY(360deg); }
+  }
+  
+  #animation20 span {
+    animation: roll 2s linear infinite;
+  }
+  @keyframes roll {
+    0% {
+      transform: translateX(0) rotate(0deg);
+    }
+    100% {
+      transform: translateX(20px) rotate(360deg);
+    }
+  }
+  
+  #animation21 span {
+    animation: jello 1s infinite;
+  }
+  @keyframes jello {
+    0% { transform: scale(1, 1); }
+    30% { transform: scale(1.25, 0.75); }
+    40% { transform: scale(0.75, 1.25); }
+    50% { transform: scale(1.15, 0.85); }
+    65% { transform: scale(0.95, 1.05); }
+    75% { transform: scale(1.05, 0.95); }
+    100% { transform: scale(1, 1); }
+  }
+  
+  #animation22 span {
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+    animation: typing 4s steps(20, end) infinite;
+    border-right: 2px solid black;
+  }
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  #animation23 span {
+    animation: slideLR 2s ease-in-out infinite alternate;
+  }
+  @keyframes slideLR {
+    0% { transform: translateX(-10px); }
+    100% { transform: translateX(10px); }
+  }
+  
+  #animation24 span {
+    animation: glow 1.5s ease-in-out infinite;
+  }
+  @keyframes glow {
+    0%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #0ff; }
+    50% { text-shadow: 0 0 20px #0ff, 0 0 30px #0ff; }
+  }
+  
+  #animation25 span {
+    animation: fall 1.5s ease-in-out infinite;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-20px) rotate(0); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(0) rotate(360deg); }
+  }
+  
+  #animation26 span {
+    animation: fadeSlide 2s infinite;
+  }
+  @keyframes fadeSlide {
+    0% { opacity: 0; transform: translateX(-30px); }
+    50% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(30px); }
+  }
+  
+  #animation27 span {
+    animation: zoomInOut 1.2s ease-in-out infinite;
+  }
+  @keyframes zoomInOut {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+  }
+  
+  #animation28 span {
+    animation: shrinkGrow 1s ease-in-out infinite;
+  }
+  @keyframes shrinkGrow {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(0.6); }
+  }
+  
+  #animation29 span {
+    animation: pop 0.6s ease-in-out infinite;
+  }
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.7; }
+  }
+  
+  #animation30 span {
+    animation: rotateIn 1s ease-out infinite;
+  }
+  @keyframes rotateIn {
+    0% { transform: rotate(-90deg); opacity: 0; }
+    100% { transform: rotate(0deg); opacity: 1; }
+  }
+  
+  #animation31 span {
+    animation: stretchWide 1.4s ease-in-out infinite;
+  }
+  @keyframes stretchWide {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(2); }
+  }
+  
+  #animation32 span {
+    animation: moveDiagonal 2s linear infinite alternate;
+  }
+  @keyframes moveDiagonal {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(15px, -15px); }
+  }
+        
+#profileNameStyleColorDiv #red {
+    background-color: red;
+}
+
+#profileNameStyleColorDiv #green {
+    background-color: green;
+}
+
+#profileNameStyleColorDiv #blue {
+    background-color: blue;
+}
+
+#profileNameStyleColorDiv #black {
+    background-color: black;
+}
+
+#profileNameStyleColorDiv #yellow {
+    background-color: yellow;
+}
+
+#profileNameStyleColorDiv #orange {
+    background-color: orange;
+}
+
+#profileNameStyleColorDiv #purple {
+    background-color: purple;
+}
+
+#profileNameStyleColorDiv #pink {
+    background-color: pink;
+}
+
+#profileNameStyleColorDiv #brown {
+    background-color: brown;
+}
+
+#profileNameStyleColorDiv #gray {
+    background-color: gray;
+}
+
+#profileNameStyleColorDiv #violet {
+    background-color: violet;
+}
+
+#profileNameStyleColorDiv #gold {
+    background-color: gold;
+}
+
+#profileNameStyleColorDiv #silver {
+    background-color: silver;
+}
+
+#profileNameStyleColorDiv #cyan {
+    background-color: cyan;
+}
+
+#profileNameStyleColorDiv #magenta {
+    background-color: magenta;
+}
+
+#profileNameStyleColorDiv div {
+    height: 100px;
+    width: 100px;
+    border-radius: 10px; /* Slightly rounded corners for a square look */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+    position: relative; /* For positioning the check icon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#profileNameStyleColorDiv div:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#profileNameStyleColorDiv div .fas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    color: white;
+    display: none; /* Hidden by default */
+}
+
+#profileNameStyleColorDiv div.active .fas {
+    display: flex; /* Show when active */
+}
+#styleDiv {
+    display: none;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#styleDiv > div {
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+#styleDiv > div:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Individual styles */
+.pinkRoundedCookieDiv {
+    background-color: pink;
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.blueRoundedCookieDiv {
+    background-color: blue;
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.greenGlassStyle {
+    background: rgba(0, 255, 0, 0.5);
+    backdrop-filter: blur(5px);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.purpleGlowStyle {
+    background-color: purple;
+    box-shadow: 0 0 10px purple, 0 0 20px purple;
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+    
+}
+
+.neonRedStyle {
+    background-color: red;
+    box-shadow: 0 0 10px red, 0 0 20px red;
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.aquaBubbleStyle {
+    background: linear-gradient(45deg, aqua, lightblue);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.shadowBoxStyle {
+    background-color: gray;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.rainbowStripeStyle {
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.goldenShinyStyle {
+    background: linear-gradient(45deg, gold, yellow);
+    box-shadow: 0 0 10px gold;
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.holoCardStyle {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.lavaFlowStyle {
+    background: linear-gradient(45deg, red, orange, darkred);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.iceBlockStyle {
+    background: linear-gradient(45deg, lightblue, white);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.sunnySkyStyle {
+    background: linear-gradient(45deg, yellow, lightblue);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.forestMossStyle {
+    background: linear-gradient(45deg, green, darkgreen);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.glitchPopStyle {
+    background: linear-gradient(45deg, magenta, cyan);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.cottonCandyStyle {
+    background: linear-gradient(45deg, pink, lightblue);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.galaxyTwistStyle {
+    background: radial-gradient(circle, purple, black);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.oceanWaveStyle {
+    background: linear-gradient(45deg, blue, cyan);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.metallicChromeStyle {
+    background: linear-gradient(45deg, silver, gray);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.crystalClearStyle {
+    background: rgba(255, 255, 255, 0.5);
+    color: black !important;
+    /* Fallback for browsers that do not support backdrop-filter */
+    background-color: white;
+    /* Apply backdrop-filter for supported browsers */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.fireBlazeStyle {
+    background: linear-gradient(45deg, red, orange, yellow);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+
+.midnightShadowStyle {
+    background: linear-gradient(45deg, black, darkblue);
+    width: auto;
+    height: 40px;
+    border-radius: 20px 0px 20px 0px;
+    border-bottom: 2px solid #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
+}
+@media (max-width: 600px) {
+    #profileNameStyleScreenDiv {
+        width: 90%;
+    }
+
+    #profileNameStyleColorDiv div {
+        height: 30px;
+        width: 30px;
+    }
+}
+@media (max-width: 600px) {
+    #profileStickerScreenDiv {
+        width: 90%;
+    }
+
+    #stickerListDiv div {
+        width: 60px;
+        height: 60px;
+    }
+}
+@media (max-width: 600px) {
+    #editProfileScreenDiv {
+        width: 100%;
+        height: 100%;
+        border-radius: 0px;
+    }
+    #editProfileCoverImgAndOtherDivCon {
+        margin-top: 10px;
+    }
+    #editProfilePicAndOther {
+        margin-top: -30px;
+    }
+    #editProfilePicDiv {
+        width: 100px;
+        height: 100px;
+    }
+    #editProfileName {
+        font-size: 1.2rem;
+    }
+    #editProfilePicDeleteImage {
+       left: -60px;
+       position: absolute;
+       bottom: 40px;
+    }
+    
+}
+@keyframes pop {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.7; }
+  }

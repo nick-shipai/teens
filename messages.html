@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OTP Sender</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 50px;
+      text-align: center;
+      background: #f4f4f4;
+    }
+    input, textarea, button {
+      padding: 10px;
+      margin: 10px;
+      width: 280px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Send OTP to Email</h2>
+
+  <form id="otp-form">
+    <input type="email" id="email" placeholder="Enter your email" required /><br>
+    <textarea id="message" placeholder="Your message" required></textarea><br>
+    <button type="submit">Send Code</button>
+  </form>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <script>
+    // Initialize EmailJS
+    emailjs.init('J7ixNmgAooPAYqcUO'); // Public Key
+
+    document.getElementById('otp-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message').value;
+      const otpCode = Math.floor(100000 + Math.random() * 900000); // 6-digit code
+      const currentTime = new Date().toLocaleString();
+
+      const params = {
+        to_email: email,
+        message: message,
+        code: otpCode,
+        time: currentTime,
+        otp: otpCode
+      };
+
+      emailjs.send('service_8gss1kb', 'template_p8z4xaw', params)
+        .then(function(response) {
+          alert('OTP sent successfully to ' + email + '!\nCode: ' + otpCode);
+          console.log('SUCCESS!', response.status, response.text);
+        }, function(error) {
+          alert('Failed to send OTP. Check the console for errors.');
+          console.error('FAILED...', error);
+        });
+    });
+  </script>
+
+</body>
+</html>

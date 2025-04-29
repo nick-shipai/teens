@@ -11,189 +11,1214 @@
     <!-- Body & Button Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Poppins&family=Nunito&family=Lato&family=Oswald&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,500,0,0&icon_names=account_circle" />
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="container">
-        <div id="chatBody">
-        </div>
-        <div id="uploadMenu">
-            <div id="uploadImageDiv">
-                <i class="fas fa-image"></i>
+    <div id="theWholeContainer">
+        <div id="topBar">
+            <div id="menuDiv">
+                <i class="fas fa-bars"></i>
             </div>
-            <div id="uploadVideoDiv">
-                <input type="file" id="videoInput" accept="video/*" style="display: none;">
-                <i class="fas fa-video"></i>
-            </div>                
-            <div id="uploadAudioDiv">
-                <i class="fas fa-music"></i>
-            </div>
-            <div id="uploadGiftDiv">
-                <i class="fas fa-gift"></i>
-            </div>
-            <div id="uploadGivDiv">
-                 <span>GIF</span>
-            </div>
-            <div id="uploadDrawingDiv">
-                <i class="fas fa-paint-brush"></i>
-            </div>
-            <div id="uploadGameDiv">
-                <i class="fas fa-gamepad"></i>
-            </div>
-            <div id="uploadYoutubeDiv">
-                <i class="fab fa-youtube"></i>
-            </div>
-        </div>
-        <div id="progressBarContainer">
-            <div id="progressBar"></div>
-        </div> 
-        <div id="quoteReplyDivCon">
-            <div id="quoteReplyDiv">
-                <div id="upPart">
-                    <div id="quoteReplyUserName">
-                    </div>
-                    <i class="fas fa-times" id="cancel"></i>
+            <div id="appIcons">
+                <div id="chatDiv">
+                    <i class="fas fa-comment-alt"></i>
+                    <div id="newMessageDiv"></div>
                 </div>
-                <div id="quoteReplyMessage"></div>
-                <div id="quoteReplyMessageId"></div>
-            </div>  
-        </div>     
-        <div id="chatBar">
-            <div id="uploadDiv">
-                <i class="fas fa-add"></i>
-            </div>
-            <div id="emojiDiv">
-                <i class="fas fa-smile"></i>
-            </div>
-            <div id="messageDiv">
-                <textarea id="message" placeholder="Type a message"></textarea>
-            </div>
-            <div id="sendDiv">
-                <i class="fas fa-arrow-right"></i>
+                <div id="friendRequestDiv">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <div id="notificationDiv">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div id="profileDiv">
+                    <i class="fas fa-user"></i>
+                </div>
             </div>
         </div>
+        <div id="wholeContainer">
+            <div id="container">
+                <div id="chatBody"></div>
+                <div id="uploadMenu">
+                    <div id="uploadImageDiv">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div id="uploadVideoDiv">
+                        <input type="file" id="videoInput" accept="video/*" style="display: none;">
+                        <i class="fas fa-video"></i>
+                    </div>                
+                    <div id="uploadAudioDiv">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div id="uploadGiftDiv">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div id="uploadGivDiv">
+                         <span>GIF</span>
+                    </div>
+                    <div id="uploadDrawingDiv">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div id="uploadGameDiv">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div id="uploadYoutubeDiv">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                </div>
+                <div id="progressBarContainer">
+                    <div id="progressBar"></div>
+                </div> 
+                <div id="quoteReplyDivCon">
+                    <div id="quoteReplyDiv">
+                        <div id="upPart">
+                            <div id="quoteReplyUserName">
+                            </div>
+                            <i class="fas fa-times" id="cancel"></i>
+                        </div>
+                        <div id="quoteReplyMessage"></div>
+                        <div id="quoteReplyMessageId"></div>
+                    </div>  
+                </div>     
+                <div id="editPopupDivCon">
+                    <div id="editPopupDiv">
+                        <div id="editUpPart">
+                            <i class="fas fa-times" id="editCancel"></i>
+                        </div>
+                        <div id="editIdDiv">
+                            <div id="editTitle">Edit Message</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="chatBarDiv">
+                    <div id="chatBar">
+                        <div id="uploadDiv">
+                            <i class="fas fa-add"></i>
+                        </div>
+                        <div id="emojiDiv">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <div id="messageDiv">
+                            <textarea id="message" placeholder="Type a message"></textarea>
+                        </div>
+                        <div id="sendDiv">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <div id="editSendDiv">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div id="emojiDivCon">
+                        <div id="emojiContainer">
+                            <div id="emojiTopBar">
+                                <i class="fas fa-search" id="emojiSearchIcon"></i>
+                                <div id="emojiShowDiv">
+                                    <i class="fas fa-smile"></i>
+                                </div>
+                                <i class="fas fa-backspace" id="emojiBackSpace"></i>
+                            </div>
+                            <div id="allEmojiDiv">
+                                <div id="recentEmojiCon">
+                                    <div id="recentEmojiTitle">Recent</div>
+                                    <div id="recentEmoji">
+                                        <div>😀</div>
+                                        <div>😁</div>
+                                        <div>😂</div>
+                                        <div>🤣</div>
+                                        <div>😃</div>
+                                        <div>😄</div>
+                                        <div>😅</div>
+                                        <div>😆</div>
+                                        <div>😉</div>
+                                        <div>😊</div>
+                                        <div>😋</div>
+                                        <div>😎</div>
+                                        <div>😍</div>
+                                        <div>😘</div>
+                                        <div>😗</div>
+                                        <div>😙</div>
+                                        <div>😚</div>
+                                        
+                                    </div>
+                                </div>
+                                <div id="smileyEmojiCon">
+                                    <div id="smileyEmojiTitle">Smiley And People</div>
+                                    <div id="smileyEmoji">
+                                        <!-- Add smiley emojis here -->
+                                    </div>
+                                </div>
+        
+                                <div id="animalAndNatureEmojiCon">
+                                    <div id="animalAndNatureEmojiTitle">Animal & Nature</div>
+                                    <div id="animalAndNatureEmoji">
+                                        <!-- Add animal and nature emojis here -->
+                                          
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="emojiBottomMenu">
+                                <div id="clockEmojiDiv">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div id="smileyEmojiDiv">
+                                    <i class="fas fa-smile"></i>
+                                </div>
+                                <div id="amimalAndNature">
+                                    <i class="fas fa-paw"></i>
+                                </div>
+                                <div id="foodAndDrink">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <div id="activity">
+                                    <i class="fas fa-futbol"></i>
+                                </div>
+                                <div id="travelAndPlaces">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <div id="objects">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <div id="symbols">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div id="flags">
+                                    <i class="fas fa-flag"></i>
+                                </div>
+                            </div>
+                        </div>                
+                        
+                    </div>
+                </div>
+        
+                <div id="reportPopUpDiv">
+                    <div id="reportPopUp">
+                        <div id="reportTitle">Report</div>
+                        <div id="reportText">Report this message?</div>
+                        <div id="messageId">
+                            <span>Message ID: </span>
+                            <span id="messageIdSpan"></span>
+                        </div>
+                        <div id="reportBtnDiv">
+                            <button id="reportBtn">Report</button>
+                            <button id="cancelBtn">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="thankYouPopUpDiv">
+                    <div id="thankYouPopUp">
+                        <div id="thankYouTitle">Thank you</div>
+                        <div id="thankYouText">Your report has been submitted</div>
+                        <button id="thankYouBtn">OK</button>
+                    </div>
+                </div>
+                <div id="profilePopUpDiv">
+                    <div id="profilePopUp">
+                        <div id="topProfileBar">
+                            <div id="profilePopUpCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div id="profilePopUpTitle">Profile</div>
+                        </div>
+                        <div id="profilePicAndCoverImgDiv">
+                            <div id="coverImgDiv">
+                                <img src="img/jolofu.webp" alt="cover" id="coverImg">
+                            </div>
+                            <div id="profilePicDiv">
+                                <img src="img/emperor.png" alt="profile" id="profilePic">
+                                <div id="onlineStatus"></div>
+                            </div>
+                        </div>
+                        <div id="profileNameDiv">
+                            <div id="profileName">--</div>
+                            <div id="profileRankDivCon">
+                                <img src="img/user.png" id="profileRankImg">
+                            <div id="profileRank">
+                                <span id="profileRankText"></span>
+                            </div>
+                            </div>
+                        </div>
+                        <div id="actionDiv">
+                            <div id="chat">
+                                <i class="fas fa-comment"></i>
+                                <span>Chat</span>
+                            </div>
+                            <div id="viewProfile">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </div>
+                            <div id="rate">
+                                <i class="fas fa-star"></i>
+                                <span>Rate</span>
+                            </div>
+                            <div id="block">
+                                <i class="fas fa-ban
+                                "></i>
+                                <span>Block</span>
+                            </div>
+                            <div id="report">
+                                <i class="fas fa-flag"></i>
+                                <span>Report</span>
+                            </div>
+                            <div id="action">
+                                <i class="fas fa-ellipsis-h"></i>
+                                <span>Action</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <div id="canvasDivCon">
+                <div id="canvasDiv">
+                    <div id="canvasTitle">Drawing</div>
+                    <canvas id="canvas"></canvas>
+                    <div id="changePenColorDiv">
+                        <div id="red"></div>
+                        <div id="green"></div>
+                        <div id="blue"></div>
+                        <div id="black"></div>
+                        <div id="yellow"></div>
+                        <div id="orange"></div>
+                            <i class="fas fa-eraser" id="white"></i>
+                    </div>
+                    <div id="canvasBtnDiv">
+                        <button id="cancelCanvasBtn">Cancel</button>
+                        <button id="sendCanvasBtn">Send</button>
+                    </div>
+                </div>
+               </div>
+                <div id="recordPopUpDiv">
+                    <div id="recordPopUp">
+                        <div id="recordTitle">Recording</div>
+                        <div id="recordingIcon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <div id="recordReaderDiv">
+                            <div id="recordReader">0:00</div>
+                        </div>
+                        <div id="cancelAndGoRecordDiv">
+                            <button id="cancelRecordBtn">Cancel</button>
+                            <button id="goRecordBtn">Go</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="gifDivCon">
+                    <div id="gifDiv">
+                        <div id="gifTop">
+                            <div id="searchGivDiv">
+                                <input type="text" id="searchGiv">
+                            </div>
+                        </div>
+                            <div id="gifGrid"></div>
+                            <div id="gifBottom">
+                                 <button id="cancelGifBtn">Cancel</button>
+                                 <button id="goGifBtn">Send</button>
+                            </div>
+                    </div>
+                </div>
 
-        <div id="reportPopUpDiv">
-            <div id="reportPopUp">
-                <div id="reportTitle">Report</div>
-                <div id="reportText">Report this message?</div>
-                <div id="messageId">
-                    <span>Message ID: </span>
-                    <span id="messageIdSpan"></span>
+
+
+                <div id="incomingCallDivCon">
+                    <div id="incomingCallDiv">
+                        <div id="incomingText">Incoming Call</div>
+                        <div id="incomingCallNameAndPic">
+                            <div id="incomingCallProfilePicDiv">
+                                <img src="img/emperor.png" alt="profile" id="incomingCallProfilePicImg">
+                            </div>
+                            <div id="incomingCallName">--</div>
+                        </div>
+                        <div id="acceptAndRejectDiv">
+                            <div id="incomingCallAcceptDiv">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div id="incomingCallRejectDiv">
+                                <i class="fas fa-phone-slash"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="reportBtnDiv">
-                    <button id="reportBtn">Report</button>
-                    <button id="cancelBtn">Cancel</button>
+
+                <div id="callingDivCon">
+                    <div id="callingDiv">
+                        <div id="callingText">Calling</div>
+                        <div id="callingNameAndPic">
+                            <div id="callingProfilePicDiv">
+                                <img src="img/emperor.png" alt="profile" id="callingProfilePicImg">
+                            </div>
+                            <div id="callingName">--</div>
+                        </div>
+                        <div id="cancelCallDiv">
+                            <i class="fas fa-phone-slash"></i>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="videoCallConDiv">
+                    <div id="videoCallDiv">
+                        <div id="videoCallHeader">
+                            <div id="videoCancelBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                        <div id="videoBoxes">
+                            <div id="localVideoDiv">
+                                <video id="localVideo" autoplay muted></video>
+                            </div>
+                        <div id="remoteVideoDiv">
+                            <video id="remoteVideo" autoplay></video>
+                        </div>
+                        </div>
+                        <div id="videoCallMenu">
+                            <div id="muteDiv">
+                                <i class="fas fa-microphone-slash"></i>
+                            </div>
+                            <div id="videoCallEndDiv">
+                                <i class="fas fa-phone-slash"></i>
+                            </div>
+                            <div id="videoCallCameraDiv">
+                                <i class="fas fa-video-slash"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="profileScreenDivCon">
+                    <div id="profileScreenDiv">
+                        <div id="profileScreenTopBar">
+                            <div id="profileScreenCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                        <div id="userProfilePicAndCoverPhoto">
+                            <div id="userCoverPhotoDiv">
+                                <img src="https://www.w3schools.com/w3images/avatar2.png" alt="cover" id="userCoverPhoto">
+                                <div id="uploadCoverPhotoIcon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            </div>
+                            <div id="userProfilePicDiv">
+                                <img src="img/profile.png" alt="profile" id="userProfilePic">
+                                <div id="userOnlineStatus"></div>
+                            </div>
+                        </div>
+                        <div id="userNameAndRankDiv">
+                            <div id="userName">--</div>
+                            <div id="userRankDivCon">
+                                <img src="img/user.png" id="userRankImg">
+                                <div id="userRank">
+                                    <span id="userRankText"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="hey" style="display: none;">hey</div>
+                        <div id="profileMenuDivCon">
+                            <div id="profileMenu">
+                                <div id="levelInfoDiv">
+                                    <i class="fas fa-trophy"></i>
+                                    <div id="levelInfoText">Level Info</div>
+                                </div>
+                                <div id="walletDiv">
+                                    <i class="fas fa-wallet"></i>
+                                    <div id="walletText">Wallet</div>
+                                </div>
+                                <div id="editProfileDiv">
+                                    <i class="fas fa-user-edit"></i>
+                                    <div id="editProfileText">Edit Profile</div>
+                                </div>
+                                <div id="appSettingDiv">
+                                    <i class="fas fa-cog"></i>
+                                    <div id="appSettingText">App Setting</div>
+                                </div>
+                                <div id="logOutDiv">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <div id="logOutText">Log Out</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="walletScreenDivCon">
+                    <div id="walletScreenDiv">
+                        <div id="walletScreenTopBar">
+                            <div id="walletScreenCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                        <div id="walletScreenTitle">Wallet</div>
+                        <div id="diamondDiv">
+                            <img src="img/diamond.png" alt="diamond" id="diamondImg">
+                            <div id="diamondAmt">0</div>
+                        </div>
+                        <div id="coinDiv">
+                            <img src="img/coin.png" alt="coin" id="coinImg">
+                            <div id="coinAmt">0</div>
+                        </div>
+                        <button id="sendCoinBtn">Send Coin</button>
+                        <button id="sendDiamondBtn">Send Diamond</button>
+                    </div>
+                </div>
+                <div id="sendCoinDiv">
+                    <div id="sendCoinPopUpDiv">
+                        <div id="sendCoinPopUpTopBar">
+                            <div id="sendCoinPopUpCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                        <div id="sendCoinPopUp">
+                            <div id="sendCoinTitle">Send Coin</div>
+                            <div id="sendCoinText">Enter the amount of coin you want to send</div>
+                            <input type="number" id="coinInput" placeholder="0" min="0" max="1000000">
+                            <input type="text" id="userNameOrUid" placeholder="Enter username or UID" autocomplete="off">
+                            <div id="insufficientFundsDiv">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div id="insufficientFundsText">Insufficient funds</div>
+                            </div>
+                            <div id="sentSuccessfullyDiv">
+                                <i class="fas fa-check-circle"></i>
+                                <div id="sentSuccessfullyText">Sent successfully</div>
+                            </div>
+                            <div id="sendCoinErrorDiv">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <div id="sendCoinErrorText">Error sending coin</div>
+                            </div>
+                            <button id="sendCoinBtn2">Send</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="sendDiamondDiv">
+                    <div id="sendDiamondPopUpDiv">
+                        <div id="sendDiamondPopUpTopBar">
+                            <div id="sendDiamondPopUpCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                        <div id="sendDiamondPopUp">
+                            <div id="sendDiamondTitle">Send Diamond</div>
+                            <div id="sendDiamondText">Enter the amount of diamond you want to send</div>
+                            <input type="number" id="diamondInput" placeholder="0" min="0" max="1000000">
+                            <input type="text" id="userNameOrUidDiamond" placeholder="Enter username or UID" autocomplete="off">
+                            <div id="insufficientFundsDiamondDiv">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div id="insufficientFundsDiamondText">Insufficient funds</div>
+                            </div>
+                            <div id="sentSuccessfullyDiamondDiv">
+                                <i class="fas fa-check-circle"></i>
+                                <div id="sentSuccessfullyDiamondText">Sent successfully</div>
+                            </div>
+                            <div id="sendDiamondErrorDiv">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <div id="sendDiamondErrorText">Error sending diamond</div>
+                            </div>
+                            <button id="sendDiamondBtn2">Send</button>
+                        </div>
+                    </div>
+                </div>    
+                <div id="editProfileScreenDivCon">
+                    <div id="editProfileScreenDiv">
+                        <div id="editProfileScreenTopBar">
+                            <div id="editProfileScreenBackBtn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                        </div>
+                        <div id="editProfileCoverImgAndOtherDivCon">
+                            <div id="editProfileCoverImgDiv">
+                                <img src="https://www.w3schools.com/w3images/avatar2.png" alt="cover" id="editProfileCoverImg">
+                                <div id="editProfileUploadCoverImgIcon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            </div>
+                            <div id="editProfilePicAndOther">
+                                <div id="editProfilePicDiv">
+                                    <img src="img/profile.png" alt="profile" id="editProfilePic">
+                                    <div id="editProfilePicIconDiv">
+                                        <div id="editProfilePicDeleteImage">
+                                            <i class="fas fa-times"></i>
+                                        </div>
+                                        <div id="editProfilePicUploadIcon">
+                                            <i class="fas fa-camera"></i>
+                                        </div>
+                                    </div>
+                                    <div id="editProfileOnlineStatus"></div>
+                                </div>
+                                <div id="editProfileNameRatingLikeAndFollowersFlexDiv">
+                                    <div id="editProfileNameRatingLikeFollowersDiv">
+                                        <div id="editProfileName">--</div>
+                                        <div id="likeRataAndFollowersDiv">
+                                            <div id="likeDiv">
+                                                <i class="fas fa-thumbs-up"></i>
+                                                <span id="likeAmt">0</span>
+                                            </div>
+                                            <div id="ratingDiv">
+                                                <i class="fas fa-star"></i>
+                                                <span id="ratingAmt">0</span>
+                                            </div>
+                                            <div id="followersDiv">
+                                                <i class="fas fa-users"></i>
+                                                <span id="followersAmt">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="editProfileMenuDiv">
+                            <div id="account" class="editMenu active">Account</div>
+                            <div id="gifts" class="editMenu">Gifts</div>
+                            <div id="more" class="editMenu">More</div>
+                        </div>
+                        <div id="accountDivCon">
+                            <div id="accountDiv">
+                                <div id="editInfoDiv">
+                                   <div id="editInfoIcon">
+                                        <i class="fas fa-user-edit"></i>
+                                    </div>
+                                    <div id="editInfoText">Edit Info</div>
+                                </div>
+                                <div id="editAboutMe">
+                                    <div id="editAboutMeIcon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div id="editAboutMeText">Edit About Me</div>
+                                </div>
+                                <div id="editMood">
+                                    <div id="editMoodIcon">
+                                        <i class="fas fa-smile"></i>
+                                    </div>
+                                    <div id="editMoodText">Edit Mood</div>
+                                </div>
+                                <div id="editUserName">
+                                    <div id="editUserNameIcon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div id="editUserNameText">Edit User Name</div>
+                                </div>
+                                <div id="textColor">
+                                    <div id="textColorIcon">
+                                        <i class="fas fa-paint-brush"></i>
+                                    </div>
+                                    <div id="textColorText">Text Color</div>
+                                </div>
+                                <div id="manageFriends">
+                                    <div id="manageFriendsIcon">
+                                        <i class="fas fa-user-friends"></i>
+                                    </div>
+                                    <div id="manageFriendsText">Manage Friends</div>
+                                </div>
+                                <div id="profileSticker">
+                                    <div id="profileStickerIcon">
+                                        <i class="fas fa-sticky-note"></i>
+                                    </div>
+                                    <div id="profileStickerText">Profile Sticker</div>
+                                </div>
+                                <div id="profleNameStyle">
+                                    <div id="profileNameStyleIcon">
+                                        <i class="fas fa-font"></i>
+                                    </div>
+                                    <div id="profileNameStyleText">Profile Name Style</div>
+                                </div>
+                                <div id="rankStyle">
+                                    <div id="rankStyleIcon">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <div id="rankStyleText">Rank Style</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="giftsDivCon"></div>
+                        <div id="moreDivCon"></div>
+                    </div>
+                </div>      
+                <div id="editInfoScreenDivCon">
+                    <div id="editInfoScreenDiv">
+                        <div id="editInfoScreenTopBar">
+                            <div id="editInfoScreenBackBtn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                        </div>
+                        <div id="editInfoScreenTitle">Edit Info</div>
+                        <div id="ageAndGenderDiv">
+                            <div id="ageTitle">Age</div>
+                            <div id="ageDiv">
+                                <div id="ageText"></div>
+                                <div id="ageDropDownDiv">
+                                    <i class="fas fa-caret-down"></i>
+                                </div>
+                            </div>
+                            <div id="genderTitle">Gender</div>
+                            <div id="genderDiv">
+                                <div id="genderText"></div>
+                                <div id="genderDropDownDiv">
+                                    <i class="fas fa-caret-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="saveInfo">Save</button>
+                    </div>
+                </div>    
+                <div id="ageMenuDropDownDiv">
+                    <div id="ageMenuDropDown">
+                        <div class="ageOption" data-age="13">13</div>
+                        <div class="ageOption" data-age="14">14</div>
+                        <div class="ageOption" data-age="15">15</div>
+                        <div class="ageOption" data-age="16">16</div>
+                        <div class="ageOption" data-age="17">17</div>
+                        <div class="ageOption" data-age="18">18</div>
+                        <div class="ageOption" data-age="19">19</div>
+                    </div>
+                </div>
+                <div id="genderMenuDropDownDiv">
+                    <div id="genderMenuDropDown">
+                        <div class="genderOption" data-gender="male">Male</div>
+                        <div class="genderOption" data-gender="female">Female</div>
+                        <div class="genderOption" data-gender="other">Other</div>
+                        <div class="genderOption" data-gender="preferNotToSay">Prefer not to say</div>
+                    </div>
+                </div>
+                <div id="editAbouMeScreenDivCon">
+                    <div id="editAbouMeScreenDiv">
+                        <div id="editAbouMeScreenTopBar">
+                            <div id="editAbouMeScreenBackBtn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                        </div>
+                        <div id="editAbouMeScreenTitle">Edit About Me</div>
+                        <textarea id="editAboutMeTextArea" placeholder="Type something about yourself..."></textarea>
+                        <button id="saveAboutMe">Save</button>
+                    </div> 
+                </div>
+                <div id="editMoodScreenDivCon">
+                    <div id="editMoodScreenDiv">
+                        <div id="editMoodScreenTopBar">
+                            <div id="editMoodScreenBackBtn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                        </div>
+                        <div id="editMoodScreenTitle">Edit Mood</div>
+                        <textarea id="editMoodTextArea" placeholder="Type your mood..."></textarea>
+                        <button id="saveMood">Save</button>
+                    </div>
+                </div>
+                <div id="editUserNameScreenDivCon">
+                    <div id="editUserNameScreenDiv">
+                        <div id="editUserNameScreenTopBar">
+                            <div id="editUserNameScreenBackBtn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                        </div>
+                        <div id="editUserNameScreenTitle">Edit User Name</div>
+                        <input type="text" id="editUserNameInput" placeholder="Enter new user name" autocomplete="off">
+                        <button id="saveUserName">Save</button>
+                    </div>
+                </div>
+                <div id="textColorScreenDivCon">
+                    <div id="textColorScreenDiv">
+                        <div id="textColorScreenTopBar">
+                            <div id="textColorScreenBackBtn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                        </div>
+                        <div id="sampleText">Sample Text</div>
+                        <div id="textColorScreenTitle">Text Color</div>
+                        <div id="textColorMenu">
+                            <div id="fontColor" class="active">
+                                <div id="fontColorIcon">
+                                    <i class="fas fa-paint-brush"></i>
+                                </div>
+                                <div id="fontColorText">Font Color</div>
+                            </div>
+                            <div id="neonColor">
+                                <div id="neonColorIcon">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div id="neonColorText">Neon Color</div>
+                            </div>
+                            <div id="fontType">
+                                <div id="fontTypeIcon">
+                                    <i class="fas fa-font"></i>
+                                </div>
+                                <div id="fontTypeText">Font</div>
+                            </div>
+                            <div id="gradientColor">
+                                <div id="gradientColorIcon">
+                                    <i class="fas fa-paint-roller"></i>
+                                </div>
+                                <div id="gradientColorText">Gradient Color</div>
+                            </div>
+                        </div>
+                        <div id="fontColorDivCon">
+                            <div id="fontColorDiv">
+                                <div id="red"></div>
+                                <div id="green"></div>
+                                <div id="blue"></div>
+                                <div id="black"></div>
+                                <div id="yellow"></div>
+                                <div id="orange"></div>
+                                <div id="purple"></div>
+                                <div id="pink"></div>
+                                <div id="brown"></div>
+                                <div id="gray"></div>
+                                <div id="brown"></div>
+                                <div id="violet"></div>
+                                <div id="gold"></div>
+                            </div>
+                        </div>
+                        <div id="neonColorDivCon">
+                            <div id="neonColorDiv">
+                                <div id="red">
+                                    <div class="activeRed fas fa-check"></div>
+                                </div>
+                                <div id="green">
+                                    <div class="activeGreen fas fa-check"></div>
+                                </div>
+                                <div id="blue">
+                                    <div class="activeBlue fas fa-check"></div>
+                                </div>
+                                <div id="yellow">
+                                    <div class="activeYellow fas fa-check"></div>
+                                </div>
+                                <div id="orange">
+                                    <div class="activeOrange fas fa-check"></div>
+                                </div>
+                                <div id="purple">
+                                    <div class="activePurple fas fa-check"></div>
+                                </div>
+                                <div id="pink">
+                                    <div class="activePink fas fa-check"></div>
+                                </div>
+                                <div id="brown">
+                                    <div class="activeBrown fas fa-check"></div>
+                                </div>
+                                <div id="gray">
+                                    <div class="activeGray fas fa-check"></div>
+                                </div>
+                                <div id="brown">
+                                    <div class="activeBrown fas fa-check"></div>
+                                </div>
+                                <div id="violet">
+                                    <div class="activeViolet fas fa-check"></div>
+                                </div>
+                                <div id="gold">
+                                    <div class="activeGold fas fa-check"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="fontTypeDivCon">
+                            <div id="fontTypeDiv">
+                                <div id="fontStyleDropDownDiv">
+                                    <div id="fontStyleText">Font Style</div>
+                                    <i class="fas fa-caret-down"></i>
+                                </div>
+                                <div id="fontTypeDropDownDiv">
+                                    <div id="fontTypeText">Font Type</div>
+                                    <i class="fas fa-caret-down"></i>
+                                </div>
+                            </div>
+                            <div id="fontTypeDropDown">
+                                <div class="fontTypeOption" data-font="Arial">Arial</div>
+                                <div class="fontTypeOption" data-font="Courier New">Courier New</div>
+                                <div class="fontTypeOption" data-font="Georgia">Georgia</div>
+                                <div class="fontTypeOption" data-font="Times New Roman">Times New Roman</div>
+                                <div class="fontTypeOption" data-font="Verdana">Verdana</div>
+                                <div class="fontTypeOption" data-font="Comic Sans MS">Comic Sans MS</div>
+                                <div class="fontTypeOption" data-font="Trebuchet MS">Trebuchet MS</div>
+                                <div class="fontTypeOption" data-font="Lucida Console">Lucida Console</div>
+                                <div class="fontTypeOption" data-font="Impact">Impact</div>
+                                <div class="fontTypeOption" data-font="Tahoma">Tahoma</div>
+                                <div class="fontTypeOption" data-font="Cursive">Cursive</div>
+                                <div class="fontTypeOption" data-font="Monaco">Monaco</div>
+                                <div class="fontTypeOption" data-font="Brush Script MT">Brush Script MT</div>
+                                <div class="fontTypeOption" data-font="Futura">Futura</div>
+                                <div class="fontTypeOption" data-font="Rockwell">Rockwell</div>
+                                <div class="fontTypeOption" data-font="Gill Sans">Gill Sans</div>
+                                <div class="fontTypeOption" data-font="Garamond">Garamond</div>
+                                <div class="fontTypeOption" data-font="Franklin Gothic Medium">Franklin Gothic Medium</div>
+                                <div class="fontTypeOption" data-font="Copperplate">Copperplate</div>
+                                <div class="fontTypeOption" data-font="Papyrus">Papyrus</div>
+                                <div class="fontTypeOption" data-font="Segoe UI">Segoe UI</div>
+                                <div class="fontTypeOption" data-font="Calibri">Calibri</div>
+                                <div class="fontTypeOption" data-font="Poppins">Poppins</div>
+                                <div class="fontTypeOption" data-font="Lobster">Lobster</div>
+                                <div class="fontTypeOption" data-font="Pacifico">Pacifico</div>
+                                <div class="fontTypeOption" data-font="Bangers">Bangers</div>
+                                <div class="fontTypeOption" data-font="Fredoka">Fredoka</div>
+                                <div class="fontTypeOption" data-font="Shadows Into Light">Shadows Into Light</div>
+                                <div class="fontTypeOption" data-font="Raleway">Raleway</div>
+                                <div class="fontTypeOption" data-font="Orbitron">Orbitron</div>
+                            </div>        
+                            <div id="fontStyleDropDown">
+                                <div class="fontStyleOption" data-style="normal">Normal</div>
+                                <div class="fontStyleOption" data-style="italic">Italic</div>
+                                <div class="fontStyleOption" data-style="oblique">Oblique</div>
+                                <div class="fontStyleOption" data-style="bold">Bold</div>
+                                <div class="fontStyleOption" data-style="bold italic">Bold Italic</div>
+                                <div class="fontStyleOption" data-style="bold oblique">Bold Oblique</div>
+                                <div class="fontStyleOption" data-style="italic oblique">Italic Oblique</div>
+                                <div class="fontStyleOption" data-style="bold italic oblique">Bold Italic Oblique</div>
+                                <div class="fontStyleOption" data-style="inherit">Inherit</div>
+                            </div>         
+                        </div>
+                        <div id="gradientColorDivCon">
+                            <div id="gradientColorDiv">
+                                <div id="gradientColor1"></div>
+                                <div id="gradientColor2"></div>
+                                <div id="gradientColor3"></div>
+                                <div id="gradientColor4"></div>
+                                <div id="gradientColor5"></div>
+                                <div id="gradientColor6"></div>
+                                <div id="gradientColor7"></div>
+                                <div id="gradientColor8"></div>
+                                <div id="gradientColor9"></div>
+                                <div id="gradientColor10"></div>
+                                <div id="gradientColor11"></div>
+                                <div id="gradientColor12"></div>
+                                <div id="gradientColor13"></div>
+                                <div id="gradientColor14"></div>
+                                <div id="gradientColor15"></div>
+                            </div>
+                        </div>
+                        <button id="saveTextColor">Save</button>
+                    </div>
+                </div>
+                <div id="profileStickerScreenDivCon">
+                    <div id="profileStickerScreenDiv">
+                        <div id="profileStickerScreenTopBar">
+                            <div id="profileStickerScreenBackBtn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                        </div>
+                        <div id="profileStickerScreenTitle">Profile Sticker</div>
+                        <div id="stickerListDivCon">
+                            <div id="stickerListDiv">
+                                
+                            </div>
+                        </div>
+                        <button id="saveProfileSticker">Save</button>
+                    </div>
+                </div>
+                <div id="profileNameStyleScreenDivCon">
+                    <div id="profileNameStyleScreenDiv">
+                        <div id="profileNameStyleScreenTopBar">
+                            <div id="profileNameStyleScreenBackBtn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                        </div>
+                        <div id="profileNameStyleScreenTitle">Profile Name Style</div>
+                        <div id="profileNameStyleMenu">
+                            <div id="profileNameStyleFont" class="active">Font</div>
+                            <div id="profileNameStyleColor">Color</div>
+                            <div id="animation">Animation</div>
+                            <div id="style">Style</div>
+                        </div>
+                        <div id="profileNameStyleFontDivCon">
+                            <div id="profileNameStyleFontDiv">
+                                <div id="fontTypeDropDownDiv2">
+                                    <div id="fontTypeText">Font Type</div>
+                                    <i class="fas fa-caret-down"></i>
+                                </div>
+                                <div id="fontTypeDropDownDiv3">
+                                    <div id="fontTypeText">Font Style</div>
+                                    <i class="fas fa-caret-down"></i>
+                                </div>
+                            </div>
+                            <div id="fontTypeDropDown2">
+                                <div class="fontTypeOption" data-font="Arial">Arial</div>
+                                <div class="fontTypeOption" data-font="Courier New">Courier New</div>
+                                <div class="fontTypeOption" data-font="Georgia">Georgia</div>
+                                <div class="fontTypeOption" data-font="Times New Roman">Times New Roman</div>
+                                <div class="fontTypeOption" data-font="Verdana">Verdana</div>
+                                <div class="fontTypeOption" data-font="Comic Sans MS">Comic Sans MS</div>
+                                <div class="fontTypeOption" data-font="Trebuchet MS">Trebuchet MS</div>
+                                <div class="fontTypeOption" data-font="Lucida Console">Lucida Console</div>
+                                <div class="fontTypeOption" data-font="Impact">Impact</div>
+                                <div class="fontTypeOption" data-font="Tahoma">Tahoma</div>
+                                <div class="fontTypeOption" data-font="Cursive">Cursive</div>
+                                <div class="fontTypeOption" data-font="Monaco">Monaco</div>
+                                <div class="fontTypeOption" data-font="Brush Script MT">Brush Script MT</div>
+                                <div class="fontTypeOption" data-font="Futura">Futura</div>
+                                <div class="fontTypeOption" data-font="Rockwell">Rockwell</div>
+                                <div class="fontTypeOption" data-font="Gill Sans">Gill Sans</div>
+                                <div class="fontTypeOption" data-font="Garamond">Garamond</div>
+                                <div class="fontTypeOption" data-font="Franklin Gothic Medium">Franklin Gothic Medium</div>
+                                <div class="fontTypeOption" data-font="Copperplate">Copperplate</div>
+                                <div class="fontTypeOption" data-font="Papyrus">Papyrus</div>
+                                <div class="fontTypeOption" data-font="Segoe UI">Segoe UI</div>
+                                <div class="fontTypeOption" data-font="Calibri">Calibri</div>
+                                <div class="fontTypeOption" data-font="Poppins">Poppins</div>
+                                <div class="fontTypeOption" data-font="Lobster">Lobster</div>
+                                <div class="fontTypeOption" data-font="Pacifico">Pacifico</div>
+                                <div class="fontTypeOption" data-font="Bangers">Bangers</div>
+                                <div class="fontTypeOption" data-font="Fredoka">Fredoka</div>
+                                <div class="fontTypeOption" data-font="Shadows Into Light">Shadows Into Light</div>
+                                <div class="fontTypeOption" data-font="Raleway">Raleway</div>
+                                <div class="fontTypeOption" data-font="Orbitron">Orbitron</div>
+                                <div class="fontTypeOption" data-font="Playfair Display">Playfair Display</div>
+                                <div class="fontTypeOption" data-font="Merriweather">Merriweather</div>
+                                <div class="fontTypeOption" data-font="Roboto">Roboto</div>
+                                <div class="fontTypeOption" data-font="Open Sans">Open Sans</div>
+                                <div class="fontTypeOption" data-font="Lato">Lato</div>
+                                <div class="fontTypeOption" data-font="Oswald">Oswald</div>
+                                <div class="fontTypeOption" data-font="Ubuntu">Ubuntu</div>
+                                <div class="fontTypeOption" data-font="Dancing Script">Dancing Script</div>
+                                <div class="fontTypeOption" data-font="Indie Flower">Indie Flower</div>
+                                <div class="fontTypeOption" data-font="Anton">Anton</div>
+                                <div class="fontTypeOption" data-font="Bebas Neue">Bebas Neue</div>
+
+                            </div>        
+                            <div id="fontStyleDropDown2">
+                                <div class="fontStyleOption" data-style="normal">Normal</div>
+                                <div class="fontStyleOption" data-style="italic">Italic</div>
+                                <div class="fontStyleOption" data-style="oblique">Oblique</div>
+                                <div class="fontStyleOption" data-style="bold">Bold</div>
+                                <div class="fontStyleOption" data-style="bold italic">Bold Italic</div>
+                                <div class="fontStyleOption" data-style="bold oblique">Bold Oblique</div>
+                                <div class="fontStyleOption" data-style="italic oblique">Italic Oblique</div>
+                                <div class="fontStyleOption" data-style="bold italic oblique">Bold Italic Oblique</div>
+                                <div class="fontStyleOption" data-style="inherit">Inherit</div>
+                            </div>
+                        </div>
+                        <div id="profileNameStyleColorDivCon">
+                            <div id="profileNameStyleColorDiv">
+                                <div id="red">
+                                    <div class="activeRed fas fa-check"></div>
+                                </div>
+                                <div id="green">
+                                    <div class="activeGreen fas fa-check"></div>
+                                </div>
+                                <div id="blue">
+                                    <div class="activeBlue fas fa-check"></div>
+                                </div>
+                                <div id="black">
+                                    <div class="activeBlack fas fa-check"></div>
+                                </div>
+                                <div id="yellow">
+                                    <div class="activeYellow fas fa-check"></div>
+                                </div>
+                                <div id="orange">
+                                    <div class="activeOrange fas fa-check"></div>
+                                </div>
+                                <div id="purple">
+                                    <div class="activePurple fas fa-check"></div>
+                                </div>
+                                <div id="pink">
+                                    <div class="activePink fas fa-check"></div>
+                                </div>
+                                <div id="brown">
+                                    <div class="activeBrown fas fa-check"></div>
+                                </div>
+                                <div id="gray">
+                                    <div class="activeGray fas fa-check"></div>
+                                </div>
+                                <div id="violet">
+                                    <div class="activeViolet fas fa-check"></div>
+                                </div>
+                                <div id="gold">
+                                    <div class="activeGold fas fa-check"></div>
+                                </div>
+                                <div id="silver">
+                                    <div class="activeSilver fas fa-check"></div>
+                                </div>
+                                <div id="cyan">
+                                    <div class="activeCyan fas fa-check"></div>
+                                </div>
+                                <div id="magenta">
+                                    <div class="activeMagenta fas fa-check"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="animationDiv">
+                            <div id="animation1" class="active"><span>None</span></div>
+                            <div id="animation2"><span>Blink</span></div>
+                            <div id="animation3"><span>Slide</span></div>
+                            <div id="animation4"><span>Bounce</span></div>
+                            <div id="animation5"><span>Shake</span></div>
+                            <div id="animation6"><span>Wave</span></div>
+                            <div id="animation7"><span>Zoom</span></div>
+                            <div id="animation8"><span>Flash</span></div>
+                            <div id="animation9"><span>Spin And Show</span></div>
+                            <div id="animation10"><span>Spin</span></div>
+                            <div id="animation11"><span>Pulse</span></div>
+                            <div id="animation12"><span>Stretch</span></div> <!-- New stretch animation -->
+                            <div id="animation13"><span>Swing</span></div>
+                            <div id="animation14"><span>Fade In Out</span></div>
+<div id="animation15"><span>Rubber Band</span></div>
+<div id="animation16"><span>Heartbeat</span></div>
+<div id="animation17"><span>Skew</span></div>
+<div id="animation18"><span>Jump</span></div>
+<div id="animation19"><span>Flip</span></div>
+<div id="animation20"><span>Roll</span></div>
+<div id="animation21"><span>Jello</span></div>
+<div id="animation22"><span>Typing</span></div>
+<div id="animation23"><span>Slide Left-Right</span></div>
+<div id="animation24"><span>Glow</span></div>
+<div id="animation25"><span>Fall</span></div>
+<div id="animation26"><span>Fade Slide</span></div>
+<div id="animation27"><span>Zoom In Out</span></div>
+<div id="animation28"><span>Shrink Grow</span></div>
+<div id="animation29"><span>Pop</span></div>
+<div id="animation30"><span>Rotate In</span></div>
+<div id="animation31"><span>Stretch Wide</span></div>
+<div id="animation32"><span>Diagonal Move</span></div>
+                        </div>      
+                        <div id="styleDiv">
+                            <div class="pinkRoundedCookieDiv" id="pinkRoundedCookieDiv">
+                                <div id="pinkRoundedCookieDiv">Pink Rounded Cookie</div>
+                            </div>
+                            <div class="blueRoundedCookieDiv" id="blueRoundedCookieDiv">
+                                <div id="blueRoundedCookieDiv">Blue Rounded Cookie</div>
+                            </div>
+                        
+                            <div class="greenGlassStyle" id="greenGlassStyle">
+                                <div id="greenGlassStyle">Green Glass</div>
+                            </div>
+                            <div class="purpleGlowStyle" id="purpleGlowStyle">
+                                <div id="purpleGlowStyle">Purple Glow</div>
+                            </div>
+                            <div class="neonRedStyle" id="neonRedStyle">
+                                <div id="neonRedStyle">Neon Red</div>
+                            </div>
+                            <div class="aquaBubbleStyle" id="aquaBubbleStyle">
+                                <div id="aquaBubbleStyle">Aqua Bubble</div>
+                            </div>
+                            <div class="shadowBoxStyle" id="shadowBoxStyle">
+                                <div id="shadowBoxStyle">Shadow Box</div>
+                            </div>
+                            <div class="rainbowStripeStyle" id="rainbowStripeStyle">
+                                <div id="rainbowStripeStyle">Rainbow Stripe</div>
+                            </div>
+                            <div class="goldenShinyStyle" id="goldenShinyStyle">
+                                <div id="goldenShinyStyle">Golden Shiny</div>
+                            </div>
+                            <div class="holoCardStyle" id="holoCardStyle">
+                                <div id="holoCardStyle">Holographic Card</div>
+                            </div>
+                            <div class="lavaFlowStyle" id="lavaFlowStyle">
+                                <div id="lavaFlowStyle">Lava Flow</div>
+                            </div>
+                            <div class="iceBlockStyle" id="iceBlockStyle">
+                                <div id="iceBlockStyle">Ice Block</div>
+                            </div>
+                            <div class="sunnySkyStyle" id="sunnySkyStyle">
+                                <div id="sunnySkyStyle">Sunny Sky</div>
+                            </div>
+                            <div class="forestMossStyle" id="forestMossStyle">
+                                <div id="forestMossStyle">Forest Moss</div>
+                            </div>
+                            <div class="glitchPopStyle" id="glitchPopStyle">
+                                <div id="glitchPopStyle">Glitch Pop</div>
+                            </div>
+                            <div class="cottonCandyStyle" id="cottonCandyStyle">
+                                <div id="cottonCandyStyle">Cotton Candy</div>
+                            </div>
+                            <div class="galaxyTwistStyle" id="galaxyTwistStyle">
+                                <div id="galaxyTwistStyle">Galaxy Twist</div>
+                            </div>
+                            <div class="oceanWaveStyle" id="oceanWaveStyle">
+                                <div id="oceanWaveStyle">Ocean Wave</div>
+                            </div>
+                            <div class="metallicChromeStyle" id="metallicChromeStyle">
+                                <div id="metallicChromeStyle">Metallic Chrome</div>
+                            </div>
+                            <div class="crystalClearStyle" id="crystalClearStyle">
+                                <div id="crystalClearStyle">Crystal Clear</div>
+                            </div>
+                            <div class="fireBlazeStyle" id="fireBlazeStyle">
+                                <div id="fireBlazeStyle">Fire Blaze</div>
+                            </div>
+                            <div class="midnightShadowStyle" id="midnightShadowStyle">
+                                <div id="midnightShadowStyle">Midnight Shadow</div>
+                            </div>
+                        </div>                        
+                       <div id="styleButtunDiv">
+                        <button id="defaultStyle" class="active">Default</button>
+                        <button id="saveProfileNameStyle">Save</button>
+                       </div>
+                    </div>
+                </div>
+                <div id="privateChatDivCon">
+                    <div id="privateChatDiv">
+                        <div id="privateChatMenu">
+                            <div id="privateChatBackIcon">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                            <div id="privateChatIcon">
+                                <i class="fas fa-comment-dots"></i>
+                            </div>
+                            <div id="statusIcon">
+                                <i class="fas fa-circle-notch"></i>
+                            </div>
+                        </div>
+                        <div id="privateChatListCon">
+                            <div id="privateChatListHeader">
+                                <div id="privateChatHeaderBackBtn">
+                                    <i class="fas fa-arrow-left"></i>
+                                </div>
+                                <div id="privateChatListTitle">Chats</div>
+                            </div>
+                            <div id="searchDivCon">
+                                <div id="searchDiv">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="search" placeholder="Search" autocomplete="off">
+                                </div>
+                            </div>
+                            <div id="chatList">
+                               
+                            </div>
+                        </div>
+                        <div id="privateChatWindowDiv">
+                            <div id="openChat">
+                                    <img src="img/open.png" alt="openChat" id="openChatImg">
+                                    <div id="openChatText">Open a chat</div>
+                                    <div id="openChatText2">Select a chat to start messaging</div>
+                            </div>
+                            <div id="privateChatWindow">
+                                <div id="privateChatHeader">
+                                    <div id="privateChatWindowBackIcon">
+                                        <i class="fas fa-arrow-left"></i>
+                                    </div>
+                                    <div id="privateChatProfilePic">
+                                        <img src="img/emperor.png" alt="profile" id="privateChatProfilePicImg">
+                                    </div>
+                                    <div id="NameAndStatusDiv">
+                                        <div id="privateChatName">BIOR</div>
+                                        <div id="privateChatStatus">online</div>
+                                    </div>
+                                    <div id="privateChatVideoCallIcon">
+                                        <i class="fas fa-video"></i>
+                                    </div>
+                                    <div id="privateChatMenuIcon">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </div>
+                                </div>
+                                <div id="typingIndicatorBubbleDiv">
+                                    <div id="typingIndicatorBubble">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                </div>
+                                <div id="privateChatBody">
+                                </div>
+                                <div id="privateChatBarDiv">
+                                    <div id="privateChatBar">
+                                        <div id="privateChatUploadDiv">
+                                            <i class="fas fa-plus"></i>
+                                        </div>
+                                        <div id="privateChatEmojiDiv">
+                                            <i class="fas fa-smile"></i>
+                                        </div>
+                                        <div id="privateChatMessageDiv">
+                                            <textarea id="privateChatMessage" placeholder="Type a message"></textarea>
+                                        </div>
+                                        <div id="privateChatSendDiv">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div id="thankYouPopUpDiv">
-            <div id="thankYouPopUp">
-                <div id="thankYouTitle">Thank you</div>
-                <div id="thankYouText">Your report has been submitted</div>
-                <button id="thankYouBtn">OK</button>
-            </div>
-        </div>
-        <div id="profilePopUpDiv">
-            <div id="profilePopUp">
-                <div id="topProfileBar">
-                    <div id="profilePopUpCloseBtn">
-                        <i class="fas fa-times"></i>
-                    </div>
-                    <div id="profilePopUpTitle">Profile</div>
-                </div>
-                <div id="profilePicAndCoverImgDiv">
-                    <div id="coverImgDiv">
-                        <img src="img/jolofu.webp" alt="cover" id="coverImg">
-                    </div>
-                    <div id="profilePicDiv">
-                        <img src="img/emperor.png" alt="profile" id="profilePic">
-                        <div id="onlineStatus"></div>
-                    </div>
-                </div>
-                <div id="profileNameDiv">
-                    <div id="profileName">--</div>
-                    <div id="profileRankDivCon">
-                        <img src="img/user.png" id="profileRankImg">
-                    <div id="profileRank">
-                        <span id="profileRankText"></span>
-                    </div>
-                    </div>
-                </div>
-                <div id="actionDiv">
-                    <div id="chat">
-                        <i class="fas fa-comment"></i>
-                        <span>Chat</span>
-                    </div>
-                    <div id="viewProfile">
-                        <i class="fas fa-user"></i>
-                        <span>Profile</span>
-                    </div>
-                    <div id="rate">
-                        <i class="fas fa-star"></i>
-                        <span>Rate</span>
-                    </div>
-                    <div id="block">
-                        <i class="fas fa-ban
-                        "></i>
-                        <span>Block</span>
-                    </div>
-                    <div id="report">
-                        <i class="fas fa-flag"></i>
-                        <span>Report</span>
-                    </div>
-                    <div id="action">
-                        <i class="fas fa-ellipsis-h"></i>
-                        <span>Action</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-       <div id="canvasDivCon">
-        <div id="canvasDiv">
-            <div id="canvasTitle">Drawing</div>
-            <canvas id="canvas"></canvas>
-            <div id="changePenColorDiv">
-                <div id="red"></div>
-                <div id="green"></div>
-                <div id="blue"></div>
-                <div id="black"></div>
-                <div id="yellow"></div>
-                <div id="orange"></div>
-                    <i class="fas fa-eraser" id="white"></i>
-            </div>
-            <div id="canvasBtnDiv">
-                <button id="cancelCanvasBtn">Cancel</button>
-                <button id="sendCanvasBtn">Send</button>
-            </div>
-        </div>
-       </div>
-        <div id="recordPopUpDiv">
-            <div id="recordPopUp">
-                <div id="recordTitle">Recording</div>
-                <div id="recordingIcon">
-                    <i class="fas fa-microphone"></i>
-                </div>
-                <div id="recordReaderDiv">
-                    <div id="recordReader">0:00</div>
-                </div>
-                <div id="cancelAndGoRecordDiv">
-                    <button id="cancelRecordBtn">Cancel</button>
-                    <button id="goRecordBtn">Go</button>
-                </div>
-            </div>
-        </div>
-        <div id="gifDivCon">
-            <div id="gifDiv">
-                <div id="gifTop">
-                    <div id="searchGivDiv">
-                        <input type="text" id="searchGiv">
-                    </div>
-                </div>
-                    <div id="gifGrid"></div>
-                    <div id="gifBottom">
-                         <button id="cancelGifBtn">Cancel</button>
-                         <button id="goGifBtn">Send</button>
-                    </div>
+            <div id="chatStatusDivCon">
+                
             </div>
         </div>
     </div>
@@ -205,5 +1230,6 @@
     <script src="js/emoji.js" type="module"></script>
     <script src="js/record.js" type="module"></script>
     <script src="js/recorder.js"></script>
+    <script src="https://js.puter.com/v2/"></script>
 </body>
 </html>
