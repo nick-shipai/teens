@@ -681,10 +681,12 @@ async function displayMessage(messageData) {
 
         const likeRef = ref(database, `group-chat/${chatName}/message/${messageId}/reactions/${currentUserId}`);
 
-        // Check if user has already liked
-        get(likeRef).then((snapshot) => {
+        // Listen for changes in like status for the current user
+        onValue(likeRef, (snapshot) => {
             if (snapshot.exists()) {
-                likeButton.style.color = "red"; // User already liked
+            likeButton.style.color = "red"; // User already liked
+            } else {
+            likeButton.style.color = "black"; // User has not liked
             }
         });
 
@@ -707,69 +709,7 @@ async function displayMessage(messageData) {
                 likeButton.style.color = "red";
             }
 
-            // Check if the message is flagged as inappropriate
-            const messageRef = ref(database, `group-chat/${chatName}/message/${messageData.id}`);
-            get(messageRef).then((messageSnapshot) => {
-                if (messageSnapshot.exists()) {
-                const message = messageSnapshot.val();
-                if (message.spam) {
-                    // Ensure the flagged message text remains consistent
-                    chatBubble.textContent = "This message has been flagged as inappropriate.";
-                    chatBubble.style.color = "red";
-                    chatBubble.style.fontWeight = "bold";
-                } else if (messageData.replyingTo) {
-                    // Ensure the reply still shows even after liking
-                    const replyAndMessageDiv = document.createElement("div");
-                    replyAndMessageDiv.classList.add("replyAndMessageDiv");
-
-                    const replyName = document.createElement("div");
-                    replyName.classList.add("replyName");
-
-                    const replyDiv = document.createElement("div");
-                    replyDiv.classList.add("replyDiv");
-
-                    // Fetch reply details
-                    fetchReplyDetails(messageData.replyingTo).then((replyDetails) => {
-                    replyName.textContent = replyDetails.name;
-                    if (replyDetails.video) {
-                        const video = document.createElement("video");
-                        video.src = replyDetails.video;
-                        video.style.width = "100%";
-                        video.style.height = "50px";
-                        video.style.objectFit = "cover";
-                        video.backgroundColor = "white";
-                        replyDiv.appendChild(video);
-                    } else if (replyDetails.gif) {
-                        const gif = document.createElement("video");
-                        gif.src = replyDetails.gif;
-                        gif.style.width = "100%";
-                        gif.style.height = "50px";
-                        gif.style.objectFit = "cover";
-                        gif.autoplay = true;
-                        gif.backgroundColor = "white";
-                        gif.loop = true;
-                        gif.muted = true;
-                        replyDiv.appendChild(gif);
-                    } else if (replyDetails.img) {
-                        const img = document.createElement("img");
-                        img.src = replyDetails.img;
-                        img.style.width = "100%";
-                        img.style.height = "50px";
-                        img.style.objectFit = "cover";
-                        replyDiv.appendChild(img);
-                    } else if (replyDetails.audio) {
-                        replyDiv.innerHTML = "🔊 Audio";
-                    } else {
-                        replyDiv.textContent = replyDetails.message;
-                    }
-                    });
-
-                    replyAndMessageDiv.appendChild(replyName);
-                    replyAndMessageDiv.appendChild(replyDiv);
-                    chatBubble.appendChild(replyAndMessageDiv);
-                }
-                }
-            });
+            
             });
         });
     }
@@ -4591,4 +4531,214 @@ document.addEventListener("click", (event) => {
         menuSlideDiv.classList.remove("menuSlideInAnimation");
         menuSlideDiv.style.display = "none";
     }
+});
+const groupsTab = document.getElementById("groupsTab");
+const groupsDivCon = document.getElementById("groupsDivCon");
+groupsTab.addEventListener("click", () => {
+    fetchGroupsData(); // Fetch groups data when opening the groups tab
+});
+const groupsCloseBtn = document.getElementById("groupsCloseBtn");
+groupsCloseBtn.addEventListener("click", () => {
+    groupsDivCon.style.display = "none";
+});
+function fetchGroupsData() {
+    groupsDivCon.style.display = "flex";
+    const groupsRef = ref(database, `group-chat`);
+    const groupsListDiv = document.getElementById("groupsList");
+    groupsListDiv.innerHTML = ""; // Clear existing groups
+
+    get(groupsRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const groups = snapshot.val();
+            Object.keys(groups).forEach((chatName) => {
+                const groupData = groups[chatName];
+                const groupItemDiv = document.createElement("div");
+                groupItemDiv.className = "groupItem";
+                const groupName = document.createElement("div");
+                groupName.className = "groupName";
+                groupName.textContent = chatName;
+
+                const groupNumberDiv = document.createElement("div");
+                groupNumberDiv.className = "groupNumberDiv";
+                const groupNumIcon = document.createElement("i");
+                const groupActiveNum = document.createElement("span");
+                groupActiveNum.className = "groupActiveNum";
+                groupNumIcon.className = "fas fa-users";
+                groupActiveNum.textContent = "0";
+
+                const groupGo = document.createElement("div");
+                groupGo.className = "groupGo";
+                groupGo.innerHTML = '<i class="fas fa-arrow-right"></i>';
+
+                const paddLockDivIcon = document.createElement("div");
+                paddLockDivIcon.className = "paddlockIcon";
+                const paddLockIcon = document.createElement("i");
+                paddLockIcon.className = "fas fa-lock";
+               
+
+                if (paddLockDivIcon.style.display === "none") {
+                    groupNumberDiv.style.marginLeft = "auto";
+                }
+                // Add padlock icon if the group is locked
+                if (groupData.locked) {
+                    paddLockDivIcon.style.display = "block";
+                }
+
+                groupItemDiv.addEventListener("click", () => {
+                    if (groupData.locked) {
+                        const enterPasswordDivCon = document.getElementById("enterPasswordDivCon");
+                        const enterGroupPasswordInput = document.getElementById("enterGroupPasswordInput");
+                        const enterGroupBtn = document.getElementById("enterGroupBtn");
+                        const enterPasswordCloseBtn = document.getElementById("enterPasswordCloseBtn");
+                        const errorMessage = document.getElementById("errorMrssage");
+
+                        enterPasswordDivCon.style.display = "flex";
+
+                        enterGroupBtn.onclick = () => {
+                            const password = enterGroupPasswordInput.value.trim();
+                            if (password === groupData.password) {
+                                console.log(`Access granted to group: ${chatName}`);
+                                const urlParams = new URLSearchParams(window.location.search);
+                                urlParams.set("chat", chatName);
+                                window.location.search = urlParams.toString();
+                            } else {
+                                errorMessage.textContent = "Incorrect password. Please try again.";
+                                errorMessage.style.color = "red";
+                            }
+                        };
+
+                        enterPasswordCloseBtn.onclick = () => {
+                            enterPasswordDivCon.style.display = "none";
+                            errorMessage.textContent = ""; // Clear error message
+                        };
+                    } else {
+                        console.log(`Selected group: ${chatName}`);
+                        const urlParams = new URLSearchParams(window.location.search);
+                        urlParams.set("chat", chatName);
+                        window.location.search = urlParams.toString();
+                    }
+                });
+
+                groupGo.addEventListener("click", (event) => {
+                    event.stopPropagation(); // Prevent triggering the groupItemDiv click event
+                    if (groupData.locked) {
+                        const enterPasswordDivCon = document.getElementById("enterPasswordDivCon");
+                        const enterGroupPasswordInput = document.getElementById("enterGroupPasswordInput");
+                        const enterGroupBtn = document.getElementById("enterGroupBtn");
+                        const enterPasswordCloseBtn = document.getElementById("enterPasswordCloseBtn");
+                        const errorMessage = document.getElementById("errorMrssage");
+
+                        enterPasswordDivCon.style.display = "flex";
+
+                        enterGroupBtn.onclick = () => {
+                            const password = enterGroupPasswordInput.value.trim();
+                            if (password === groupData.password) {
+                                console.log(`Access granted to group: ${chatName}`);
+                                const urlParams = new URLSearchParams(window.location.search);
+                                urlParams.set("chat", chatName);
+                                window.location.search = urlParams.toString();
+                            } else {
+                                errorMessage.textContent = "Incorrect password. Please try again.";
+                                errorMessage.style.color = "red";
+                            }
+                        };
+
+                        enterPasswordCloseBtn.onclick = () => {
+                            enterPasswordDivCon.style.display = "none";
+                            errorMessage.textContent = ""; // Clear error message
+                        };
+                    } else {
+                        console.log(`Go to group: ${chatName}`);
+                        const urlParams = new URLSearchParams(window.location.search);
+                        urlParams.set("chat", chatName);
+                        window.location.search = urlParams.toString();
+                    }
+                });
+
+                groupsListDiv.appendChild(groupItemDiv);
+                groupItemDiv.appendChild(groupName);
+                groupItemDiv.appendChild(groupNumberDiv);
+                groupNumberDiv.appendChild(groupNumIcon);
+                groupNumberDiv.appendChild(groupActiveNum);
+                groupItemDiv.appendChild(paddLockDivIcon);
+                paddLockDivIcon.appendChild(paddLockIcon);
+                groupItemDiv.appendChild(groupGo);
+            });
+        } else {
+            const noGroupsDiv = document.createElement("div");
+            noGroupsDiv.className = "noGroups";
+            noGroupsDiv.textContent = "No groups available.";
+            groupsListDiv.appendChild(noGroupsDiv);
+        }
+    }).catch((error) => {
+        console.error("Error fetching groups:", error);
+    });
+}
+const creatGroupDiv = document.getElementById("creatGroupDiv");
+const createGroupDivCon = document.getElementById("createGroupDivCon");
+const createGroupCloseBtn = document.getElementById("createGroupCloseBtn");
+creatGroupDiv.addEventListener("click", () => {
+    createAGroup();
+});
+createGroupCloseBtn.addEventListener("click", () => {
+    createGroupDivCon.style.display = "none";
+});
+function createAGroup() {
+    createGroupDivCon.style.display = "flex";
+
+    const lockedSwitchInput = document.getElementById("lockedSwitchInput");
+    const groupPasswordInput = document.getElementById("groupPasswordInput");
+
+    // Toggle password input visibility based on locked switch
+    lockedSwitchInput.addEventListener("change", () => {
+        groupPasswordInput.style.display = lockedSwitchInput.checked ? "block" : "none";
+    });
+
+    const createGroupBtn = document.getElementById("createGroupBtn");
+    createGroupBtn.addEventListener("click", () => {
+        const groupNameInput = document.getElementById("groupNameInput").value.trim();
+        const groupDescription = document.getElementById("groupDescriptionInput").value.trim();
+        const groupPassword = groupPasswordInput.value.trim();
+        const isLocked = lockedSwitchInput.checked;
+        const createGroupSuccessDivCon = document.getElementById("createGroupSuccessDivCon");
+        const createGroupSuccessBtn = document.getElementById("createGroupSuccessBtn");
+        const isAdminOnly = document.getElementById("adminOnlySwitchInput").checked;
+
+        if (!groupNameInput) {
+            alert("Please enter a group name.");
+            return;
+        }
+
+        const groupData = {
+            chatName: groupNameInput,
+            description: groupDescription,
+            locked: isLocked,
+            password: isLocked && groupPassword ? groupPassword : null,
+            adminOnly: isAdminOnly,
+            createdBy: uid,
+            createdAt: serverTimestamp(),
+        };
+
+        const groupRef = ref(database, `group-chat/${groupNameInput}`);
+        set(groupRef, groupData)
+            .then(() => {
+                alert("Group created successfully!");
+                createGroupDivCon.style.display = "none";
+                createGroupSuccessDivCon.style.display = "flex";
+                createGroupSuccessBtn.addEventListener("click", () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    urlParams.set("chat", groupNameInput);
+                    window.location.search = urlParams.toString();
+                });
+            })
+            .catch((error) => {
+                console.error("Error creating group:", error);
+                alert("Failed to create group. Please try again.");
+            });
+    });
+}
+const createGroupSuccessCloseBtn = document.getElementById("createGroupSuccessCloseBtn");
+createGroupSuccessCloseBtn.addEventListener("click", () => {
+    const createGroupSuccessDivCon = document.getElementById("createGroupSuccessDivCon");
+    createGroupSuccessDivCon.style.display = "none";
 });

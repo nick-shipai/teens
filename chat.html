@@ -36,8 +36,11 @@
             </div>
         </div>
         <div id="menuSlideDiv">
-            <div id="closeMenuDiv">
-                <i class="fas fa-times"></i>
+            <div id="closeMenuAndTitleDiv">
+                <div id="menuTitle">Menu</div>
+                <div id="closeMenuDiv">
+                    <i class="fas fa-times"></i>
+                </div>
             </div>
             <div id="menuSlide">
             <div id="groupsTab">
@@ -304,6 +307,73 @@
                         </div>
                     </div>
                 </div>
+                <div id="groupsDivCon">
+                    <div id="groupsDiv">
+                        <div id="groupsTopBar">
+                            <div id="groupsCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div id="groupsTitle">Groups</div>
+                        </div>
+                        <div id="groupsList"></div>
+                        <div id="creatGroupDiv">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="enterPasswordDivCon">
+                    <div id="enterPasswordDiv">
+                        <div id="enterPasswordTopBar">
+                            <div id="enterPasswordCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div id="enterPasswordTitle">Enter Password</div>
+                        </div>
+                        <input type="password" id="enterGroupPasswordInput" placeholder="Group Password">
+                        <div id="errorMrssage"></div>
+                        <button id="enterGroupBtn">Enter Group</button>
+                    </div>
+                </div>
+                <div id="createGroupDivCon">
+                    <div id="createGroupDiv">
+                        <div id="createGroupTopBar">
+                            <div id="createGroupCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div id="createGroupTitle">Create Group</div>
+                        </div>
+                        <input type="text" id="groupNameInput" placeholder="Group Name">
+                        <textarea id="groupDescriptionInput" placeholder="Group Description"></textarea>
+                        <input type="password" id="groupPasswordInput" placeholder="Group Password" style="display: none;"> 
+                        <div id="groupRulesDiv">
+                            <div id="locked">
+                                <div id="lockedText">Allow this group to be locked and only be opened by password</div>
+                                <div id="lockedSwitch">
+                                    <input type="checkbox" id="lockedSwitchInput">
+                                </div>
+                            </div>
+                            <div id="adminOnly">
+                                <div id="adminOnlyText">Allow only admin to send messages</div>
+                                <div id="adminOnlySwitch">
+                                    <input type="checkbox" id="adminOnlySwitchInput">
+                                </div>
+                            </div>
+                        </div>
+                        <button id="createGroupBtn">Create Group</button>
+                    </div>
+                </div>
+                <div id="createGroupSuccessDivCon">
+                    <div id="createGroupSuccessDiv">
+                        <div id="createGroupSuccessTopBar">
+                            <div id="createGroupSuccessCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                        <div id="createGroupSuccessText">Group created successfully</div>
+                        <button id="createGroupSuccessBtn">OK</button>
+                    </div>
+                </div>
+
                <div id="canvasDivCon">
                 <div id="canvasDiv">
                     <div id="canvasTitle">Drawing</div>
