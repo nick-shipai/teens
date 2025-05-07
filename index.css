@@ -1,0 +1,604 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    background-color: white;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#topBar {
+    background: red;
+    height: 50px;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 1.5rem;
+}
+
+#iframeDiv {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    overflow: auto;
+}
+
+#iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+#leftFrameDiv {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 50%;
+    background-color: white;
+    overflow: auto;
+    border: none;
+     background-color: #eee;
+}
+#leftFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+#iframeBodyDiv {
+    display: flex;
+    height: 100%;
+}
+#appIcons {
+    display: flex;
+    margin-left: auto; /* Pushes icons to the right */
+    gap: 15px; /* Adds spacing between icons */
+}
+
+#appIcons div {
+    cursor: pointer;
+    padding: 10px;
+    font-size: 1.5rem;
+}
+@media (max-width: 730px) { 
+    /* Apply styles for most phones */
+    #leftFrameDiv {
+        display: none;
+    }
+}
+#appLoadingDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+#loadingIconAndNameAndLoderDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#logo {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+#loadingNameDiv {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 10px;
+    font-family: 'Comic Neue', Arial, sans-serif;
+}
+#loadingSpinnerDiv i {
+    font-size: 2rem;
+    color: #000;
+    margin-top: 50px;
+}
+#signUpAndLoginDiv {
+    display: none;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+#signUpDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
+#loginDiv {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
+#signUpName {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 10px;
+    font-family: 'Comic Neue', Arial, sans-serif;
+}
+#showcaseDivCon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    background-color: #f1f1f1;
+    overflow: auto;
+    border: none;
+    padding: 20px;
+}
+
+#showcaseName {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: 'Comic Neue', Arial, sans-serif;
+}
+
+#showcaseText {
+    font-size: 1.2rem;
+    color: #555;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+#showcaseImageDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#showcaseLogo {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+#SLDivSide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 50%;
+    background-color: #f1f1f1;
+    overflow: auto;
+}
+@media (max-width: 600px) {
+    #showcaseDivCon {
+        display: none;
+    }
+    #showcaseName {
+        font-size: 2rem;
+    }
+    #showcaseText {
+        font-size: 1rem;
+    }
+    #SLDivSide {
+        width: 100%;
+    }
+
+    
+}
+
+#signUpUsernameDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+#signUpUsernameDiv i {
+    font-size: 1.5rem;
+    color: red;
+    margin-right: 10px;
+
+}
+#signUpUsername {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 1.2rem;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+}
+#signUpEmailDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+#signUpEmailDiv i {
+    font-size: 1.5rem;
+    color: red;
+    margin-right: 10px;
+}
+#signUpEmail {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 1.2rem;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+}
+#signUpPasswordDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+#signUpPasswordDiv i {
+    font-size: 1.5rem;
+    color: red;
+    margin-right: 10px;
+}
+#signUpPassword {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 1.2rem;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+}
+.fa-solid fa-eye {
+    font-size: 1.5rem;
+    color: red;
+    margin-left: 20px;
+}
+#signUpButton {
+    width: 300px;
+    height: 50px;
+    background-color: red;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    border-bottom: 2px solid black;
+}
+#signUpButton:hover {
+    background-color: #ff4d4d;
+}
+#signUpButton:active {
+    background-color: #ff1a1a;
+}
+#signUpLoader {
+    animation: spin 0.6s linear infinite;
+    display: none;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+#signUpSwithchText {
+    font-size: 1.2rem;
+    color: #333;
+    margin-top: 20px;
+    text-align: center;
+}
+#signUpSwitchButton {
+    color: red;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+}
+#loginDiv {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
+
+#loginName {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 20px;
+    font-family: 'Comic Neue', Arial, sans-serif;
+}
+
+#loginEmailDiv, #loginPasswordDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#loginEmailDiv i, #loginPasswordDiv i {
+    font-size: 1.5rem;
+    color: red;
+    margin-right: 10px;
+}
+
+#loginPasswordDiv #showLoginPasswordIcon {
+    margin-left: auto;
+    cursor: pointer;
+    color: red;
+}
+
+#loginEmailDiv input, #loginPasswordDiv input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 1.2rem;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#loginButton {
+    width: 300px;
+    height: 50px;
+    background-color: red;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-bottom: 2px solid black;
+}
+
+#loginButton:hover {
+    background-color: #ff4d4d;
+}
+
+#loginButton:active {
+    background-color: #ff1a1a;
+}
+
+#loginLoder {
+    display: none;
+    animation: spin 0.6s linear infinite;
+}
+
+#loginButtonText {
+    display: inline-block;
+}
+
+#loginSwithchText {
+    font-size: 1.2rem;
+    color: #333;
+    margin-top: 20px;
+    text-align: center;
+}
+
+#loginSwitchButton {
+    color: red;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+}
+#appLogoNameDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: 'Comic Neue', Arial, sans-serif;
+    margin-bottom: 20px;
+}
+
+#appLogoNameDiv span {
+    display: inline-block;
+    animation: bounce 1.5s infinite;
+}
+
+#appLogoNameDiv span:nth-child(1) {
+    animation-delay: 0s;
+    color: red;
+}
+
+#appLogoNameDiv span:nth-child(2) {
+    animation-delay: 0.2s;
+    color: blue;
+}
+
+#appLogoNameDiv span:nth-child(3) {
+    animation-delay: 0.4s;
+    color: green;
+}
+
+#appLogoNameDiv span:nth-child(4) {
+    animation-delay: 0.6s;
+    color: orange;
+}
+
+#appLogoNameDiv span:nth-child(5) {
+    animation-delay: 0.8s;
+    color: purple;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+#set-upDiv {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    z-index: 10001;
+    padding: 20px;
+    gap: 20px;
+
+}
+
+#addProfilePicDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    background-color: #eee;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+}
+
+#addProfilePicDiv i {
+    font-size: 2rem;
+    color: #666;
+}
+
+#ageDiv {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+#ageDiv i {
+    font-size: 1.5rem;
+    color: red;
+}
+
+#ageInput {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: #333;
+    padding: 5px;
+}
+
+#genderDiv {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+#genderDiv div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    background-color: #fff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#genderDiv div.active {
+    background-color: red;
+    color: white;
+}
+
+#genderDiv div i {
+    font-size: 1.5rem;
+}
+
+#saveSetUp {
+    width: 100%;
+    padding: 10px;
+    background-color: red;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#saveSetUp:hover {
+    background-color: #ff4d4d;
+}
+
+#saveSetUp:active {
+    background-color: #ff1a1a;
+}
