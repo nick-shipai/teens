@@ -439,7 +439,7 @@ async function handleNovaResponse(messageData) {
         return;
     }
 
-    const token = "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"; // Your OpenRouter API key
+    const token = "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"; // Your OpenRouter API key
     const url = "https://openrouter.ai/api/v1/chat/completions";
 
     const headers = {
@@ -500,7 +500,7 @@ async function handleNovaResponse(messageData) {
             console.warn("Rate limit exceeded. Nova will reply with an unavailable message.");
             const unavailableMessage = "I'm not available for now. Please try again later.";
             const novaMessageRef = push(ref(database, `group-chat/${chatName}/message`));
-            const novaMessageData = { message: unavailableMessage, uid: "nova", time: serverTimestamp() };
+            const novaMessageData = { message: unavailableMessage, uid: "nova", time: serverTimestamp(), askerUid: messageData.uid };
             await set(novaMessageRef, novaMessageData);
             return;
         }
@@ -511,7 +511,7 @@ async function handleNovaResponse(messageData) {
             : "Sorry, I couldn't process your request.";
 
         const novaMessageRef = push(ref(database, `group-chat/${chatName}/message`));
-        const novaMessageData = { message: novaResponse, uid: "nova", time: serverTimestamp(), id: novaMessageRef.key };
+        const novaMessageData = { message: novaResponse, uid: "nova", time: serverTimestamp(), id: novaMessageRef.key, askerUid: messageData.uid };
         set(novaMessageRef, novaMessageData);
 
         const messageRef = ref(database, `group-chat/${chatName}/message/${messageData.id}`);
@@ -522,7 +522,7 @@ async function handleNovaResponse(messageData) {
             const imageUrl = await generateImage(novaResponse);
             if (imageUrl) {
                 const novaImageRef = push(ref(database, `group-chat/${chatName}/message`));
-                const novaImageData = { img: imageUrl, uid: "nova", time: serverTimestamp() };
+                const novaImageData = { img: imageUrl, uid: "nova", time: serverTimestamp(), askerUid: messageData.uid };
                 await set(novaImageRef, novaImageData);
             }
         }
@@ -1552,8 +1552,10 @@ async function displayMessage(messageData) {
             chatBubbleCon.style.textAlign = "center"; // Center align text
             chatBubbleCon.style.cursor = "pointer";
         } else if (messageData.message.toLowerCase().includes("nova")) {
+            if (messageData.askerUid && messageData.askerUid !== uid) {
+                return;
+            }
             handleNovaResponse(messageData);
-         
         } else if (messageData.replyingTo) {
                 const replyAndMessageDiv = document.createElement("div");
                 replyAndMessageDiv.classList.add("replyAndMessageDiv");
@@ -1928,17 +1930,21 @@ function sendMessage() {
     // Create a unique message ID
     const messageRef = push(ref(database, `group-chat/${chatName}/message`));
 
+    // Determine if the message contains "nova"
+    const containsNova = messageText.toLowerCase().includes("nova");
+
     // Message data
     const messageData = {
         message: messageText,
         id: messageRef.key,
         time: serverTimestamp(),
         uid: uid,
-        replyingTo: quoteReplyMessageId.textContent || null // Always include replyingTo, even if null
+        replyingTo: quoteReplyMessageId.textContent || null, // Always include replyingTo, even if null
+        askerUid: containsNova ? uid : null // Set askerUid if message contains "nova"
     };
     messageInput.value = ""; // Clear input after sending
     const audio = new Audio("audio/send.mp3");
-        audio.play();
+    audio.play();
 
     // Save message to database
     set(messageRef, messageData)
@@ -3335,34 +3341,87 @@ function acceptCallRequest() {
 acceptCallRequest();
 function checkNewMessage() {
     const privateChatRef = ref(database, `privateChat`);
+    const newMessageDiv = document.getElementById("newMessageDiv");
+
+    if (!newMessageDiv) {
+        console.error("Element with ID 'newMessageDiv' not found in the DOM.");
+        return;
+    }
+
+    if (!uid) {
+        console.error("UID is undefined. Ensure the user is authenticated.");
+        return;
+    }
+
     onValue(privateChatRef, (snapshot) => {
-        if (snapshot.exists()) {
-            const privateChats = snapshot.val();
-            const chatList = Object.keys(privateChats).filter((chatKey) => chatKey.includes(uid));
-
-            chatList.forEach((chatKey) => {
-                const messagesRef = ref(database, `privateChat/${chatKey}/messages`);
-                onValue(messagesRef, (messagesSnapshot) => {
-                    if (messagesSnapshot.exists()) {
-                        const messages = messagesSnapshot.val();
-                        const newMessageExists = Object.values(messages).some(
-                            (message) => message.uid !== uid && (!message.seen || message.seenBy !== uid)
-                        );
-
-                        const newMessageDiv = document.getElementById("newMessageDiv");
-                        if (newMessageExists) {
-                            newMessageDiv.style.display = "flex"; // Show new message indicator
-                        } else {
-                            newMessageDiv.style.display = "none"; // Hide new message indicator
-                        }
-                    }
-                });
-            });
-
+        if (!snapshot.exists()) {
+            newMessageDiv.style.display = "none";
+            return;
         }
+
+        const privateChats = snapshot.val();
+        const chatKeys = Object.keys(privateChats).filter((key) => key.includes(uid));
+
+        let newMessageFound = false;
+        let checksRemaining = chatKeys.length;
+
+        chatKeys.forEach((chatKey) => {
+            const messagesRef = ref(database, `privateChat/${chatKey}/messages`);
+            get(messagesRef).then((messagesSnapshot) => {
+                if (messagesSnapshot.exists()) {
+                    const messages = messagesSnapshot.val();
+                    const hasNew = Object.values(messages).some((msg) =>
+                        msg.uid !== uid && (!msg.seen || msg.seen === false)
+                    );
+
+                    if (hasNew) {
+                        newMessageFound = true;
+                    }
+                }
+
+                checksRemaining--;
+
+                if (checksRemaining === 0) {
+                    newMessageDiv.style.display = newMessageFound ? "flex" : "none";
+                }
+            }).catch((error) => {
+                console.error(`Error fetching messages for ${chatKey}:`, error);
+                checksRemaining--;
+                if (checksRemaining === 0 && !newMessageFound) {
+                    newMessageDiv.style.display = "none";
+                }
+            });
+        });
+
+        if (chatKeys.length === 0) {
+            newMessageDiv.style.display = "none";
+        }
+    }, (error) => {
+        console.error("Error fetching private chats:", error);
     });
 }
 checkNewMessage();
+
+// Ensure messages are marked as seen when the chat is opened
+function markMessagesAsSeen(chatKey) {
+    const messagesRef = ref(database, `privateChat/${chatKey}/messages`);
+    get(messagesRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const messages = snapshot.val();
+            Object.keys(messages).forEach((messageId) => {
+                const message = messages[messageId];
+                if (message.uid !== uid && (!message.seen || (message.seenBy && !message.seenBy.includes(uid)))) {
+                    const messageRef = ref(database, `privateChat/${chatKey}/messages/${messageId}`);
+                    update(messageRef, {
+                        seen: true,
+                        seenBy: message.seenBy ? [...message.seenBy, uid] : [uid],
+                        timeSeen: serverTimestamp()
+                    });
+                }
+            });
+        }
+    });
+}
 // Wallet screen functionality
 const walletScreenDivCon = document.getElementById("walletScreenDivCon");
 const walletScreenCloseBtn = document.getElementById("walletScreenCloseBtn");
@@ -4512,4 +4571,24 @@ profileNameStyleMenuItems.forEach((menuItem) => {
             styleDiv.style.display = "flex";
         }
     });
+});
+const menuDiv = document.getElementById("menuDiv");
+const menuSlideDiv = document.getElementById("menuSlideDiv");
+const closeMenuDiv = document.getElementById("closeMenuDiv");
+
+menuDiv.addEventListener("click", () => {
+    menuSlideDiv.style.display = "flex";
+    menuSlideDiv.classList.add("menuSlideInAnimation");
+});
+
+closeMenuDiv.addEventListener("click", () => {
+    menuSlideDiv.classList.remove("menuSlideInAnimation");
+    menuSlideDiv.style.display = "none";
+});
+
+document.addEventListener("click", (event) => {
+    if (!menuSlideDiv.contains(event.target) && !menuDiv.contains(event.target)) {
+        menuSlideDiv.classList.remove("menuSlideInAnimation");
+        menuSlideDiv.style.display = "none";
+    }
 });

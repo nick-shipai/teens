@@ -2518,12 +2518,13 @@ a, div, button, span i {
     display: none;
     justify-content: center;
     align-items: center;
-    height: 1px;
-    width: 1px;
+    height: 7px;
+    width: 7px;
     border-radius: 50%;
     background-color: blue;
     color: white;
     cursor: pointer;
+    z-index: 1000;
 }
 #walletScreenDivCon {
     position: fixed;
@@ -5322,3 +5323,94 @@ a, div, button, span i {
     50% { transform: scale(1.2); opacity: 1; }
     100% { transform: scale(1); opacity: 0.7; }
   }
+#menuSlideDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: 100%;
+    background-color: #f9f9f9;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    padding: 10px;
+    overflow-y: auto;
+}
+#closeMenuDiv {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+}
+#closeMenuDiv i {
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+#menuSlide {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#menuSlide > div, #settingsTab  {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#menuSlide > div:hover {
+    background-color: #e1e1e1;
+    transform: scale(1.05);
+}
+
+#menuSlide > div i {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+#menuSlide > div span {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #555;
+}
+
+#menuSlide > div.active {
+    background-color: #dc3545;
+    color: white;
+}
+
+#menuSlide > div.active i,
+#menuSlide > div.active span {
+    color: white;
+}
+
+@media (max-width: 600px) {
+    #menuSlideDiv {
+        width: 300px;
+    }
+
+    #menuSlide > div i {
+        font-size: 1.2rem;
+    }
+
+    #menuSlide > div span {
+        font-size: 0.9rem;
+    }
+}
+.menuSlideInAnimation {
+    animation: slideIn 0.3s forwards;
+}
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}

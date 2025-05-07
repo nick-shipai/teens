@@ -47,51 +47,8 @@ const showSignUpPasswordIcon = document.getElementById("showPasswordIcon");
 const loginPasswordInput = document.getElementById("loginPassword");
 const showLoginPasswordIcon = document.getElementById("showLoginPasswordIcon");
 
-// Track user state
-let inactivityTimer;
-const inactivityLimit = 60000; // 1 minute
-let currentState = "online";
 
-const startInactivityTracking = (userStatusDatabaseRef) => {
-    const markAway = () => {
-        update(userStatusDatabaseRef, {
-            state: 'away',
-            last_changed: new Date().toISOString()
-        });
-        currentState = "away";
-    };
 
-    const markOnline = () => {
-        update(userStatusDatabaseRef, {
-            state: 'online',
-            last_changed: new Date().toISOString()
-        });
-        currentState = "online";
-    };
-
-    const resetInactivityTimer = () => {
-        clearTimeout(inactivityTimer);
-        if (currentState !== "online") {
-            markOnline();
-        } else {
-            // Even if currentState is online, update just in case backend is not in sync
-            update(userStatusDatabaseRef, {
-                state: 'online',
-                last_changed: new Date().toISOString()
-            });
-        }
-        inactivityTimer = setTimeout(markAway, inactivityLimit);
-    };
-
-    // Attach listeners once
-    ['mousemove', 'keydown', 'mousedown', 'touchstart'].forEach(event => {
-        document.addEventListener(event, resetInactivityTimer);
-    });
-
-    resetInactivityTimer(); // Start timer immediately
-};
-
-// Auth listener
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         uid = user.uid;
@@ -104,36 +61,8 @@ onAuthStateChanged(auth, async (user) => {
 
         setupDiv.style.display = (!userData["set-up"]) ? "flex" : "none";
 
-        const userStatusDatabaseRef = ref(db, `users/${uid}/status`);
-        const isConnectedRef = ref(db, '.info/connected');
-
-        // Monitor connection state
-        onValue(isConnectedRef, (snapshot) => {
-            if (snapshot.val() === true) {
-                // User is connected, set to online
-                set(userStatusDatabaseRef, {
-                    state: 'online',
-                    last_changed: new Date().toISOString()
-                });
-
-                // Set user status to offline when they disconnect
-                onDisconnect(userStatusDatabaseRef).set({
-                    state: 'offline',
-                    last_changed: new Date().toISOString()
-                });
-
-            } else {
-                // If the user is disconnected, set to offline
-                set(userStatusDatabaseRef, {
-                    state: 'offline',
-                    last_changed: new Date().toISOString()
-                });
-            }
-        });
-
-        // ✅ Start tracking user activity (mouse, key events)
-        startInactivityTracking(userStatusDatabaseRef);
-
+        // ✅ Only initialize Ably once UID is known
+        initAbly(uid);
     } else {
         signUpAndLoginDiv.style.display = "flex";
     }
@@ -305,5 +234,57 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+function setupFirebasePresence(uid) {
+    const userStatusDatabaseRef = ref(db, `users/${uid}/status`);
+    const connectedRef = ref(db, ".info/connected");
 
- 
+    onValue(connectedRef, (snap) => {
+        if (snap.val() === true) {
+            // Connected: set online
+            const status = {
+                state: "online",
+                last_changed: new Date().toISOString()
+            };
+
+            // Setup onDisconnect (runs when connection is lost)
+            onDisconnect(userStatusDatabaseRef).set({
+                state: "offline",
+                last_changed: new Date().toISOString()
+            });
+
+            // Set online status
+            set(userStatusDatabaseRef, status);
+        }
+    });
+}
+
+function initAbly(uid) {
+    const username = "user_" + Math.floor(Math.random() * 10000);
+    const ably = new Ably.Realtime({
+        key: '_LiHmA.YRn10A:Qc9CKILFTpR3EQZ3WAU9l7XE95J0-r2ykwilI0dGc8g',
+        clientId: uid
+    });
+
+    const channel = ably.channels.get("presence-demo");
+
+    ably.connection.on('connected', () => {
+        console.log('Connected to Ably');
+
+        // Enter Ably presence
+        channel.presence.enter({ username }, (err) => {
+            if (err) {
+                console.error('Error entering presence:', err);
+            } else {
+                console.log(username + ' entered presence');
+            }
+        });
+
+        // Set up Firebase presence detection
+        setupFirebasePresence(uid);
+    });
+
+    // Optional: handle manual disconnect
+    window.addEventListener('beforeunload', () => {
+        channel.presence.leave();
+    });
+}
