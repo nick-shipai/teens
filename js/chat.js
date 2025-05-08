@@ -1157,11 +1157,80 @@ async function displayMessage(messageData) {
     const banUserOption = document.createElement("div");
     banUserOption.classList.add("menuOption");
     banUserOption.innerHTML = '<i class="fas fa-ban"></i> Ban User';
+    banUserOption.id = "banUserOption";
+
+    if(userData.accountStatus === "banned") {
+        banUserOption.innerHTML = '<i class="fas fa-ban"></i> Unban User';
+    }
+
+    banUserOption.addEventListener("click", () => {
+        const userRef = ref(database, `users/${messageData.uid}`);
+        get(userRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                if (userData.accountStatus === "banned") {
+                    // Unban the user
+                    update(userRef, { accountStatus: null })
+                        .then(() => {
+                            console.log(`${name} has been unbanned successfully.`);
+                            banUserOption.innerHTML = '<i class="fas fa-ban"></i> Ban User';
+                        })
+                        .catch((error) => {
+                            console.error("Error unbanning user:", error);
+                            alert("Failed to unban the user. Please try again.");
+                        });
+                } else {
+                    // Ban the user
+                    update(userRef, { accountStatus: "banned" })
+                        .then(() => {
+                            console.log(`${name} has been banned successfully.`);
+                             banUserOption.innerHTML = '<i class="fas fa-ban"></i> Unban User';
+                        })
+                        .catch((error) => {
+                            console.error("Error banning user:", error);
+                            alert("Failed to ban the user. Please try again.");
+                        });
+                }
+            } else {
+                console.warn("User data not found.");
+            }
+        }).catch((error) => {
+            console.error("Error fetching user data:", error);
+        });
+    });
+
+    fetchUserData(uid).then((currentUserData) => {
+        const currentUserRank = currentUserData.account || "user";
+        const messageUserRank = userData.account || "user";
+
+        const rankHierarchy = [
+            "guardian", "sentinel", "overseer", "enforcer", "inspector", 
+            "moderator", "admin", "co-owner", "owner", "emperor"
+        ];
+
+        const currentUserRankIndex = rankHierarchy.indexOf(currentUserRank.toLowerCase());
+        const messageUserRankIndex = rankHierarchy.indexOf(messageUserRank.toLowerCase());
+
+        if (currentUserRankIndex > -1 && messageUserRankIndex > -1 && currentUserRankIndex <= messageUserRankIndex) {
+            banUserOption.style.display = "none";
+        } else if (currentUserRankIndex > -1) {
+            banUserOption.style.display = "block";
+        } else {
+            banUserOption.style.display = "none";
+        }
+    });
+
+
 
     const editOption = document.createElement("div");
     editOption.classList.add("menuOption");
     editOption.innerHTML = '<i class="fas fa-edit"></i> Edit';
+    editOption.style.display = "none"; // Initially hidden
 
+    if(messageData.uid === uid) {
+        editOption.style.display = "block"; // Show edit option for the user
+    }
+    
     // Append menu options
     menuOptions.appendChild(removeOption);
     menuOptions.appendChild(reportOption);
@@ -1400,7 +1469,7 @@ async function displayMessage(messageData) {
         moderateChat(messageData, rank);
         
         // Check for naughty words
-        const naughtyWords = ["sex", "badword2", "badword3"]; // Replace with actual words
+        const naughtyWords = ["sex", "asshole", "fuck", "bitch", "whatsapp", "pussy", "cock", "snap", "snapchat", "facebook", "zangi", "sn@p", "nudes", "nude", "cum", "motherfucker", "shit", "ass", "boobs", "masturbation", "w hatsapp", "pimpies", "shege", "god punish you", "your papa", "fucking", "instagram", "ig", "fb", "wa", "prick", "penis", "vigina", "breast", "s nap"]; // Replace with actual words
         const containsNaughtyWords = naughtyWords.some((word) =>
             messageData.message.toLowerCase().includes(word)
         );
@@ -1474,8 +1543,8 @@ async function displayMessage(messageData) {
         } else {
             // If alreadyMuted is true, just show the message as spam
             bubbleText.textContent = "This message has been flagged as inappropriate.";
-            chatBubble.style.color = "red";
-            chatBubble.style.fontWeight = "bold";
+            bubbleText.style.color = "red";
+            bubbleText.style.fontWeight = "bold";
         }
     }
     } else {

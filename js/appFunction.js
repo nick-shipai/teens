@@ -59,6 +59,20 @@ onAuthStateChanged(auth, async (user) => {
         const userSnapshot = await get(userRef);
         const userData = userSnapshot.val();
 
+        onValue(ref(db, `users/${user.uid}/accountStatus`), (snapshot) => {
+            const accountStatus = snapshot.val();
+            if (accountStatus === "banned") {
+            bannedDiv.style.display = "flex";
+            signUpAndLoginDiv.style.display = "none";
+            setupDiv.style.display = "none";
+            iframe.style.display = "none";
+            return;
+            } else {
+            bannedDiv.style.display = "none";
+            iframe.style.display = "block";
+            }
+        });
+
         setupDiv.style.display = (!userData["set-up"]) ? "flex" : "none";
 
         // ✅ Only initialize Ably once UID is known
@@ -288,3 +302,5 @@ function initAbly(uid) {
         channel.presence.leave();
     });
 }
+const bannedDiv = document.getElementById("bannedDiv");
+
