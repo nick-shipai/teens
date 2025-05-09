@@ -1007,6 +1007,26 @@ async function displayMessage(messageData) {
         "user": { img: "img/user.png", color: "red" }
     };
     
+
+    function sendFriendRequest(friendUid) {
+        const friendRequestRef = ref(database, `friend-requests/${friendUid}/${uid}`);
+        const friendData = {
+            sender: uid,
+            timestamp: serverTimestamp(),
+        };
+
+        set(friendRequestRef, friendData)
+            .then(() => {
+                console.log("Friend request sent successfully to UID: " + friendUid);
+                actionPopUpDiv.style.display = "none";
+                alert("Friend request sent successfully!");
+            })
+            .catch((error) => {
+                console.error("Error sending friend request:", error);
+                alert("Failed to send friend request. Please try again.");
+            });
+    }
+    
     messagePicDiv.addEventListener("click", () => {
         const profilePopUpDiv = document.getElementById("profilePopUpDiv");
         profilePopUpDiv.style.display = "flex";
@@ -1014,6 +1034,9 @@ async function displayMessage(messageData) {
         // Store the messageData.uid in a variable
         const clickedUserId = messageData.uid;
 
+        addFriendBtn.addEventListener("click", () => {
+            sendFriendRequest(clickedUserId);
+        });
         // Populate profile popup with user data
         document.getElementById("profilePic").src = profilePic;
         document.getElementById("profileName").textContent = name;
@@ -1024,7 +1047,7 @@ async function displayMessage(messageData) {
         if (ranks[rank.toLowerCase()]) {
             document.getElementById("profileRank").style.backgroundColor = ranks[rank.toLowerCase()].color;
         }
-
+       
         // Add click event to #chat to redirect to messages.html
         const chatButton = document.getElementById("chat");
         const privateChatDivCon = document.getElementById("privateChatDivCon");
@@ -1907,6 +1930,7 @@ async function displayMessage(messageData) {
         return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
     }
 
+    
     // Append elements
     chatBubbleConDiv.appendChild(nameDiv);
     nameDiv.appendChild(rankDiv);
@@ -2154,12 +2178,22 @@ function checkForMessages() {
 // Listen for new messages in real-time
 onChildAdded(messagesRef, (snapshot) => {
     const messageData = snapshot.val();
-    if (messageData.uid === uid) {
-        
-    } else {
+    const currentTime = new Date();
+    const messageTime = new Date(messageData.time);
+
+    if (
+        messageData.uid !== uid &&
+        messageTime.getHours() === currentTime.getHours() &&
+        messageTime.getMinutes() === currentTime.getMinutes()
+    ) {
+        console.log("The message time corresponds with the current time and is not from your UID.");
         const audio = new Audio("audio/recieve.mp3");
         audio.play();
+    } else {
+        console.log("The message time does not correspond with the current time or is from your UID.");
     }
+       
+    
     displayMessage(messageData);
     noMessagesPlaceholder.style.display = "none"; // Hide placeholder when a message is added
 
@@ -4811,3 +4845,32 @@ createGroupSuccessCloseBtn.addEventListener("click", () => {
     const createGroupSuccessDivCon = document.getElementById("createGroupSuccessDivCon");
     createGroupSuccessDivCon.style.display = "none";
 });
+const action = document.getElementById("action");
+const actionPopUpDiv = document.getElementById("actionPopUpDiv");
+const actionPopUpCloseBtn = document.getElementById("actionPopUpCloseBtn");
+const addFriendBtn = document.getElementById("addFriendBtn");
+action.addEventListener("click", () => {
+    actionPopUpDiv.style.display = "flex";
+    profilePopUpDiv.style.display = "none"; // Hide profile pop-up if it's open
+});
+actionPopUpCloseBtn.addEventListener("click", () => {
+    actionPopUpDiv.style.display = "none";
+});
+
+function sendFriendRequest(friendUid) {
+    const friendRequestRef = ref(database, `friend-requests/${uid}/${friendUid}`);
+    const friendData = {
+        sender: uid,
+        timestamp: serverTimestamp(),
+    };
+
+    set(friendRequestRef, friendData)
+        .then(() => {
+            console.log("Friend request sent successfully!" + friendUid);
+            actionPopUpDiv.style.display = "none";
+        })
+        .catch((error) => {
+            console.error("Error sending friend request:", error);
+            alert("Failed to send friend request. Please try again.");
+        });
+}
