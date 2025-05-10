@@ -1009,6 +1009,9 @@ async function displayMessage(messageData) {
     
 
     function sendFriendRequest(friendUid) {
+        if (friendUid === uid) {
+            return; // Prevent sending a friend request to oneself
+        }
         const friendRequestRef = ref(database, `friend-requests/${friendUid}/${uid}`);
         const friendData = {
             sender: uid,
@@ -1034,9 +1037,16 @@ async function displayMessage(messageData) {
         // Store the messageData.uid in a variable
         const clickedUserId = messageData.uid;
 
-        addFriendBtn.addEventListener("click", () => {
-            sendFriendRequest(clickedUserId);
-        });
+        
+            addFriendBtn.addEventListener("click", () => {
+            
+                sendFriendRequest(clickedUserId);
+            });
+        
+
+        
+        checkIfFriends(clickedUserId);
+        
         // Populate profile popup with user data
         document.getElementById("profilePic").src = profilePic;
         document.getElementById("profileName").textContent = name;
@@ -2189,9 +2199,7 @@ onChildAdded(messagesRef, (snapshot) => {
         console.log("The message time corresponds with the current time and is not from your UID.");
         const audio = new Audio("audio/recieve.mp3");
         audio.play();
-    } else {
-        console.log("The message time does not correspond with the current time or is from your UID.");
-    }
+    } 
        
     
     displayMessage(messageData);
@@ -4857,20 +4865,393 @@ actionPopUpCloseBtn.addEventListener("click", () => {
     actionPopUpDiv.style.display = "none";
 });
 
-function sendFriendRequest(friendUid) {
-    const friendRequestRef = ref(database, `friend-requests/${uid}/${friendUid}`);
-    const friendData = {
-        sender: uid,
-        timestamp: serverTimestamp(),
-    };
 
-    set(friendRequestRef, friendData)
+const friendRequestDiv = document.getElementById("friendRequestDiv");
+const friendDivCon = document.getElementById("friendDivCon");
+const friendCloseBtn = document.getElementById("friendCloseBtn");
+
+friendRequestDiv.addEventListener("click", () => {
+    fetchFriendRequests(); // Fetch friend requests when opening the friend request tab
+});
+friendCloseBtn.addEventListener("click", () => {
+    friendDivCon.style.display = "none";
+});
+
+function fetchFriendRequests() {
+    friendDivCon.style.display = "flex";
+    const friendRequestsRef = ref(database, `friend-requests/${uid}`);
+    const friendList = document.getElementById("friendList");
+    friendList.innerHTML = ""; // Clear existing friend requests
+
+    get(friendRequestsRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const friendRequests = snapshot.val();
+
+            Object.keys(friendRequests).forEach((requestUid) => {
+                const requestData = friendRequests[requestUid];
+                if (requestData.sender) {
+                    const senderUid = requestData.sender;
+
+                    // Fetch sender's profile data
+                    const senderRef = ref(database, `users/${senderUid}`);
+                    get(senderRef).then((senderSnapshot) => {
+                        if (senderSnapshot.exists()) {
+                            const senderData = senderSnapshot.val();
+                            const { profilePic, name } = senderData;
+
+                            // Create friend request item
+                            const friendRequestItem = document.createElement("div");
+                            friendRequestItem.className = "friendRequestItem";
+
+                            const friendProfilePicDiv = document.createElement("div");
+                            friendProfilePicDiv.className = "friendProfilePicDiv";
+
+                            const friendProfilePic = document.createElement("img");
+                            friendProfilePic.src = profilePic || "img/profile.png"; // Default profile picture
+                            friendProfilePic.className = "friendProfilePic";
+
+                            const friendName = document.createElement("div");
+                            friendName.className = "friendName";
+                            friendName.textContent = name || "Unknown User";
+
+                            const friendActions = document.createElement("div");
+                            friendActions.className = "friendActions";
+
+                            const acceptBtn = document.createElement("button");
+                            acceptBtn.className = "acceptBtn";
+                            acceptBtn.textContent = "Accept";
+                            acceptBtn.addEventListener("click", () => {
+                                acceptFriendRequest(senderUid);
+                            });
+
+                            const declineBtn = document.createElement("button");
+                            declineBtn.className = "declineBtn";
+                            declineBtn.textContent = "Decline";
+                            declineBtn.addEventListener("click", () => {
+                                declineFriendRequest(senderUid);
+                            });
+
+                            friendActions.appendChild(acceptBtn);
+                            friendActions.appendChild(declineBtn);
+                            friendProfilePicDiv.appendChild(friendProfilePic);
+                            friendRequestItem.appendChild(friendProfilePicDiv);
+                            friendRequestItem.appendChild(friendName);
+                            friendRequestItem.appendChild(friendActions);
+
+                            friendList.appendChild(friendRequestItem);
+                        } else {
+                            console.warn(`User data not found for UID: ${senderUid}`);
+                        }
+                    }).catch((error) => {
+                        console.error(`Error fetching sender data for UID: ${senderUid}`, error);
+                    });
+                }
+            });
+        } else {
+            const noRequestsDiv = document.createElement("div");
+            noRequestsDiv.className = "noRequests";
+            noRequestsDiv.textContent = "No friend requests.";
+            friendList.appendChild(noRequestsDiv);
+        }
+    }).catch((error) => {
+        console.error("Error fetching friend requests:", error);
+    });
+}
+
+function acceptFriendRequest(senderUid) {
+    const friendRequestsRef = ref(database, `friend-requests/${uid}/${senderUid}`);
+    const friendsRef = ref(database, `friends/${uid}/${senderUid}`);
+    const senderFriendsRef = ref(database, `friends/${senderUid}/${uid}`);
+
+    // Add to friends list and remove from friend requests
+    set(friendsRef, { uid: senderUid, timestamp: serverTimestamp() })
+        .then(() => set(senderFriendsRef, { uid: uid, timestamp: serverTimestamp() }))
+        .then(() => remove(friendRequestsRef))
         .then(() => {
-            console.log("Friend request sent successfully!" + friendUid);
-            actionPopUpDiv.style.display = "none";
+            alert("Friend request accepted!");
+            fetchFriendRequests(); // Refresh the friend requests list
+            sendNotificattion(uid, "Friend request accepted", "You are now friends!", "friendRequestAccepted", senderUid);
         })
         .catch((error) => {
-            console.error("Error sending friend request:", error);
-            alert("Failed to send friend request. Please try again.");
+            console.error("Error accepting friend request:", error);
         });
+}
+
+function declineFriendRequest(senderUid) {
+    const friendRequestsRef = ref(database, `friend-requests/${uid}/${senderUid}`);
+
+    // Remove from friend requests
+    remove(friendRequestsRef)
+        .then(() => {
+            alert("Friend request declined!");
+            fetchFriendRequests(); // Refresh the friend requests list
+            sendNotificattion(uid, "Friend request declined", "Delined your request.", "friendRequestDeclined", senderUid);
+        })
+        .catch((error) => {
+            console.error("Error declining friend request:", error);
+        });
+}
+const newFriendRequestDiv = document.getElementById("newFriendRequestDiv");
+function checkFriendRequest() {
+    const friendRequestsRef = ref(database, `friend-requests/${uid}`);
+    onValue(friendRequestsRef, (snapshot) => {
+        if (snapshot.exists()) {
+            const friendRequests = snapshot.val();
+            const currentTime = new Date();
+
+            Object.keys(friendRequests).forEach((requestUid) => {
+                const requestData = friendRequests[requestUid];
+                if (requestData.sender && requestData.timestamp) {
+                    const requestTime = new Date(requestData.timestamp);
+
+                    if (
+                        requestTime.getHours() === currentTime.getHours() &&
+                        requestTime.getMinutes() === currentTime.getMinutes()
+                    ) {
+                        console.log("Friend request received at the current time.");
+                        const audio = new Audio("audio/friend.mp3");
+                        audio.play();
+                    }
+
+                    console.log(`Friend request received from UID: ${requestData.sender}`);
+                    // Handle the friend request (e.g., display it in the UI)
+                }
+            });
+
+            newFriendRequestDiv.style.display = "flex"; // Show the new friend request div if there are requests
+        } else {
+            console.log("No friend requests found.");
+            newFriendRequestDiv.style.display = "none"; // Hide the new friend request div if there are no requests
+        }
+    }, (error) => {
+        console.error("Error checking friend requests:", error);
+    });
+}
+async function checkIfFriends(friendUid) {
+    const friendsRef = ref(database, `friends/${uid}/${friendUid}`);
+    try {
+        const snapshot = await get(friendsRef);
+        if (snapshot.exists()) {
+            console.log("Already friends with this user.");
+            alert("You are already friends with this user.");
+            if (addFriendBtn) {
+                addFriendBtn.style.display = "none"; // Hide the button if they are friends
+            }
+
+            const removeFriend = document.getElementById("removeFriend");
+            if (removeFriend) {
+                removeFriend.style.display = "flex"; // Show the remove friend button
+                // Add click event to remove friend
+                removeFriend.addEventListener("click", async () => {
+                    try {
+                        await remove(friendsRef);
+                        const senderFriendsRef = ref(database, `friends/${friendUid}/${uid}`);
+                        await remove(senderFriendsRef);
+                        alert("Friend removed successfully.");
+                        removeFriend.style.display = "none"; // Hide the remove friend button
+                        if (addFriendBtn) {
+                            addFriendBtn.style.display = "flex"; // Show the add friend button again
+                        }
+                    } catch (error) {
+                        console.error("Error removing friend:", error);
+                    }
+                });
+            }
+        } else {
+            addFriendBtn.style.display = "flex"; // Show the button if they are not friends
+            removeFriend.style.display = "none"; // Hide the remove friend button
+            console.log("Not friends with this user.");
+        }
+    } catch (error) {
+        console.error("Error checking friendship:", error);
+    }
+}
+checkFriendRequest(); // Call the function to check for friend requests
+const notificationDiv = document.getElementById("notificationDiv");
+const notificationScreenDivCon = document.getElementById("notificationScreenDivCon");
+const notificationScreenCloseBtn = document.getElementById("notificationScreenCloseBtn");
+notificationDiv.addEventListener("click", () => {
+    fetchNotifications(); // Fetch notifications when opening the notification tab
+});
+notificationScreenCloseBtn.addEventListener("click", () => {
+    notificationScreenDivCon.style.display = "none";
+});
+function fetchNotifications() {
+    notificationScreenDivCon.style.display = "flex";
+    const notificationRef = ref(database, `notification/${uid}`);
+    const notificationListDiv = document.getElementById("notificationList");
+    notificationListDiv.innerHTML = ""; // Clear existing notifications
+
+    // Update all notifications to read: true
+    get(notificationRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const notifications = snapshot.val();
+
+            // Update notifications to mark them as read
+            Object.keys(notifications).forEach((notUid) => {
+                const notificationItemRef = ref(database, `notification/${uid}/${notUid}`);
+                update(notificationItemRef, { read: true }).catch((error) => {
+                    console.error(`Error updating notification ${notUid} to read: true`, error);
+                });
+            });
+
+            // Sort notifications by timestamp in descending order
+            const sortedNotifications = Object.entries(notifications).sort(([, a], [, b]) => {
+                return (b.timestamp || 0) - (a.timestamp || 0);
+            });
+
+            sortedNotifications.forEach(([notUid, notData]) => {
+                if (!notData) {
+                    console.warn(`Notification data is undefined for UID: ${notUid}`);
+                    return;
+                }
+
+                const notificationItem = document.createElement("div");
+                notificationItem.className = "notificationItem";
+
+                const senderRef = ref(database, `users/${notData.sender}`);
+                get(senderRef).then((senderSnapshot) => {
+                    if (senderSnapshot.exists()) {
+                        const senderData = senderSnapshot.val();
+                        const { profilePic, name } = senderData;
+
+                        const notificationProfilePicDiv = document.createElement("div");
+                        notificationProfilePicDiv.className = "notificationProfilePicDiv";
+
+                        const notificationProfilePic = document.createElement("img");
+                        notificationProfilePic.className = "notificationProfilePic";
+                        notificationProfilePic.src = profilePic || "img/profile.png"; // Default profile picture
+
+                        const senderNameTitleAndBodyDiv = document.createElement("div");
+                        senderNameTitleAndBodyDiv.className = "senderNameTitleAndBodyDiv";
+
+                        const notificationTitle = document.createElement("div");
+                        notificationTitle.className = "notificationTitle";
+                        notificationTitle.textContent = notData.title && notData.title.length > 30 
+                            ? notData.title.substring(0, 28) + "..." + notData.title.slice(-2) 
+                            : notData.title || "Notification Title";
+
+                        const notificationBody = document.createElement("div");
+                        notificationBody.className = "notificationBody";
+                        notificationBody.textContent = notData.body && notData.body.length > 50 
+                            ? notData.body.substring(0, 48) + "..." + notData.body.slice(-2) 
+                            : notData.body || "Notification Body";
+
+                        const notificationSenderName = document.createElement("div");
+                        notificationSenderName.className = "notificationSenderName";
+                        notificationSenderName.textContent = name || "Unknown User";
+
+                        const notificationTime = document.createElement("div");
+                        notificationTime.className = "notificationTime";
+                        const timestampDate = notData.timestamp ? new Date(notData.timestamp) : null;
+                        notificationTime.textContent = timestampDate ? timestampDate.toLocaleString() : "Unknown Time"; // Format the timestamp
+
+                        notificationProfilePicDiv.appendChild(notificationProfilePic);
+                        notificationItem.appendChild(notificationProfilePicDiv);
+                        senderNameTitleAndBodyDiv.appendChild(notificationSenderName);
+                        senderNameTitleAndBodyDiv.appendChild(notificationTitle);
+                        senderNameTitleAndBodyDiv.appendChild(notificationBody);
+                        notificationItem.appendChild(senderNameTitleAndBodyDiv);
+                        notificationItem.appendChild(notificationTime);
+                        notificationListDiv.appendChild(notificationItem);
+
+                        console.log(`Notification received: ${notData.title} - ${notData.body}`);
+                    } else {
+                        console.warn(`Sender data not found for UID: ${notData.sender}`);
+                    }
+                }).catch((error) => {
+                    console.error(`Error fetching sender data for UID: ${notData.sender}`, error);
+                });
+            });
+        } else {
+            const noNotificationsDiv = document.createElement("div");
+            noNotificationsDiv.className = "noNotifications";
+            noNotificationsDiv.textContent = "No notifications.";
+            notificationListDiv.appendChild(noNotificationsDiv);
+        }
+    }).catch((error) => {
+        console.error("Error fetching notifications:", error);
+    });
+}
+const newNotificationDiv = document.getElementById("newNotificationDiv");
+function checkNotification() {
+    if (!uid) {
+        console.error("UID is undefined. Ensure the user is authenticated.");
+        return;
+    }
+
+    if (!newNotificationDiv) {
+        console.error("Element with ID 'newNotificationDiv' not found in the DOM.");
+        return;
+    }
+
+    const notificationRef = ref(database, `notification/${uid}`);
+    onValue(notificationRef, (snapshot) => {
+        if (snapshot.exists()) {
+            const notifications = snapshot.val();
+            const currentTime = new Date();
+
+            Object.keys(notifications).forEach((notUid) => {
+                const notData = notifications[notUid];
+                if (notData.timestamp) {
+                    const notificationTime = new Date(notData.timestamp);
+
+                    if (
+                        notificationTime.getHours() === currentTime.getHours() &&
+                        notificationTime.getMinutes() === currentTime.getMinutes()
+                    ) {
+                        newNotificationDiv.style.display = "flex"; // Show the new notification div if there are notifications
+                        console.log("Notification received at the current time.");
+                        const audio = new Audio("audio/not.mp3");
+                        audio.play();
+                    } else if (notData.read === false) {
+                        newNotificationDiv.style.display = "block"; // Hide the new notification div if the notification is read
+                    } else {
+                        newNotificationDiv.style.display = "none"; // Hide the new notification div if there are no notifications
+                    }
+
+                    console.log(`Notification received: ${notData.title} - ${notData.body}`);
+                }
+            });
+        } else {
+            newNotificationDiv.style.display = "none"; // Hide the new notification div if there are no notifications
+        }
+    });
+}
+checkNotification(); // Call the function to check for notifications
+function sendNotificattion(uid, title, body, notType, friendUid) {
+    const notificationRef = ref(database, `notification/${friendUid}`);
+    const friendRequestAcceptedData = {
+        title: title,
+        body: body,
+        timestamp: serverTimestamp(),
+        type: notType,
+        read: false,
+        sender: uid,
+    };
+    const friendRequestDeclinedData = {
+        title: title,
+        body: body,
+        timestamp: serverTimestamp(),
+        type: notType,
+        read: false,
+        sender: uid,
+    };
+    if(notType === "friendRequestAccepted") {
+        push(notificationRef, friendRequestAcceptedData)
+        .then(() => {
+            console.log("Notification sent successfully!");
+        })
+        .catch((error) => {
+            console.error("Error sending notification:", error);
+        });
+    } else if (notType === "friendRequestDeclined") {
+        push(notificationRef, friendRequestDeclinedData)
+        .then(() => {
+            console.log("Notification sent successfully!");
+        })
+        .catch((error) => {
+            console.error("Error sending notification:", error);
+        });
+    }
 }
