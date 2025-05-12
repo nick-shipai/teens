@@ -684,9 +684,9 @@ async function displayMessage(messageData) {
         // Listen for changes in like status for the current user
         onValue(likeRef, (snapshot) => {
             if (snapshot.exists()) {
-            likeButton.style.color = "red"; // User already liked
+                likeButton.style.color = "red"; // User already liked
             } else {
-            likeButton.style.color = "black"; // User has not liked
+                likeButton.style.color = "black"; // User has not liked
             }
         });
 
@@ -699,18 +699,29 @@ async function displayMessage(messageData) {
         // Like button event listener
         likeButton.addEventListener("click", () => {
             get(likeRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                // Unlike
-                remove(likeRef);
-                likeButton.style.color = "black";
-            } else {
-                // Like
-                set(likeRef, { uid: currentUserId });
-                likeButton.style.color = "red";
-            }
-
-            
+                if (snapshot.exists()) {
+                    // Unlike
+                    remove(likeRef);
+                    likeButton.style.color = "black";
+                } else {
+                    // Like
+                    set(likeRef, { uid: currentUserId });
+                    likeButton.style.color = "red";
+                }
             });
+        });
+
+        // Hide like button if the message contains spam
+        const messageRef = ref(database, `group-chat/${chatName}/message/${messageId}`);
+        onValue(messageRef, (snapshot) => {
+            const messageData = snapshot.val();
+            if (messageData && messageData.spam) {
+                likeButton.style.display = "none";
+                likeCount.style.display = "none";
+            } else {
+                likeButton.style.display = "block";
+                likeCount.style.display = "block";
+            }
         });
     }
 
@@ -1029,7 +1040,103 @@ async function displayMessage(messageData) {
                 alert("Failed to send friend request. Please try again.");
             });
     }
-    
+    const accountProfileDivCon = document.getElementById("accountProfileDivCon");
+    const accountProfileBackBtn = document.getElementById("accountProfileBackBtn");
+    accountProfileBackBtn.addEventListener("click", () => {
+        accountProfileDivCon.style.display = "none";
+    });
+    function viewAccountProfile(profileUid) {
+        accountProfileDivCon.style.display = "flex";
+        profilePopUpDiv.style.display = "none";
+
+        const userRef = ref(database, `users/${profileUid}`);
+        get(userRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                const { profilePic, coverImg, name, account, like, rating, followers, aboutMe, mood, age, gender, country } = userData;
+
+                // Update profile picture and cover image
+                document.getElementById("accountProfilePic").src = profilePic || "img/profile.png";
+                document.getElementById("accountCoverImg").src = coverImg || "img/cover.jpg";
+
+                // Update name and rank
+                document.getElementById("accountName").textContent = name || "--";
+                document.getElementById("accountRankText").textContent = account || "User";
+
+                const ranks = {
+                    "cool": { img: "img/cool.png", color: "blue" },
+                    "vip": { img: "img/vip.png", color: "lightgreen" },
+                    "svip": { img: "img/svip.png", color: "gold" },
+                    "elite": { img: "img/elite.png", color: "#6a0dad" },
+                    "champion": { img: "img/champion.png", color: "#4169E1" },
+                    "icon": { img: "img/icon.png", color: "#DC143C" },
+                    "legend": { img: "img/legend.png", color: "#4169E1" },
+                    "royal": { img: "img/royal.png", color: "#4B0082" },
+                    "guardian": { img: "img/guardian.png", color: "#008B8B" },
+                    "sentinel": { img: "img/sentinel.png", color: "#4682B4" },
+                    "overseer": { img: "img/overseer.png", color: "#4B0082" },
+                    "enforcer": { img: "img/enforcer.png", color: "#DC143C" },
+                    "inspector": { img: "img/inspector.png", color: "#008080" },
+                    "moderator": { img: "img/moderator.png", color: "#00796B" },
+                    "admin": { img: "img/admin.png", color: "#B71C1C" },
+                    "co-owner": { img: "img/co-owner.png", color: "#4169E1" },
+                    "owner": { img: "img/owner.png", color: "#DC143C" },
+                    "emperor": { img: "img/emperor.png", color: "#FFD700" },
+                    "mvp": { img: "img/mvp.png", color: "#DC143C" }
+                };
+                
+
+                const rankData = ranks[account?.toLowerCase()] || { img: "img/user.png", color: "red" };
+                document.getElementById("accountRankImg").src = rankData.img;
+                document.getElementById("accountRank").style.backgroundColor = rankData.color;
+
+                // Update likes, rating, and followers
+                document.getElementById("accountLikeAmt").textContent = `likes ${like || 0}`;
+                document.getElementById("accountRatingAmt").textContent = `rating ${rating || 0}`;
+                document.getElementById("accountFollowersAmt").textContent = `followers ${followers || 0}`;
+
+                // Update bio
+                document.getElementById("accountBioDiv").textContent = aboutMe || "No bio available.";
+
+                // Update account info
+                document.getElementById("accountUserName").textContent = name || "--";
+                document.getElementById("accountUid").textContent = profileUid || "--";
+                document.getElementById("accountCountry").textContent = country || "--";
+                document.getElementById("accountGender").textContent = gender || "--";
+                document.getElementById("accountAge").textContent = age || "--";
+
+                // Update mood
+                const accountMoodDiv = document.getElementById("accountMood");
+                accountMoodDiv.textContent = mood || "No mood set.";
+            } else {
+                console.warn("User data not found for UID:", profileUid);
+            }
+        }).catch((error) => {
+            console.error("Error fetching user data:", error);
+        });
+    }
+    function blockUser(blockUid) {
+        if (blockUid === uid) {
+            return; // Prevent blocking oneself
+        }
+        const blockRef = ref(database, `blocked-users/${uid}/${blockUid}`);
+        const blockData = {
+            blocker: uid,
+            timestamp: serverTimestamp(),
+        };
+
+        set(blockRef, blockData)
+            .then(() => {
+                console.log("User blocked successfully: " + blockUid);
+                actionPopUpDiv.style.display = "none";
+            })
+            .catch((error) => {
+                console.error("Error blocking user:", error);
+                alert("Failed to block user. Please try again.");
+            });
+    }
+    const block = document.getElementById("block");
+    const viewProfile = document.getElementById("viewProfile");
     messagePicDiv.addEventListener("click", () => {
         const profilePopUpDiv = document.getElementById("profilePopUpDiv");
         profilePopUpDiv.style.display = "flex";
@@ -1042,10 +1149,18 @@ async function displayMessage(messageData) {
             
                 sendFriendRequest(clickedUserId);
             });
+
+            block.addEventListener("click", () => {
+                blockUser(clickedUserId);
+            });
+            viewProfile.addEventListener("click", () => {
+               viewAccountProfile(clickedUserId);
+            });
         
 
         
         checkIfFriends(clickedUserId);
+        checkBlockedUser(clickedUserId);
         
         // Populate profile popup with user data
         document.getElementById("profilePic").src = profilePic;
@@ -1550,6 +1665,11 @@ async function displayMessage(messageData) {
             chatBubble.style.color = "red";
             chatBubble.style.fontWeight = "bold";
 
+           if (messageData.uid === uid) {
+            sendNotificattion(uid, "Spam Detected", "You have been muted for 1min", "spam", uid);
+            
+           }
+           likeButton.style.display = "none";
             
                  // Hide chatBar
             const chatBar = document.getElementById("chatBar");
@@ -2978,72 +3098,76 @@ function displayPrivateMessage(privateMessageData) {
         console.warn("Empty message, skipping chat bubble creation.");
         return; // Do not display the chat bubble if the message is empty
     }
-
-    let existingChatBubble = document.getElementById(privateMessageData.id);
-    if (!existingChatBubble) { // Ensure no duplicate chat bubbles
-        const privateChatBody = document.getElementById("privateChatBody");
-        const privateChatBubble = document.createElement("div");
-        privateChatBubble.className = "privateChatBubble";
-        const privateChatBubbleTimeAndSeenRecieptDiv = document.createElement("div");
-        privateChatBubbleTimeAndSeenRecieptDiv.className = "privateChatBubbleTimeAndSeenRecieptDiv";
-        const privateChatBubbleText = document.createElement("div");
-        privateChatBubbleText.className = "privateChatBubbleText";
-        privateChatBubbleText.textContent = privateMessageData.message;
-        privateChatBubbleText.id = privateMessageData.id; // Set the ID for the chat bubble
-        const privateChatBubbleTime = document.createElement("div");
-        privateChatBubbleTime.className = "privateChatBubbleTime";
-        const time = new Date(privateMessageData.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        privateChatBubbleTime.textContent = time; // Format the time as needed
-        const privateChatBubbleSeenReciept = document.createElement("div");
-        privateChatBubbleSeenReciept.className = "privateChatBubbleSeenReciept";
-        privateChatBubbleSeenReciept.innerHTML = `<i class="fa-solid fa-check"></i>`; // Add check icon for seen receipt
-        privateChatBubble.appendChild(privateChatBubbleText);
-        privateChatBubbleTimeAndSeenRecieptDiv.appendChild(privateChatBubbleSeenReciept); // Append seen receipt icon
-        privateChatBubbleTimeAndSeenRecieptDiv.appendChild(privateChatBubbleTime); // Append time to the chat bubble
-        privateChatBubble.appendChild(privateChatBubbleTimeAndSeenRecieptDiv); // Append time and seen receipt div to the chat bubble
-        privateChatBody.appendChild(privateChatBubble);
-        if (privateMessageData.uid === uid) {
-            privateChatBubble.classList.add("sent"); // Add class for sent messages
-        } else {
-            privateChatBubble.classList.add("received"); // Add class for received messages
-        }
-        if (privateMessageData.uid !== uid) {
-            privateChatBubbleSeenReciept.style.display = "none"; // Hide seen receipt for received messages
-        }
-        privateChatBubbleTime.style.textAlign = "left"; // Align time to the left
-        privateChatBubbleTime.style.marginTop = "5px"; // Add some spacing above the time
-
-        onValue(ref(database, `privateChat/${chattingWithUser}/messages/${privateMessageData.id}`), (snapshot) => {
-            const messageData = snapshot.val();
-            if (messageData && messageData.uid && messageData.seen) {
-            privateChatBubbleSeenReciept.style.color = "red"; // Change color to red if seen
-            }
-        });
-        privateChatBody.scrollTop = privateChatBody.scrollHeight; // Scroll to the bottom
-    }
-
     
-    // Add seen functionality
-    if (privateMessageData.uid !== uid) { // Only mark as seen if the message is not from the current user
-        if(privateMessageData.seen && privateMessageData.seenBy && privateMessageData.timeSeen) {
-            console.log("Message already seen by user:", privateMessageData.seenBy);
-            return; // Exit if the message is already seen
-        }
-        const seenRef = ref(database, `privateChat/${chattingWithUser}/messages/${privateMessageData.id}`);
-        const seenData = {
-            seen: true,
-            seenBy: uid,
-            timeSeen: serverTimestamp()
-        };
-        update(seenRef, seenData)
-            .then(() => {
-                console.log("Message marked as seen.");
-            })
-            .catch((error) => {
-                console.error("Error marking message as seen:", error);
-            });
-    }   
+
+            
+
+            let existingChatBubble = document.getElementById(privateMessageData.id);
+            if (!existingChatBubble) { // Ensure no duplicate chat bubbles
+                const privateChatBody = document.getElementById("privateChatBody");
+                const privateChatBubble = document.createElement("div");
+                privateChatBubble.className = "privateChatBubble";
+                const privateChatBubbleTimeAndSeenRecieptDiv = document.createElement("div");
+                privateChatBubbleTimeAndSeenRecieptDiv.className = "privateChatBubbleTimeAndSeenRecieptDiv";
+                const privateChatBubbleText = document.createElement("div");
+                privateChatBubbleText.className = "privateChatBubbleText";
+                privateChatBubbleText.textContent = privateMessageData.message;
+                privateChatBubbleText.id = privateMessageData.id; // Set the ID for the chat bubble
+                const privateChatBubbleTime = document.createElement("div");
+                privateChatBubbleTime.className = "privateChatBubbleTime";
+                const time = new Date(privateMessageData.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                privateChatBubbleTime.textContent = time; // Format the time as needed
+                const privateChatBubbleSeenReciept = document.createElement("div");
+                privateChatBubbleSeenReciept.className = "privateChatBubbleSeenReciept";
+                privateChatBubbleSeenReciept.innerHTML = `<i class="fa-solid fa-check"></i>`; // Add check icon for seen receipt
+                privateChatBubble.appendChild(privateChatBubbleText);
+                privateChatBubbleTimeAndSeenRecieptDiv.appendChild(privateChatBubbleSeenReciept); // Append seen receipt icon
+                privateChatBubbleTimeAndSeenRecieptDiv.appendChild(privateChatBubbleTime); // Append time to the chat bubble
+                privateChatBubble.appendChild(privateChatBubbleTimeAndSeenRecieptDiv); // Append time and seen receipt div to the chat bubble
+                privateChatBody.appendChild(privateChatBubble);
+                if (privateMessageData.uid === uid) {
+                    privateChatBubble.classList.add("sent"); // Add class for sent messages
+                } else {
+                    privateChatBubble.classList.add("received"); // Add class for received messages
+                }
+                if (privateMessageData.uid !== uid) {
+                    privateChatBubbleSeenReciept.style.display = "none"; // Hide seen receipt for received messages
+                }
+                privateChatBubbleTime.style.textAlign = "left"; // Align time to the left
+                privateChatBubbleTime.style.marginTop = "5px"; // Add some spacing above the time
+
+                onValue(ref(database, `privateChat/${chattingWithUser}/messages/${privateMessageData.id}`), (snapshot) => {
+                    const messageData = snapshot.val();
+                    if (messageData && messageData.uid && messageData.seen) {
+                        privateChatBubbleSeenReciept.style.color = "red"; // Change color to red if seen
+                    }
+                });
+                privateChatBody.scrollTop = privateChatBody.scrollHeight; // Scroll to the bottom
+            }
+
+            // Add seen functionality
+            if (privateMessageData.uid !== uid) { // Only mark as seen if the message is not from the current user
+                if (privateMessageData.seen && privateMessageData.seenBy && privateMessageData.timeSeen) {
+                    console.log("Message already seen by user:", privateMessageData.seenBy);
+                    return; // Exit if the message is already seen
+                }
+                const seenRef = ref(database, `privateChat/${chattingWithUser}/messages/${privateMessageData.id}`);
+                const seenData = {
+                    seen: true,
+                    seenBy: uid,
+                    timeSeen: serverTimestamp()
+                };
+                update(seenRef, seenData)
+                    .then(() => {
+                        console.log("Message marked as seen.");
+                    })
+                    .catch((error) => {
+                        console.error("Error marking message as seen:", error);
+                    });
+            }
+        
 }
+
 function alert() {
     if(chattingWithUser) {
         console.log("Chatting with user:", chattingWithUser);
@@ -3059,6 +3183,61 @@ function initializePrivateChatListener() {
         onChildAdded(privateChatRef, (snapshot) => {
             const privateMessageData = snapshot.val();
             displayPrivateMessage(privateMessageData);
+            document.addEventListener("click", (event) => {
+                if (event.target && event.target.id === "unBlockChat") {
+                    const unblockRef = ref(database, `blocked-users/${uid}/${privateMessageData.uid}`);
+                    remove(unblockRef).then(() => {
+                        console.log("User unblocked successfully.");
+                        const privateChatBarDiv = document.getElementById("privateChatBarDiv");
+                        unBlock.style.setProperty("display", "none", "important"); // Hide the unblock button
+                        block.style.setProperty("display", "flex", "important"); // Show the block button again
+                        privateChatBlocked.style.display = "none"; // Show the blocked message
+                        const privateChatBar = document.getElementById("privateChatBar");
+                        privateChatBar.style.display = "flex"; // Hide the chat bar
+                    }).catch((error) => {
+                        console.error("Error unblocking user:", error);
+                    });
+                }
+            });
+        
+            // Check if the current user is blocked
+            const blockedRef = ref(database, `blocked-users/${privateMessageData.uid}/${uid}`);
+            onValue(blockedRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    console.log("You are blocked.");
+                    const privateChatBar = document.getElementById("privateChatBar");
+                    const privateChatBlocked = document.getElementById("privateChatBlocked");
+                    const privateChatBlocked2 = document.getElementById("privateChatBlocked2");
+                    privateChatBar.style.display = "none"; // Hide the chat bar
+                    privateChatBlocked2.style.display = "flex"; // Show the blocked message
+                    privateChatBlocked.style.display = "none"; // Show the blocked message
+                } else {
+                    console.log("You are not blocked.");
+                    const privateChatBar = document.getElementById("privateChatBar");
+                    const privateChatBlocked = document.getElementById("privateChatBlocked");
+                    const privateChatBlocked2 = document.getElementById("privateChatBlocked2");
+                    privateChatBar.style.display = "flex"; // Show the chat bar
+                    privateChatBlocked.style.display = "none"; // Hide the blocked message
+                    privateChatBlocked2.style.display = "none"; // Hide the blocked message
+                }
+            }, (error) => {
+                console.error("Error checking if user is blocked:", error);
+            });
+
+            const checkIfIBlockedRef = ref(database, `blocked-users/${uid}/${privateMessageData.uid}`);
+            get(checkIfIBlockedRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log("You have blocked this user.");
+                    const privateChatBar = document.getElementById("privateChatBar");
+                    privateChatBar.style.display = "none"; // Hide the chat bar
+                    const privateChatBlocked = document.getElementById("privateChatBlocked");
+                    const privateChatBlocked2 = document.getElementById("privateChatBlocked2");
+                    privateChatBlocked.style.display = "flex"; // Show the blocked message
+                    privateChatBlocked2.style.display = "none"; // Show the blocked message
+                }
+            }).catch((error) => {
+                console.error("Error checking if user is blocked:", error);
+            });
         });
     } else {
         console.warn("chattingWithUser is not set. Unable to initialize private chat listener.");
@@ -3618,6 +3797,7 @@ sendCoinBtn2.addEventListener("click", () => {
                                     sentSuccessfullyDiv.style.display = "flex";
                                     insufficientFundsDiv.style.display = "none";
                                     sendCoinErrorDiv.style.display = "none";
+                                    sendNotificattion(uid, "Coins Sent", `You have received ${coinAmount} coins from ${userData.name || "Unknown User"}.`, "coin", recipientUid);
                                 })
                                 .catch((error) => {
                                     console.error("Error updating recipient coins:", error);
@@ -3710,6 +3890,7 @@ sendDiamondBtn2.addEventListener("click", () => {
                                     sentSuccessfullyDiamondDiv.style.display = "flex";
                                     insufficientFundsDiamondDiv.style.display = "none";
                                     sendDiamondErrorDiv.style.display = "none";
+                                    sendNotificattion(uid, "Diamond Sent", `You have received ${diamondAmount} diamonds from ${userData.name || "Unknown User"}.`, "diamond", recipientUid);
                                 })
                                 .catch((error) => {
                                     console.error("Error updating recipient diamonds:", error);
@@ -4101,6 +4282,8 @@ saveUserName.addEventListener("click", () => {
         .then(() => {
             alert("Username updated successfully!");
             editUserNameScreenDivCon.style.display = "none";
+            sendNotificattion(uid, "Username Changed", `Your username has been successfully updated to ${newUserName}.`, "changeUserName", uid);
+
         })
         .catch((error) => {
             console.error("Error updating username:", error);
@@ -4836,6 +5019,7 @@ function createAGroup() {
                 alert("Group created successfully!");
                 createGroupDivCon.style.display = "none";
                 createGroupSuccessDivCon.style.display = "flex";
+                sendNotificattion(uid, "Group Created", `Your group "${groupNameInput}" has been successfully created.`, "groupCreated", uid);
                 createGroupSuccessBtn.addEventListener("click", () => {
                     const urlParams = new URLSearchParams(window.location.search);
                     urlParams.set("chat", groupNameInput);
@@ -5036,6 +5220,7 @@ async function checkIfFriends(friendUid) {
             alert("You are already friends with this user.");
             if (addFriendBtn) {
                 addFriendBtn.style.display = "none"; // Hide the button if they are friends
+                removeFriend.style.display = "flex"; // Show the remove friend button
             }
 
             const removeFriend = document.getElementById("removeFriend");
@@ -5049,22 +5234,49 @@ async function checkIfFriends(friendUid) {
                         await remove(senderFriendsRef);
                         alert("Friend removed successfully.");
                         removeFriend.style.display = "none"; // Hide the remove friend button
-                        if (addFriendBtn) {
-                            addFriendBtn.style.display = "flex"; // Show the add friend button again
-                        }
                     } catch (error) {
                         console.error("Error removing friend:", error);
                     }
                 });
             }
         } else {
-            addFriendBtn.style.display = "flex"; // Show the button if they are not friends
             removeFriend.style.display = "none"; // Hide the remove friend button
             console.log("Not friends with this user.");
         }
     } catch (error) {
         console.error("Error checking friendship:", error);
     }
+}
+function checkBlockedUser(blockUid) {
+    const blockedRef = ref(database, `blocked-users/${uid}/${blockUid}`);
+    onValue(blockedRef, (snapshot) => {
+        if (snapshot.exists()) {
+            console.log("User is blocked.");
+            const block = document.getElementById("block");
+            const unBlock = document.getElementById("unBlock");
+            if (block) {
+                block.style.setProperty("display", "none", "important"); // Hide the block button if they are blocked
+            }
+            if (unBlock) {
+                unBlock.style.setProperty("display", "flex", "important"); // Show the unblock button
+                // Add click event to unblock user
+                unBlock.addEventListener("click", async () => {
+                    try {
+                        await remove(blockedRef);
+                        unBlock.style.setProperty("display", "none", "important"); // Hide the unblock button
+                        block.style.setProperty("display", "flex", "important"); // Show the block button again
+                    } catch (error) {
+                        console.error("Error unblocking user:", error);
+                    }
+                });
+            }
+        } else {
+            console.log("User is not blocked.");
+            checkIfFriends(blockUid); // Check if they are friends if not blocked
+        }
+    }, (error) => {
+        console.error("Error checking blocked user:", error);
+    });
 }
 checkFriendRequest(); // Call the function to check for friend requests
 const notificationDiv = document.getElementById("notificationDiv");
@@ -5080,20 +5292,14 @@ function fetchNotifications() {
     notificationScreenDivCon.style.display = "flex";
     const notificationRef = ref(database, `notification/${uid}`);
     const notificationListDiv = document.getElementById("notificationList");
-    notificationListDiv.innerHTML = ""; // Clear existing notifications
+    notificationListDiv.innerHTML = "";
 
-    // Update all notifications to read: true
+    // Get notifications once (no real-time listener)
     get(notificationRef).then((snapshot) => {
+        notificationListDiv.innerHTML = "";
+
         if (snapshot.exists()) {
             const notifications = snapshot.val();
-
-            // Update notifications to mark them as read
-            Object.keys(notifications).forEach((notUid) => {
-                const notificationItemRef = ref(database, `notification/${uid}/${notUid}`);
-                update(notificationItemRef, { read: true }).catch((error) => {
-                    console.error(`Error updating notification ${notUid} to read: true`, error);
-                });
-            });
 
             // Sort notifications by timestamp in descending order
             const sortedNotifications = Object.entries(notifications).sort(([, a], [, b]) => {
@@ -5101,123 +5307,118 @@ function fetchNotifications() {
             });
 
             sortedNotifications.forEach(([notUid, notData]) => {
-                if (!notData) {
-                    console.warn(`Notification data is undefined for UID: ${notUid}`);
-                    return;
+                if (!notData) return;
+
+                // Now safe to mark as read because the user actually opened the tab
+                if (!notData.read) {
+                    const notificationItemRef = ref(database, `notification/${uid}/${notUid}`);
+                    update(notificationItemRef, { read: true }).catch((error) => {
+                        console.error(`Error updating notification as read: ${error}`);
+                    });
                 }
 
+                // Continue rendering like before...
                 const notificationItem = document.createElement("div");
                 notificationItem.className = "notificationItem";
 
                 const senderRef = ref(database, `users/${notData.sender}`);
                 get(senderRef).then((senderSnapshot) => {
-                    if (senderSnapshot.exists()) {
-                        const senderData = senderSnapshot.val();
-                        const { profilePic, name } = senderData;
+                    const senderData = senderSnapshot.val();
+                    let { profilePic, name } = senderData || {};
 
-                        const notificationProfilePicDiv = document.createElement("div");
-                        notificationProfilePicDiv.className = "notificationProfilePicDiv";
-
-                        const notificationProfilePic = document.createElement("img");
-                        notificationProfilePic.className = "notificationProfilePic";
-                        notificationProfilePic.src = profilePic || "img/profile.png"; // Default profile picture
-
-                        const senderNameTitleAndBodyDiv = document.createElement("div");
-                        senderNameTitleAndBodyDiv.className = "senderNameTitleAndBodyDiv";
-
-                        const notificationTitle = document.createElement("div");
-                        notificationTitle.className = "notificationTitle";
-                        notificationTitle.textContent = notData.title && notData.title.length > 30 
-                            ? notData.title.substring(0, 28) + "..." + notData.title.slice(-2) 
-                            : notData.title || "Notification Title";
-
-                        const notificationBody = document.createElement("div");
-                        notificationBody.className = "notificationBody";
-                        notificationBody.textContent = notData.body && notData.body.length > 50 
-                            ? notData.body.substring(0, 48) + "..." + notData.body.slice(-2) 
-                            : notData.body || "Notification Body";
-
-                        const notificationSenderName = document.createElement("div");
-                        notificationSenderName.className = "notificationSenderName";
-                        notificationSenderName.textContent = name || "Unknown User";
-
-                        const notificationTime = document.createElement("div");
-                        notificationTime.className = "notificationTime";
-                        const timestampDate = notData.timestamp ? new Date(notData.timestamp) : null;
-                        notificationTime.textContent = timestampDate ? timestampDate.toLocaleString() : "Unknown Time"; // Format the timestamp
-
-                        notificationProfilePicDiv.appendChild(notificationProfilePic);
-                        notificationItem.appendChild(notificationProfilePicDiv);
-                        senderNameTitleAndBodyDiv.appendChild(notificationSenderName);
-                        senderNameTitleAndBodyDiv.appendChild(notificationTitle);
-                        senderNameTitleAndBodyDiv.appendChild(notificationBody);
-                        notificationItem.appendChild(senderNameTitleAndBodyDiv);
-                        notificationItem.appendChild(notificationTime);
-                        notificationListDiv.appendChild(notificationItem);
-
-                        console.log(`Notification received: ${notData.title} - ${notData.body}`);
-                    } else {
-                        console.warn(`Sender data not found for UID: ${notData.sender}`);
+                    if (notData.sender === "system") {
+                        profilePic = "img/system.png"; // Use a default system image
+                        name = "System Notification"; // Use a default system name
                     }
-                }).catch((error) => {
-                    console.error(`Error fetching sender data for UID: ${notData.sender}`, error);
+
+                    const notificationProfilePicDiv = document.createElement("div");
+                    notificationProfilePicDiv.className = "notificationProfilePicDiv";
+
+                    const notificationProfilePic = document.createElement("img");
+                    notificationProfilePic.className = "notificationProfilePic";
+                    notificationProfilePic.src = profilePic || "img/profile.png";
+
+                    const senderNameTitleAndBodyDiv = document.createElement("div");
+                    senderNameTitleAndBodyDiv.className = "senderNameTitleAndBodyDiv";
+
+                    const notificationTitle = document.createElement("div");
+                    notificationTitle.className = "notificationTitle";
+                    notificationTitle.textContent = notData.title || "Notification Title";
+
+                    const notificationBody = document.createElement("div");
+                    notificationBody.className = "notificationBody";
+                    notificationBody.textContent = notData.body || "Notification Body";
+
+                    const notificationSenderName = document.createElement("div");
+                    notificationSenderName.className = "notificationSenderName";
+                    notificationSenderName.textContent = name || "Unknown User";
+
+                    const notificationTime = document.createElement("div");
+                    notificationTime.className = "notificationTime";
+                    const timestampDate = notData.timestamp ? new Date(notData.timestamp) : null;
+                    notificationTime.textContent = timestampDate ? timestampDate.toLocaleString() : "Unknown Time";
+
+                    notificationProfilePicDiv.appendChild(notificationProfilePic);
+                    notificationItem.appendChild(notificationProfilePicDiv);
+                    senderNameTitleAndBodyDiv.appendChild(notificationSenderName);
+                    senderNameTitleAndBodyDiv.appendChild(notificationTitle);
+                    senderNameTitleAndBodyDiv.appendChild(notificationBody);
+                    notificationItem.appendChild(senderNameTitleAndBodyDiv);
+                    notificationItem.appendChild(notificationTime);
+                    notificationListDiv.appendChild(notificationItem);
                 });
             });
         } else {
             const noNotificationsDiv = document.createElement("div");
             noNotificationsDiv.className = "noNotifications";
-            noNotificationsDiv.textContent = "No notifications.";
+            noNotificationsDiv.textContent = "No notifications available.";
             notificationListDiv.appendChild(noNotificationsDiv);
         }
     }).catch((error) => {
         console.error("Error fetching notifications:", error);
     });
 }
+
+
 const newNotificationDiv = document.getElementById("newNotificationDiv");
 function checkNotification() {
-    if (!uid) {
-        console.error("UID is undefined. Ensure the user is authenticated.");
-        return;
-    }
-
-    if (!newNotificationDiv) {
-        console.error("Element with ID 'newNotificationDiv' not found in the DOM.");
-        return;
-    }
-
     const notificationRef = ref(database, `notification/${uid}`);
     onValue(notificationRef, (snapshot) => {
         if (snapshot.exists()) {
             const notifications = snapshot.val();
             const currentTime = new Date();
+            let hasUnreadNotifications = false;
 
             Object.keys(notifications).forEach((notUid) => {
                 const notData = notifications[notUid];
-                if (notData.timestamp) {
+                if (notData && notData.timestamp) {
                     const notificationTime = new Date(notData.timestamp);
 
                     if (
                         notificationTime.getHours() === currentTime.getHours() &&
                         notificationTime.getMinutes() === currentTime.getMinutes()
                     ) {
-                        newNotificationDiv.style.display = "flex"; // Show the new notification div if there are notifications
-                        console.log("Notification received at the current time.");
+                        console.log("New notification received at the current time.");
                         const audio = new Audio("audio/not.mp3");
                         audio.play();
-                    } else if (notData.read === false) {
-                        newNotificationDiv.style.display = "block"; // Hide the new notification div if the notification is read
-                    } else {
-                        newNotificationDiv.style.display = "none"; // Hide the new notification div if there are no notifications
                     }
 
-                    console.log(`Notification received: ${notData.title} - ${notData.body}`);
+                    if (!notData.read) {
+                        hasUnreadNotifications = true;
+                    }
                 }
             });
+
+            newNotificationDiv.style.display = hasUnreadNotifications ? "flex" : "none";
         } else {
-            newNotificationDiv.style.display = "none"; // Hide the new notification div if there are no notifications
+            console.log("No notifications found.");
+            newNotificationDiv.style.display = "none";
         }
+    }, (error) => {
+        console.error("Error checking notifications:", error);
     });
 }
+
 checkNotification(); // Call the function to check for notifications
 function sendNotificattion(uid, title, body, notType, friendUid) {
     const notificationRef = ref(database, `notification/${friendUid}`);
@@ -5226,8 +5427,8 @@ function sendNotificattion(uid, title, body, notType, friendUid) {
         body: body,
         timestamp: serverTimestamp(),
         type: notType,
-        read: false,
         sender: uid,
+        read: false,
     };
     const friendRequestDeclinedData = {
         title: title,
@@ -5236,7 +5437,49 @@ function sendNotificattion(uid, title, body, notType, friendUid) {
         type: notType,
         read: false,
         sender: uid,
+    }
+    const spamNotificationData = {
+        title: title,
+        body: body,
+        timestamp: serverTimestamp(),
+        type: notType,
+        sender: "system",
+        read: false,
+        uid: uid,
     };
+    const coinNotificationData = {
+        title: title,
+        body: body,
+        timestamp: serverTimestamp(),
+        type: notType,
+        sender: uid,
+        read: false,
+    };
+    const diamondNotificationData = {
+        title: title,
+        body: body,
+        timestamp: serverTimestamp(),
+        type: notType,
+        sender: uid,
+        read: false,
+    };
+    const changeUserNameData = {
+        title: title,
+        body: body,
+        timestamp: serverTimestamp(),
+        type: notType,
+        sender: "system",
+        read: false,
+        uid: uid,
+    };
+    const groupCreatedData = {
+        title: title,
+        body: body,
+        timestamp: serverTimestamp(),
+        type: notType,
+        sender: "system",
+        read: false,
+    }
     if(notType === "friendRequestAccepted") {
         push(notificationRef, friendRequestAcceptedData)
         .then(() => {
@@ -5247,6 +5490,46 @@ function sendNotificattion(uid, title, body, notType, friendUid) {
         });
     } else if (notType === "friendRequestDeclined") {
         push(notificationRef, friendRequestDeclinedData)
+        .then(() => {
+            console.log("Notification sent successfully!");
+        })
+        .catch((error) => {
+            console.error("Error sending notification:", error);
+        });
+    } else if (notType === "spam") {
+        push(notificationRef, spamNotificationData)
+        .then(() => {
+            console.log("Notification sent successfully!");
+        })
+        .catch((error) => {
+            console.error("Error sending notification:", error);
+        });
+    } else if(notType === "coin") {
+        push(notificationRef, coinNotificationData)
+        .then(() => {
+            console.log("Notification sent successfully!");
+        })
+        .catch((error) => {
+            console.error("Error sending notification:", error);
+        });
+    } else if(notType === "diamond") {
+        push(notificationRef, diamondNotificationData)
+        .then(() => {
+            console.log("Notification sent successfully!");
+        })
+        .catch((error) => {
+            console.error("Error sending notification:", error);
+        });
+    } else if(notType === "changeUserName") {
+        push(notificationRef, changeUserNameData)
+        .then(() => {
+            console.log("Notification sent successfully!");
+        })
+        .catch((error) => {
+            console.error("Error sending notification:", error);
+        });
+    } else if(notType === "groupCreated") {
+        push(notificationRef, groupCreatedData)
         .then(() => {
             console.log("Notification sent successfully!");
         })

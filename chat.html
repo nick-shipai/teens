@@ -298,6 +298,10 @@
                                 "></i>
                                 <span>Block</span>
                             </div>
+                            <div id="unBlock">
+                                <i class="fas fa-unlock"></i>
+                                <span>Unblock</span>
+                            </div>
                             <div id="report">
                                 <i class="fas fa-flag"></i>
                                 <span>Report</span>
@@ -305,6 +309,109 @@
                             <div id="action">
                                 <i class="fas fa-ellipsis-h"></i>
                                 <span>Action</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="accountProfileDivCon">
+                    <div id="accountProfileDiv">
+                        <div id="accountProfileTopBar">
+                            <div id="accountProfileBackBtn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                            <div id="accountProfileTitle">Profile</div>
+                        </div>        
+                        <div id="accountCoverImgAndProfilePicDiv">
+                            <div id="accountCoverImgDiv">
+                                <img src="img/cover.jpg" alt="cover" id="accountCoverImg">
+                            </div>
+                            <div id="accountProfilePicDiv">
+                                <img src="img/emperor.png" alt="profile" id="accountProfilePic">
+                            </div>
+                        </div>
+                        <div id="accountNameRankLikeAndFollowersDiv">
+                            <div id="accountNameAndRankDiv">
+                                <div id="accountName">--</div>
+                                <div id="accountRankDivCon">
+                                    <img src="img/user.png" id="accountRankImg">
+                                    <div id="accountRank">
+                                        <span id="accountRankText"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="accountLikeAndFollowersDiv">
+                            <div id="accountLikeDiv">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span id="accountLikeAmt">likes 0</span>
+                            </div>
+                            <div id="accountRatingDiv">
+                                <i class="fas fa-star"></i>
+                                <span id="accountRatingAmt">rating 0</span>
+                            </div>
+                            <div id="accountFollowersDiv">
+                                <i class="fas fa-users"></i>
+                                <span id="accountFollowersAmt">followers 0</span>
+                            </div>
+                        </div>
+                        <div id="accountBioDiv">
+
+                        </div>
+                        <div id="accountLikeFollowAndRateBtn">
+                            <div id="accountLikeBtn">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>Like</span>
+                            </div>
+                            <div id="accountFollowBtn">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Follow</span>
+                            </div>
+                            <div id="accountRateBtn">
+                                <i class="fas fa-star"></i>
+                                <span>Rate</span>
+                            </div>
+                        </div>
+                        <div id="accountMenuDiv">
+                            <div id="accountInfo" class="accountMenu active">
+                                <span>Info</span>
+                            </div>
+                            <div id="accountFriends">
+                                <span>Friends</span>
+                            </div>
+                            <div id="accountAbout">
+                                <span>About</span>
+                            </div>
+                            <div id="accountMood">
+                                <span>Mood</span>
+                            </div>
+                        </div>
+                        <div id="accountInfoDivCon">
+                            <div id="accountInfoDiv">
+                                <div id="accountInfoTitle">Account Info</div>
+                                <div id="accountInfoContent">
+                                    <div id="accountInfoContentLeft">
+                                        <div id="accountUserNameDiv">
+                                            <span>Username:</span>
+                                            <span id="accountUserName">--</span>
+                                        </div>
+                                        <div id="accountUidDiv">
+                                            <span>UID:</span>
+                                            <span id="accountUid">--</span>
+                                        </div>
+                                        <div id="accountCountryDiv">
+                                            <span>Country:</span>
+                                            <span id="accountCountry">--</span>
+                                        </div>
+                                        <div id="accountGenderDiv">
+                                            <span>Gender:</span>
+                                            <span id="accountGender">--</span>
+                                        </div>
+                                        <div id="accountAgeDiv">
+                                            <span>Age:</span>
+                                            <span id="accountAge">--</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1353,18 +1460,24 @@
                                 </div>
                                 <div id="privateChatBarDiv">
                                     <div id="privateChatBar">
-                                        <div id="privateChatUploadDiv">
-                                            <i class="fas fa-plus"></i>
+                                        <div id="privateChatBar">
+                                            <div id="privateChatUploadDiv">
+                                                <i class="fas fa-plus"></i>
+                                            </div>
+                                            <div id="privateChatEmojiDiv">
+                                                <i class="fas fa-smile"></i>
+                                            </div>
+                                            <div id="privateChatMessageDiv">
+                                                <textarea id="privateChatMessage" placeholder="Type a message"></textarea>
+                                            </div>
+                                            <div id="privateChatSendDiv">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </div>
                                         </div>
-                                        <div id="privateChatEmojiDiv">
-                                            <i class="fas fa-smile"></i>
-                                        </div>
-                                        <div id="privateChatMessageDiv">
-                                            <textarea id="privateChatMessage" placeholder="Type a message"></textarea>
-                                        </div>
-                                        <div id="privateChatSendDiv">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </div>
+                                    </div>
+                                    <div class="privateChatBlocked" id="privateChatBlocked">You blocked this user. <div id="unBlockChat" style="cursor: pointer; color: blue; text-decoration: underline;">Unblock </div> to start chatting.</div>
+                                    <div id="privateChatBlocked2" style="color: red; font-size: 14px; text-align: center; margin-top: 10px; font-weight: bold;">
+                                        This user is not available in this app
                                     </div>
                                 </div>
                             </div>
