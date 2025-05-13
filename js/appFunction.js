@@ -1,7 +1,7 @@
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getDatabase, ref, set, get, update, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+import { getDatabase, ref, set, get, update, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
 // Firebase configuration
@@ -26,6 +26,7 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 let uid = getQueryParam("uid");
+let currentChat = "genChat"; // Default chat name
 // Run after DOM is ready
 
 const setupDiv = document.getElementById("set-upDiv");
@@ -52,7 +53,7 @@ const showLoginPasswordIcon = document.getElementById("showLoginPasswordIcon");
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         uid = user.uid;
-        iframe.src = `chat.html?uid=${uid}&chat=genChat`;
+        checkCurrentChat();
         signUpAndLoginDiv.style.display = "none";
 
         const userRef = ref(db, `users/${user.uid}`);
@@ -77,12 +78,19 @@ onAuthStateChanged(auth, async (user) => {
 
         // ✅ Only initialize Ably once UID is known
         initAbly(uid);
+        checkAllUsersOnline()
     } else {
         signUpAndLoginDiv.style.display = "flex";
     }
 });
 
-
+function checkCurrentChat() {
+    const userRef = ref(db, `users/${uid}/currentChat`);
+    onValue(userRef, (snapshot) => {
+        currentChat = snapshot.val();
+        iframe.src = `chat.html?uid=${uid}&chat=${currentChat || "genChat"}`;
+    });
+}
 
 
 // Hide loading screen after 10 seconds
@@ -248,29 +256,39 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-function setupFirebasePresence(uid) {
-    const userStatusDatabaseRef = ref(db, `users/${uid}/status`);
-    const connectedRef = ref(db, ".info/connected");
+function checkAllUsersOnline() {
+    const usersRef = ref(db, 'users');
 
-    onValue(connectedRef, (snap) => {
-        if (snap.val() === true) {
-            // Connected: set online
-            const status = {
-                state: "online",
-                last_changed: new Date().toISOString()
-            };
+    // Use onValue to listen for real-time updates to the 'users' node
+    onValue(usersRef, async (snapshot) => {
+        if (snapshot.exists()) {
+            const users = snapshot.val();
+            const currentTime = Date.now();
 
-            // Setup onDisconnect (runs when connection is lost)
-            onDisconnect(userStatusDatabaseRef).set({
-                state: "offline",
-                last_changed: new Date().toISOString()
-            });
+            for (const userId in users) {
+                const user = users[userId];
+                const lastPresence = user.presence || 0;
 
-            // Set online status
-            set(userStatusDatabaseRef, status);
+                // Skip if the user's presence is undefined or 0 (indicating the user just connected)
+                if (lastPresence === 0) {
+                    continue;
+                }
+
+                // Check if the user has been inactive for 10 seconds
+                if (currentTime - lastPresence > 10000) {
+                    const userStatusRef = ref(db, `users/${userId}/status`);
+                    await set(userStatusRef, "offline");  // Mark user as offline
+                    const activeUserRef = ref(db, `group-chat/${currentChat}/activeUser/${userId}`);
+                    remove(activeUserRef); // Remove active user reference on disconnect
+                } else {
+                    const userStatusRef = ref(db, `users/${userId}/status`);
+                    await set(userStatusRef, "online");  // Mark user as online
+                }
+            }
         }
     });
 }
+
 
 function initAbly(uid) {
     const username = "user_" + Math.floor(Math.random() * 10000);
@@ -285,16 +303,29 @@ function initAbly(uid) {
         console.log('Connected to Ably');
 
         // Enter Ably presence
-        channel.presence.enter({ username }, (err) => {
+        channel.presence.enter({ username }, async (err) => {
             if (err) {
                 console.error('Error entering presence:', err);
             } else {
                 console.log(username + ' entered presence');
+
+                // Update Firebase with online status and current timestamp for presence
+                const userRef = ref(db, `users/${uid}`);
+                await update(userRef, {
+                    status: "online",
+                    presence: Date.now()  // Set the current timestamp as last presence
+                });
+
+                // Increment presence counter every second (i.e., update the timestamp every second)
+                const presenceRef = ref(db, `users/${uid}/presence`);
+                setInterval(async () => {
+                    await set(presenceRef, Date.now());  // Update the presence timestamp to the current time
+                }, 1000);
+                console.log("Presence counter initialized");
             }
         });
 
         // Set up Firebase presence detection
-        setupFirebasePresence(uid);
     });
 
     // Optional: handle manual disconnect
@@ -302,5 +333,7 @@ function initAbly(uid) {
         channel.presence.leave();
     });
 }
+
+
 const bannedDiv = document.getElementById("bannedDiv");
 

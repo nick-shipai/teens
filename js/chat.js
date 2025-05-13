@@ -397,7 +397,8 @@ if (uid) {
         const activeUserRef = ref(database, `group-chat/${chatName}/activeUser/${uid}`);
         const systemMessageRef = push(ref(database, `group-chat/${chatName}/message`));
 
-        get(activeUserRef).then((snapshot) => {
+        // Continuously check if the active user exists
+        onValue(activeUserRef, (snapshot) => {
             if (!snapshot.exists()) {
                 set(activeUserRef, {
                     uid: uid,
@@ -409,25 +410,24 @@ if (uid) {
                         uid: "system",
                         time: serverTimestamp()
                     });
-                    // Remove user when they disconnect
-                    window.addEventListener("beforeunload", () => {
-                        remove(activeUserRef).then(() => {
-                            const disconnectMessageRef = push(ref(database, `group-chat/${chatName}/message`));
-                            set(disconnectMessageRef, {
-                                message: `${userData.name || "Unknown User"} has left the chat`,
-                                uid: "system",
-                                time: serverTimestamp()
-                            });
-                        });
-                    });
                 }).catch((error) => {
                     console.error("Error saving active user:", error);
                 });
-            } else {
-                console.log("Active user data already exists in the database.");
             }
-        }).catch((error) => {
-            console.error("Error checking active user data:", error);
+        });
+
+        // Remove user when they disconnect
+        window.addEventListener("beforeunload", () => {
+            remove(activeUserRef).then(() => {
+                const disconnectMessageRef = push(ref(database, `group-chat/${chatName}/message`));
+                set(disconnectMessageRef, {
+                    message: `${userData.name || "Unknown User"} has left the chat`,
+                    uid: "system",
+                    time: serverTimestamp()
+                });
+            }).catch((error) => {
+                console.error("Error removing active user:", error);
+            });
         });
     });
 }
@@ -1149,6 +1149,7 @@ async function displayMessage(messageData) {
             
                 sendFriendRequest(clickedUserId);
             });
+            checkOnlineStatusAndUpdate(clickedUserId); 
 
             block.addEventListener("click", () => {
                 blockUser(clickedUserId);
@@ -1216,6 +1217,10 @@ async function displayMessage(messageData) {
     // Close profile popup
     document.getElementById("profilePopUpCloseBtn").addEventListener("click", () => {
         document.getElementById("profilePopUpDiv").style.display = "none";
+        const unBlock = document.getElementById("unBlock");
+        unBlock.style.display = "none"; // Hide unBlock button
+        const block = document.getElementById("block");
+        block.style.display = "flex"; // Show block button
         
         
     });
@@ -4860,6 +4865,16 @@ function fetchGroupsData() {
                 groupNumIcon.className = "fas fa-users";
                 groupActiveNum.textContent = "0";
 
+                // Fetch and update active user count
+                const activeUsersRef = ref(database, `group-chat/${chatName}/activeUser`);
+                onValue(activeUsersRef, (activeSnapshot) => {
+                    if (activeSnapshot.exists()) {
+                        groupActiveNum.textContent = Object.keys(activeSnapshot.val()).length;
+                    } else {
+                        groupActiveNum.textContent = "0";
+                    }
+                });
+
                 const groupGo = document.createElement("div");
                 groupGo.className = "groupGo";
                 groupGo.innerHTML = '<i class="fas fa-arrow-right"></i>';
@@ -4868,7 +4883,6 @@ function fetchGroupsData() {
                 paddLockDivIcon.className = "paddlockIcon";
                 const paddLockIcon = document.createElement("i");
                 paddLockIcon.className = "fas fa-lock";
-               
 
                 if (paddLockDivIcon.style.display === "none") {
                     groupNumberDiv.style.marginLeft = "auto";
@@ -4891,6 +4905,8 @@ function fetchGroupsData() {
                         enterGroupBtn.onclick = () => {
                             const password = enterGroupPasswordInput.value.trim();
                             if (password === groupData.password) {
+                                const activeUserRef = ref(db, `group-chat/${chatName}/activeUser/${uid}`);
+                                remove(activeUserRef); // Remove active user reference on disconnect
                                 console.log(`Access granted to group: ${chatName}`);
                                 const urlParams = new URLSearchParams(window.location.search);
                                 urlParams.set("chat", chatName);
@@ -5213,6 +5229,7 @@ function checkFriendRequest() {
 }
 async function checkIfFriends(friendUid) {
     const friendsRef = ref(database, `friends/${uid}/${friendUid}`);
+    const removeFriend = document.getElementById("removeFriend"); // Declare at the top
     try {
         const snapshot = await get(friendsRef);
         if (snapshot.exists()) {
@@ -5223,7 +5240,6 @@ async function checkIfFriends(friendUid) {
                 removeFriend.style.display = "flex"; // Show the remove friend button
             }
 
-            const removeFriend = document.getElementById("removeFriend");
             if (removeFriend) {
                 removeFriend.style.display = "flex"; // Show the remove friend button
                 // Add click event to remove friend
@@ -5234,13 +5250,16 @@ async function checkIfFriends(friendUid) {
                         await remove(senderFriendsRef);
                         alert("Friend removed successfully.");
                         removeFriend.style.display = "none"; // Hide the remove friend button
+                        addFriendBtn.style.display = "flex"; // Show the add friend button again
                     } catch (error) {
                         console.error("Error removing friend:", error);
                     }
                 });
             }
         } else {
-            removeFriend.style.display = "none"; // Hide the remove friend button
+            if (removeFriend) {
+                removeFriend.style.display = "none"; // Hide the remove friend button
+            }
             console.log("Not friends with this user.");
         }
     } catch (error) {
@@ -5378,6 +5397,28 @@ function fetchNotifications() {
         console.error("Error fetching notifications:", error);
     });
 }
+function checkOnlineStatusAndUpdate(statusUid) {
+    const onlineStatus = document.getElementById("onlineStatus");
+    const userStatusRef = ref(database, `users/${statusUid}/status`);
+    onValue(userStatusRef, (snapshot) => {
+        if (snapshot.exists()) {
+            const status = snapshot.val();
+            if (status === "online") {
+                onlineStatus.style.backgroundColor = "green";
+                console.log("User is online.");
+            } else if (status === "offline") {
+                onlineStatus.style.backgroundColor = "red";
+                console.log("User is offline.");
+            }
+        } else {
+            console.log("User status not found.");
+        }
+    }, (error) => {
+        console.error("Error fetching user status:", error);
+    });
+}
+checkOnlineStatusAndUpdate(); // Call the function to check online status
+
 
 
 const newNotificationDiv = document.getElementById("newNotificationDiv");
@@ -5538,3 +5579,19 @@ function sendNotificattion(uid, title, body, notType, friendUid) {
         });
     }
 }
+function updateCurrentChat() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const chatName = urlParams.get("chat");
+    if (chatName) {
+        // Update currentChat in the database
+        const userRef = ref(database, `users/${uid}`);
+        update(userRef, { currentChat: chatName })
+            .then(() => {
+                console.log("Current chat updated successfully in the database.");
+            })
+            .catch((error) => {
+                console.error("Error updating current chat in the database:", error);
+            });
+    }
+}
+updateCurrentChat(); // Call the function to update current chat
