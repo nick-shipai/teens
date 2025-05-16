@@ -8,14 +8,15 @@ import { getStorage, ref as storageRef, listAll, deleteObject, uploadBytes, getD
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBqgNC5BXxtHMnc-oMhQ0QhLYg18oAG3QA",
-    authDomain: "teens-f3fc7.firebaseapp.com",
-    databaseURL: "https://teens-f3fc7-default-rtdb.firebaseio.com",
-    projectId: "teens-f3fc7",
-    storageBucket: "teens-f3fc7.appspot.com",
-    messagingSenderId: "828565874604",
-    appId: "1:828565874604:web:83ce3266202b4cd4b1fc09"
-};
+    apiKey: "AIzaSyB4yJPd9bpGeMd8I8p6aYnW9CPp1MIxYLc",
+    authDomain: "chatgio-3d5f7.firebaseapp.com",
+    databaseURL: "https://chatgio-3d5f7-default-rtdb.firebaseio.com",
+    projectId: "chatgio-3d5f7",
+    storageBucket: "chatgio-3d5f7.firebasestorage.app",
+    messagingSenderId: "160568641680",
+    appId: "1:160568641680:web:bbd8a44f6f7dad42ab3015",
+    measurementId: "G-6701DMKN4W"
+  };
 
 // Initialize Firebase services
 const app = initializeApp(firebaseConfig);
@@ -439,15 +440,8 @@ async function handleNovaResponse(messageData) {
         return;
     }
 
-    const token = "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"; // Your OpenRouter API key
-    const url = "https://openrouter.ai/api/v1/chat/completions";
-
-    const headers = {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-        "HTTP-Referer": "<YOUR_SITE_URL>", // Optional
-        "X-Title": "<YOUR_SITE_NAME>", // Optional
-    };
+    const apiKey = "AIzaSyCLi0_PeCX0fb3xhnASxCKPy07jVaiO9ls";
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
 
     const userData = await fetchUserData(messageData.uid);
     const userName = userData.name || "User";
@@ -460,74 +454,43 @@ async function handleNovaResponse(messageData) {
         return;
     }
 
-    const allMessagesSnapshot = await get(ref(database, `group-chat/${chatName}/message`));
-    const allMessages = allMessagesSnapshot.exists() ? Object.values(allMessagesSnapshot.val()) : [];
-
-    const chatHistory = allMessages.map((msg) => {
-        const role = msg.uid === "nova" ? "assistant" : "user";
-        return { role, content: `${msg.uid === "nova" ? "Nova" : userName}: ${msg.message || ""}` };
-    });
-
     const currentTime = new Date().toLocaleString();
+    const prompt = `You are Nova, a helpful assistant in a teen chat called TEENS. The room is "${chatName}" you are playful friendly, Dont talk about people diamond or gold only if they asked. The app is owned by BIOR. The user ${userName} (Rank: ${userRank}, Coins: ${userCoin}, Diamonds: ${userDiamond}) said: ${messageData.message}`;
 
-    chatHistory.push({ role: "user", content: `USER: ${userName} (Rank: ${userRank}, Coins: ${userCoin}, Diamonds: ${userDiamond}, make sure u dont always talk about coin or diamond except u were asked, Time: ${currentTime} - This time is real, not fake): ${messageData.message}` });
-
-    // Fetch active users
-    const activeUsersSnapshot = await get(ref(database, `group-chat/${chatName}/activeUser`));
-    const activeUsers = activeUsersSnapshot.exists() ? Object.values(activeUsersSnapshot.val()) : [];
-    const activeUserNames = activeUsers.map((user) => user.name).join(", ");
-    const activeUsersMessage = activeUserNames ? `Currently online: ${activeUserNames}` : "No users are currently online.";
-
-    const body = JSON.stringify({
-        "model": "deepseek/deepseek-r1:free",
-        "messages": [
-            { "role": "system", "content": `You are Nova, a helpful assistant in a teen chat named TEENS. The current chat room is "${chatName}". The owner of this app is BIOR. ${activeUsersMessage}` },
-            ...chatHistory
-        ],
-        "temperature": 1,
-        "max_tokens": 4096,
-        "top_p": 1,
-    });
+    const requestBody = {
+        contents: [
+            {
+                parts: [{ text: prompt }]
+            }
+        ]
+    };
 
     try {
         const response = await fetch(url, {
             method: "POST",
-            headers: headers,
-            body: body,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody)
         });
 
-        if (response.status === 429) {
-            console.warn("Rate limit exceeded. Nova will reply with an unavailable message.");
-            const unavailableMessage = "I'm not available for now. Please try again later.";
-            const novaMessageRef = push(ref(database, `group-chat/${chatName}/message`));
-            const novaMessageData = { message: unavailableMessage, uid: "nova", time: serverTimestamp(), askerUid: messageData.uid };
-            await set(novaMessageRef, novaMessageData);
-            return;
-        }
-
         const data = await response.json();
-        const novaResponse = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content 
-            ? data.choices[0].message.content 
-            : "Sorry, I couldn't process your request.";
+        const novaResponse = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process your request.";
 
         const novaMessageRef = push(ref(database, `group-chat/${chatName}/message`));
-        const novaMessageData = { message: novaResponse, uid: "nova", time: serverTimestamp(), id: novaMessageRef.key, askerUid: messageData.uid };
-        set(novaMessageRef, novaMessageData);
+        const novaMessageData = {
+            message: novaResponse,
+            uid: "nova",
+            time: serverTimestamp(),
+            id: novaMessageRef.key,
+            askerUid: messageData.uid
+        };
+
+        await set(novaMessageRef, novaMessageData);
 
         const messageRef = ref(database, `group-chat/${chatName}/message/${messageData.id}`);
-        update(messageRef, { AIresponded: true });
+        await update(messageRef, { AIresponded: true });
 
-        // Generate an image if the response includes a request for an image
-        if (novaResponse.toLowerCase().includes("generate an image")) {
-            const imageUrl = await generateImage(novaResponse);
-            if (imageUrl) {
-                const novaImageRef = push(ref(database, `group-chat/${chatName}/message`));
-                const novaImageData = { img: imageUrl, uid: "nova", time: serverTimestamp(), askerUid: messageData.uid };
-                await set(novaImageRef, novaImageData);
-            }
-        }
     } catch (err) {
-        console.error("An error occurred while fetching Nova's response:", err);
+        console.error("Google Gemini error:", err);
     }
 }
 
@@ -1053,7 +1016,7 @@ async function displayMessage(messageData) {
         get(userRef).then((snapshot) => {
             if (snapshot.exists()) {
                 const userData = snapshot.val();
-                const { profilePic, coverImg, name, account, like, rating, followers, aboutMe, mood, age, gender, country } = userData;
+                const { profilePic, coverImg, name, account, rating, aboutMe, mood, age, gender, country } = userData;
 
                 // Update profile picture and cover image
                 document.getElementById("accountProfilePic").src = profilePic || "img/profile.png";
@@ -1084,16 +1047,10 @@ async function displayMessage(messageData) {
                     "emperor": { img: "img/emperor.png", color: "#FFD700" },
                     "mvp": { img: "img/mvp.png", color: "#DC143C" }
                 };
-                
 
                 const rankData = ranks[account?.toLowerCase()] || { img: "img/user.png", color: "red" };
                 document.getElementById("accountRankImg").src = rankData.img;
                 document.getElementById("accountRank").style.backgroundColor = rankData.color;
-
-                // Update likes, rating, and followers
-                document.getElementById("accountLikeAmt").textContent = `likes ${like || 0}`;
-                document.getElementById("accountRatingAmt").textContent = `rating ${rating || 0}`;
-                document.getElementById("accountFollowersAmt").textContent = `followers ${followers || 0}`;
 
                 // Update bio
                 document.getElementById("accountBioDiv").textContent = aboutMe || "No bio available.";
@@ -1108,6 +1065,131 @@ async function displayMessage(messageData) {
                 // Update mood
                 const accountMoodDiv = document.getElementById("accountMood");
                 accountMoodDiv.textContent = mood || "No mood set.";
+
+                // Handle follow button
+                const accountFollowBtn = document.getElementById("accountFollowBtn");
+                const followersRef = ref(database, `users/${profileUid}/followers/${uid}`);
+
+                get(followersRef).then((followerSnapshot) => {
+                    if (followerSnapshot.exists()) {
+                        accountFollowBtn.classList.add("followed");
+                        accountFollowBtn.querySelector("span").textContent = "Unfollow";
+                    } else {
+                        accountFollowBtn.classList.remove("followed");
+                        accountFollowBtn.querySelector("span").textContent = "Follow";
+                    }
+                });
+
+                accountFollowBtn.addEventListener("click", () => {
+                    get(followersRef).then((followerSnapshot) => {
+                        if (followerSnapshot.exists()) {
+                            // Unfollow
+                            remove(followersRef).then(() => {
+                                accountFollowBtn.classList.remove("followed");
+                                accountFollowBtn.querySelector("span").textContent = "Follow";
+                                console.log("Unfollowed successfully.");
+                            }).catch((error) => {
+                                console.error("Error unfollowing:", error);
+                            });
+                        } else {
+                            // Follow
+                            set(followersRef, {
+                                uid: uid,
+                                time: serverTimestamp()
+                            }).then(() => {
+                                accountFollowBtn.classList.add("followed");
+                                accountFollowBtn.querySelector("span").textContent = "Unfollow";
+                                console.log("Followed successfully.");
+                            }).catch((error) => {
+                                console.error("Error following:", error);
+                            });
+                        }
+                    });
+                });
+
+                // Handle like button
+                const accountLikeBtn = document.getElementById("accountLikeBtn");
+                const likesRef = ref(database, `users/${profileUid}/likes/${uid}`);
+
+                get(likesRef).then((likeSnapshot) => {
+                    if (likeSnapshot.exists()) {
+                        accountLikeBtn.classList.add("liked");
+                        accountLikeBtn.querySelector("span").textContent = "Liked";
+                    } else {
+                        accountLikeBtn.classList.remove("liked");
+                        accountLikeBtn.querySelector("span").textContent = "Like";
+                    }
+                });
+
+                accountLikeBtn.addEventListener("click", () => {
+                    get(likesRef).then((likeSnapshot) => {
+                        if (likeSnapshot.exists()) {
+                            // Unlike
+                            remove(likesRef).then(() => {
+                                accountLikeBtn.classList.remove("liked");
+                                accountLikeBtn.querySelector("span").textContent = "Like";
+                                console.log("Unliked successfully.");
+                            }).catch((error) => {
+                                console.error("Error unliking:", error);
+                            });
+                        } else {
+                            // Like
+                            set(likesRef, {
+                                uid: uid,
+                                time: serverTimestamp()
+                            }).then(() => {
+                                accountLikeBtn.classList.add("liked");
+                                accountLikeBtn.querySelector("span").textContent = "Liked";
+                                console.log("Liked successfully.");
+                            }).catch((error) => {
+                                console.error("Error liking:", error);
+                            });
+                        }
+                    });
+                });
+
+                // Fetch likes count in real-time
+                const likesCountRef = ref(database, `users/${profileUid}/likes`);
+                onValue(likesCountRef, (likesSnapshot) => {
+                    const likesCount = likesSnapshot.exists() ? Object.keys(likesSnapshot.val()).length : 0;
+                    document.getElementById("accountLikeAmt").textContent = `likes ${likesCount}`;
+                });
+
+                // Fetch followers count in real-time
+                const followersCountRef = ref(database, `users/${profileUid}/followers`);
+                onValue(followersCountRef, (followersSnapshot) => {
+                    const followersCount = followersSnapshot.exists() ? Object.keys(followersSnapshot.val()).length : 0;
+                    document.getElementById("accountFollowersAmt").textContent = `followers ${followersCount}`;
+                });
+
+                const copyButtons = [
+                    { buttonId: "copyUserName", textId: "accountUserName" },
+                    { buttonId: "copyUid", textId: "accountUid" },
+                    { buttonId: "copyCountry", textId: "accountCountry" },
+                    { buttonId: "copyGender", textId: "accountGender" },
+                    { buttonId: "copyAge", textId: "accountAge" }
+                ];
+                
+                copyButtons.forEach(({ buttonId, textId }) => {
+                    const button = document.getElementById(buttonId);
+                    const textElement = document.getElementById(textId);
+                
+                    button.addEventListener("click", () => {
+                        const icon = button.querySelector("i");
+                        navigator.clipboard.writeText(textElement.textContent).then(() => {
+                            icon.classList.remove("fa-copy");
+                            icon.classList.add("fa-check");
+                
+                            setTimeout(() => {
+                                icon.classList.remove("fa-check");
+                                icon.classList.add("fa-copy");
+                            }, 2000);
+                        }).catch((error) => {
+                            console.error("Error copying text:", error);
+                        });
+                    });
+                });
+                
             } else {
                 console.warn("User data not found for UID:", profileUid);
             }
@@ -1622,7 +1704,7 @@ async function displayMessage(messageData) {
         moderateChat(messageData, rank);
         
         // Check for naughty words
-        const naughtyWords = ["sex", "asshole", "fuck", "bitch", "whatsapp", "pussy", "cock", "snap", "snapchat", "facebook", "zangi", "sn@p", "nudes", "nude", "cum", "motherfucker", "shit", "ass", "boobs", "masturbation", "w hatsapp", "pimpies", "shege", "god punish you", "your papa", "fucking", "instagram", "ig", "fb", "wa", "prick", "penis", "vigina", "breast", "s nap"]; // Replace with actual words
+        const naughtyWords = ["sex", "asshole", "fuck", "bitch", "whatsapp", "pussy", "cock", "snap", "snapchat", "facebook", "zangi", "sn@p", "nudes", "nude", "cum", "motherfucker", "shit", "ass", "boobs", "masturbation", "w hatsapp", "pimpies", "shege", "fucking", "instagram", "ig", "fb", "wa", "prick", "penis", "vigina", "breast", "s nap"]; // Replace with actual words
         const containsNaughtyWords = naughtyWords.some((word) =>
             messageData.message.toLowerCase().includes(word)
         );
@@ -1659,52 +1741,51 @@ async function displayMessage(messageData) {
 });
 
     if (containsNaughtyWords) {
-    const exemptRanks = ["owner", "co-owner", "emperor", "admin"];
-    if (!exemptRanks.includes(rank.toLowerCase())) {
-        if (!messageData.alreadyMuted) {
-            // Update the message in the database as spam and mark as alreadyMuted
-            const messageRef = ref(database, `group-chat/${chatName}/message/${messageData.id}`);
-            update(messageRef, { spam: true, alreadyMuted: true });
+        const exemptRanks = ["owner", "co-owner", "emperor", "admin"];
+        const exemptUid = ["system", "bot", "admin", "owner", "co-owner", "nova"];
+        if (!exemptRanks.includes(rank.toLowerCase()) && !exemptUid.includes(messageData.uid.toLowerCase())) {
+            if (!messageData.alreadyMuted) {
+                // Update the message in the database as spam and mark as alreadyMuted
+                const messageRef = ref(database, `group-chat/${chatName}/message/${messageData.id}`);
+                update(messageRef, { spam: true, alreadyMuted: true });
 
-            chatBubble.textContent = "This message has been flagged as inappropriate.";
-            chatBubble.style.color = "red";
-            chatBubble.style.fontWeight = "bold";
+                chatBubble.textContent = "This message has been flagged as inappropriate.";
+                chatBubble.style.color = "red";
+                chatBubble.style.fontWeight = "bold";
 
-           if (messageData.uid === uid) {
-            sendNotificattion(uid, "Spam Detected", "You have been muted for 1min", "spam", uid);
-            
-           }
-           likeButton.style.display = "none";
-            
-                 // Hide chatBar
-            const chatBar = document.getElementById("chatBar");
-            if (messageData.uid === uid) {
-                chatBar.style.display = "none";
-            } else {
-                chatBar.style.display = "flex"; // Show chatBar for others
-            }
-
-            // Mute user for 1 minute
-            const duration = Date.now() + 60000; // 1 minute from now
-            update(userMutedRef, { duration });
-
-            // Start countdown
-            const countdownInterval = setInterval(() => {
-                const remaining = duration - Date.now();
-                if (remaining <= 0) {
-                    clearInterval(countdownInterval);
-                    remove(userMutedRef);
-                    document.querySelector("#chatBar").style.display = "flex"; // Show chatBar again
+                if (messageData.uid === uid) {
+                    sendNotificattion(uid, "Spam Detected", "You have been muted for 1 minute", "spam", uid);
                 }
-            }, 1000);
-            
-        } else {
-            // If alreadyMuted is true, just show the message as spam
-            bubbleText.textContent = "This message has been flagged as inappropriate.";
-            bubbleText.style.color = "red";
-            bubbleText.style.fontWeight = "bold";
+                likeButton.style.display = "none";
+
+                // Hide chatBar
+                const chatBar = document.getElementById("chatBar");
+                if (messageData.uid === uid) {
+                    chatBar.style.display = "none";
+                } else {
+                    chatBar.style.display = "flex"; // Show chatBar for others
+                }
+
+                // Mute user for 1 minute
+                const duration = Date.now() + 60000; // 1 minute from now
+                update(userMutedRef, { duration });
+
+                // Start countdown
+                const countdownInterval = setInterval(() => {
+                    const remaining = duration - Date.now();
+                    if (remaining <= 0) {
+                        clearInterval(countdownInterval);
+                        remove(userMutedRef);
+                        document.querySelector("#chatBar").style.display = "flex"; // Show chatBar again
+                    }
+                }, 1000);
+            } else {
+                // If alreadyMuted is true, just show the message as spam
+                bubbleText.textContent = "This message has been flagged as inappropriate.";
+                bubbleText.style.color = "red";
+                bubbleText.style.fontWeight = "bold";
+            }
         }
-    }
     } else {
         if (messageData.uid === "system") {
             chatBubbleConDiv.innerHTML = ""; // Clear everything inside the chatBubbleConDiv
@@ -2313,20 +2394,22 @@ function checkForMessages() {
 // Listen for new messages in real-time
 onChildAdded(messagesRef, (snapshot) => {
     const messageData = snapshot.val();
-    const currentTime = new Date();
-    const messageTime = new Date(messageData.time);
+    const currentTime = new Date(); // Removed unused variable
+    const messageTime = new Date(messageData.time); // Removed unused variable
 
-    if (
+    if (messageData.uid === "system") {
+        const systemAudio = new Audio("./audio/system.mp3"); // Ensure the path is relative to the current file
+        systemAudio.play();
+    } else if (
         messageData.uid !== uid &&
         messageTime.getHours() === currentTime.getHours() &&
         messageTime.getMinutes() === currentTime.getMinutes()
     ) {
         console.log("The message time corresponds with the current time and is not from your UID.");
-        const audio = new Audio("audio/recieve.mp3");
+        const audio = new Audio("./audio/recieve.mp3"); // Ensure the path is relative to the current file
         audio.play();
-    } 
-       
-    
+    }
+
     displayMessage(messageData);
     noMessagesPlaceholder.style.display = "none"; // Hide placeholder when a message is added
 
@@ -2344,7 +2427,6 @@ onChildAdded(messagesRef, (snapshot) => {
             }
         }
     });
-   
 });
 
 // Initial check for messages
@@ -3014,18 +3096,62 @@ manageStorage();
             console.error("Error fetching user data:", error);
         });
 
-    const privateChatWindowDiv = document.getElementById("privateChatWindowDiv");
+        let userBlocked = false;
+let iamBlocked = false;
 
-    function handleResize() {
-        if (window.innerWidth <= 600) {
-            privateChatWindowDiv.style.display = "flex";
-        } else {
-            privateChatWindowDiv.style.display = "flex";
-        }
+const privateChatBar = document.getElementById("privateChatBar");
+const privateChatBlocked = document.getElementById("privateChatBlocked");
+const privateChatBlocked2 = document.getElementById("privateChatBlocked2");
+
+function updateChatUI() {
+    if (userBlocked) {
+        console.log("You are blocked.");
+        privateChatBar.style.display = "none";
+        privateChatBlocked2.style.display = "flex";
+        privateChatBlocked.style.display = "none";
+    } else if (iamBlocked) {
+        console.log("You have blocked this user.");
+        privateChatBar.style.display = "none";
+        privateChatBlocked.style.display = "flex";
+        privateChatBlocked2.style.display = "none";
+    } else {
+        console.log("Chat is allowed.");
+        privateChatBar.style.display = "flex";
+        privateChatBlocked.style.display = "none";
+        privateChatBlocked2.style.display = "none";
     }
+}
 
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check
+// Check if the current user is blocked
+const blockedRef = ref(database, `blocked-users/${otherUid}/${uid}`);
+onValue(blockedRef, (snapshot) => {
+    userBlocked = snapshot.exists();
+    updateChatUI();
+}, (error) => {
+    console.error("Error checking if user is blocked:", error);
+});
+
+// Check if the current user has blocked the other user
+const checkIfIBlockedRef = ref(database, `blocked-users/${uid}/${otherUid}`);
+onValue(checkIfIBlockedRef, (snapshot) => {
+    iamBlocked = snapshot.exists();
+    updateChatUI();
+}, (error) => {
+    console.error("Error checking if I blocked the user:", error);
+});
+
+        const privateChatWindowDiv = document.getElementById("privateChatWindowDiv");
+
+        function handleResize() {
+            if (window.innerWidth <= 600) {
+                privateChatWindowDiv.style.display = "flex";
+            } else {
+                privateChatWindowDiv.style.display = "flex";
+            }
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize(); // Initial check
 
         // Call this function after setting chattingWithUser
         initializePrivateChatListener();
@@ -3170,17 +3296,14 @@ function displayPrivateMessage(privateMessageData) {
                         console.error("Error marking message as seen:", error);
                     });
             }
+
+            function chekIfAmBlocked() {
+                
+            }
         
 }
 
-function alert() {
-    if(chattingWithUser) {
-        console.log("Chatting with user:", chattingWithUser);
-    } else {
-        console.log("No user selected for private chat.");
-    }
-}
-alert();
+
 function initializePrivateChatListener() {
     if (chattingWithUser) {
         const privateChatRef = ref(database, `privateChat/${chattingWithUser}/messages`);
@@ -3205,44 +3328,9 @@ function initializePrivateChatListener() {
                 }
             });
         
-            // Check if the current user is blocked
-            const blockedRef = ref(database, `blocked-users/${privateMessageData.uid}/${uid}`);
-            onValue(blockedRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    console.log("You are blocked.");
-                    const privateChatBar = document.getElementById("privateChatBar");
-                    const privateChatBlocked = document.getElementById("privateChatBlocked");
-                    const privateChatBlocked2 = document.getElementById("privateChatBlocked2");
-                    privateChatBar.style.display = "none"; // Hide the chat bar
-                    privateChatBlocked2.style.display = "flex"; // Show the blocked message
-                    privateChatBlocked.style.display = "none"; // Show the blocked message
-                } else {
-                    console.log("You are not blocked.");
-                    const privateChatBar = document.getElementById("privateChatBar");
-                    const privateChatBlocked = document.getElementById("privateChatBlocked");
-                    const privateChatBlocked2 = document.getElementById("privateChatBlocked2");
-                    privateChatBar.style.display = "flex"; // Show the chat bar
-                    privateChatBlocked.style.display = "none"; // Hide the blocked message
-                    privateChatBlocked2.style.display = "none"; // Hide the blocked message
-                }
-            }, (error) => {
-                console.error("Error checking if user is blocked:", error);
-            });
+            
 
-            const checkIfIBlockedRef = ref(database, `blocked-users/${uid}/${privateMessageData.uid}`);
-            get(checkIfIBlockedRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    console.log("You have blocked this user.");
-                    const privateChatBar = document.getElementById("privateChatBar");
-                    privateChatBar.style.display = "none"; // Hide the chat bar
-                    const privateChatBlocked = document.getElementById("privateChatBlocked");
-                    const privateChatBlocked2 = document.getElementById("privateChatBlocked2");
-                    privateChatBlocked.style.display = "flex"; // Show the blocked message
-                    privateChatBlocked2.style.display = "none"; // Show the blocked message
-                }
-            }).catch((error) => {
-                console.error("Error checking if user is blocked:", error);
-            });
+            
         });
     } else {
         console.warn("chattingWithUser is not set. Unable to initialize private chat listener.");
@@ -3368,6 +3456,7 @@ function loadChatList() {
                                 privateChatWindow.style.display = "flex";
                                 openChat.style.display = "none";
                                 loadPrivateChatData();
+                              
                             });
                         }
 
@@ -5595,3 +5684,28 @@ function updateCurrentChat() {
     }
 }
 updateCurrentChat(); // Call the function to update current chat
+const discoverTab = document.getElementById("discoverTab");
+const discoverDivCon = document.getElementById("discoverDivCon");
+const discoverCloseBtn = document.getElementById("discoverCloseBtn");
+discoverTab.addEventListener("click", () => {
+    openDiscover();
+});
+discoverCloseBtn.addEventListener("click", () => {
+    discoverDivCon.style.display = "none";
+});
+function openDiscover() {
+    discoverDivCon.style.display = "flex";
+
+}
+const whatOnMindAndProfileDiv = document.getElementById("whatOnMindAndProfileDiv");
+const discoverProfileManagerDivCon = document.getElementById("discoverProfileManagerDivCon");
+const discoverProfileManagerCloseBtn = document.getElementById("discoverProfileManagerCloseBtn");
+discoverProfileManagerCloseBtn.addEventListener("click", () => {
+    discoverProfileManagerDivCon.style.display = "none";
+});
+whatOnMindAndProfileDiv.addEventListener("click", () => {
+    openDiscoverProfileManager();
+});
+function openDiscoverProfileManager() {
+    discoverProfileManagerDivCon.style.display = "flex";
+}

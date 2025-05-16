@@ -6,14 +6,15 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "http
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBqgNC5BXxtHMnc-oMhQ0QhLYg18oAG3QA",
-    authDomain: "teens-f3fc7.firebaseapp.com",
-    databaseURL: "https://teens-f3fc7-default-rtdb.firebaseio.com",
-    projectId: "teens-f3fc7",
-    storageBucket: "teens-f3fc7.appspot.com",
-    messagingSenderId: "828565874604",
-    appId: "1:828565874604:web:83ce3266202b4cd4b1fc09"
-};
+    apiKey: "AIzaSyB4yJPd9bpGeMd8I8p6aYnW9CPp1MIxYLc",
+    authDomain: "chatgio-3d5f7.firebaseapp.com",
+    databaseURL: "https://chatgio-3d5f7-default-rtdb.firebaseio.com",
+    projectId: "chatgio-3d5f7",
+    storageBucket: "chatgio-3d5f7.firebasestorage.app",
+    messagingSenderId: "160568641680",
+    appId: "1:160568641680:web:bbd8a44f6f7dad42ab3015",
+    measurementId: "G-6701DMKN4W"
+  };
 
 // Initialize Firebase services
 const app = initializeApp(firebaseConfig);
@@ -121,18 +122,46 @@ document.getElementById("signUpButton").addEventListener("click", async (event) 
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        const userRef = ref(db, `users/${user.uid}`);
-        await set(userRef, {
-            name: username,
-            email: email,
-            time: new Date().toISOString(),
-            uid: user.uid,
-            account: "user",
-            "set-up": false,
-        });
+        // Get user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
 
-        signUpAndLoginDiv.style.display = "none";
-        setupDiv.style.display = "flex"; // Show setup UI
+                // Use Google Maps API to get the country from latitude and longitude
+                const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDAewD7_ea7C4A4hZm6ZxcRtOCVajncpXk`);
+                const data = await response.json();
+
+                let country = "Unknown";
+                if (data.results && data.results.length > 0) {
+                    const addressComponents = data.results[0].address_components;
+                    const countryComponent = addressComponents.find(component => component.types.includes("country"));
+                    if (countryComponent) {
+                        country = countryComponent.long_name;
+                    }
+                }
+
+                // Save user data to Firebase Database
+                const userRef = ref(db, `users/${user.uid}`);
+                await set(userRef, {
+                    name: username,
+                    email: email,
+                    time: new Date().toISOString(),
+                    uid: user.uid,
+                    account: "user",
+                    "set-up": false,
+                    country: country, // Save the country
+                });
+
+                signUpAndLoginDiv.style.display = "none";
+                setupDiv.style.display = "flex"; // Show setup UI
+            }, (error) => {
+                console.error("Error getting location:", error);
+                alert("Failed to get location. Please enable location services and try again.");
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
     } catch (error) {
         console.error("Error signing up:", error);
         alert("Sign up failed: " + error.message);

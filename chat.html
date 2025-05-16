@@ -323,7 +323,7 @@
                         </div>        
                         <div id="accountCoverImgAndProfilePicDiv">
                             <div id="accountCoverImgDiv">
-                                <img src="img/cover.jpg" alt="cover" id="accountCoverImg">
+                                <img src="img/jolofu.webp" alt="cover" id="accountCoverImg">
                             </div>
                             <div id="accountProfilePicDiv">
                                 <img src="img/emperor.png" alt="profile" id="accountProfilePic">
@@ -393,24 +393,39 @@
                                         <div id="accountUserNameDiv">
                                             <span>Username:</span>
                                             <span id="accountUserName">--</span>
+                                            <button id="copyUserName" class="copy-button" aria-label="Copy Username">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
                                         </div>
                                         <div id="accountUidDiv">
                                             <span>UID:</span>
                                             <span id="accountUid">--</span>
+                                            <button id="copyUid" class="copy-button" aria-label="Copy UID">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
                                         </div>
                                         <div id="accountCountryDiv">
                                             <span>Country:</span>
                                             <span id="accountCountry">--</span>
+                                            <button id="copyCountry" class="copy-button" aria-label="Copy Country">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
                                         </div>
                                         <div id="accountGenderDiv">
                                             <span>Gender:</span>
                                             <span id="accountGender">--</span>
+                                            <button id="copyGender" class="copy-button" aria-label="Copy Gender">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
                                         </div>
                                         <div id="accountAgeDiv">
                                             <span>Age:</span>
                                             <span id="accountAge">--</span>
+                                            <button id="copyAge" class="copy-button" aria-label="Copy Age">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
                                         </div>
-                                    </div>
+                                    </div>                                    
                                 </div>
                             </div>
                         </div>
@@ -463,6 +478,44 @@
                         </div>
                     </div>
                 </div>
+                <div id="discoverDivCon">
+                    <div id="discoverDiv">
+                        <div id="discoverTopBar">
+                            <div id="discoverCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div id="discoverTitle">Discover</div>
+                            <div id="searchBtn">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                        <div id="whatOnMindAndProfileDiv">
+                            <div id="discoverProfilePicDiv">
+                                <img src="img/emperor.png" alt="profile" id="discoverProfilePicImg">
+                            </div>
+                            <div id="whatOnMindDiv">
+                                <span>What's on your mind</span>
+                            </div>
+                        </div>
+                        <div id="discoverList"></div>
+                    </div>
+                </div>
+                <div id="discoverProfileManagerDivCon">
+                    <div id="discoverProfileManagerDiv">
+                        <div id="discoverProfileManagerTopBar">
+                            <div id="discoverProfileManagerCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div id="discoverProfileManagerTitle">Discover</div>
+                        </div>
+                        <div id="discoverProfileManagerList"></div>
+                        <div id="createNewPostDiv">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="createNewPostDivCon">
+                </div>
                 <div id="notificationScreenDivCon">
                     <div id="notificationScreenDiv">
                         <div id="notificationScreenTopBar">
@@ -485,6 +538,36 @@
                         <input type="password" id="enterGroupPasswordInput" placeholder="Group Password">
                         <div id="errorMrssage"></div>
                         <button id="enterGroupBtn">Enter Group</button>
+                    </div>
+                </div>
+                <div id="createNewSocialPostDivCon">
+                    <div id="createNewSocialPostDiv">
+                        <div id="createNewPostTopBar">
+                            <div id="createNewPostCloseBtn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div id="createNewPostTitle">Create New Post</div>
+                        </div>
+                        <textarea id="createNewPostTextArea" placeholder="What's on your mind?"></textarea>
+                        <img id="imagePreview" src="" alt="Image Preview" style="display: none;">
+                        <video id="videoPreview" controls style="display: none;">
+                            <source id="videoSource" src="" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div id="addMore">
+                            <div id="addMoreText">Add More</div>
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div id="addImageAndVideoDiv">
+                            <div id="addImageDiv">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div id="addVideoDiv">
+                                <i class="fas fa-video"></i>
+                            </div>
+                        </div>
+                        <div id="askNova">Ask Nova</div>
+                        <button id="createNewPostBtn">Create Post</button>
                     </div>
                 </div>
                 <div id="createGroupDivCon">
@@ -1498,6 +1581,6 @@
     <script src="js/emoji.js" type="module"></script>
     <script src="js/record.js" type="module"></script>
     <script src="js/recorder.js"></script>
-    <script src="https://js.puter.com/v2/"></script>
+    
 </body>
 </html>
